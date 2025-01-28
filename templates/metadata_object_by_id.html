@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+    
+{% block content %}
+
+{% with errors = get_flashed_messages(category_filter=["success"]) %}
+{% if errors %}
+<article class="message is-success">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+{% if errors %}
+<article class="message is-danger">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+<a href={{back}}><button class="button is-dark">Back</button></a> 
+
+<div class="columns">
+
+    <div class="column">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    MuseumPlus Object id: {{xml_data["__id"]}}
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    {% if thumb_status: %}
+                        <img src="data:image/jpeg;base64,{{xml_data["thumbnail"]}}"></br>
+                        Multimedia attachment id: {{xml_data["ObjMultimediaRef_id"]}}</br>
+                    {% else: %}
+                        </br></br>
+                        <center><i class="fa fa-picture-o fa-5x"></i></br></center>
+                        <center>NO PICTURE AVAILABLE</center>
+                        </br></br>
+                    {% endif %}
+                    &nbsp; All attachments: </br>
+                    {% for item in xml_data["ObjMultimediaRef"]: %}
+                        &nbsp; &#9900;  id: {{item}} | 
+                    <a href="{{url_for('metadata.metadata_load_attachment')}}?img_id={{item}}&img_name={{xml_data['ObjMultimediaRef'][item]}}&objectid={{xml_data['__id']}}">Download</a>
+                    &rarr; {{xml_data["ObjMultimediaRef"][item]}}
+                    </br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="box">
+            <b>Inventory number:</b></br>
+            <h2>{{xml_data["ObjObjectNumberVrt"]}}</h2>
+            <b>PAS log:</b></br>
+            {% if xml_data["ObjPASLog01Clb"] != "": %}
+
+            <div class="has-background-success-light"> {{xml_data["ObjPASLog01Clb"]}} </div>
+
+            {% else %}
+            &nbsp; <b>No PAS file transfers marked for this Object!</b>
+            {% endif %}
+            <b>Name:</b></br>
+            &nbsp; {{xml_data["ObjObjectTitleVrt"]}}</br>
+            <b>Actors:</b></br>
+            {% for item in xml_data["ObjPerAssociationRef"]: %}
+                &nbsp; {{item}}</br>
+            {% endfor %}
+            <b>Creation:</b></br>
+                &nbsp; {{xml_data["ObjDateGrp_PreviewVrt"]}}</br>
+            <b>Type:</b></br>
+                &nbsp; {{xml_data["ObjCategoryVoc"]}}</br>
+            <b>Classification:</b></br>
+            {% for item in xml_data["ObjClassificationsNBA01Grp"]: %}
+                &nbsp; {{item}}</br>
+            {% endfor %}
+            <b>Measurements:</b></br>
+            {% for item in xml_data["ObjDimAllGrp_PreviewVrt"]: %}
+                &nbsp; {{item}}</br>
+            {% endfor %}
+            <b>Keeper:</b></br>
+                &nbsp; {{xml_data["ObjManagResponsibleNBA01Ref"]}}</br>
+            <b>Owner:</b></br>
+                &nbsp; {{xml_data["ObjManagOwnerNBA01Ref"]}}</br>
+            <b>Domain:</b></br>
+                &nbsp; {{xml_data["__orgUnit"]}}</br>
+        </div>
+    </div>
+
+    <div class="column">
+        <div>
+            &larr; <a class="button is-success" href="{{url_for('metadata.metadata_save_object_by_id', objectid=objectid)}}">Import</a> Object XML to DATA-folder</br>
+            <hr>
+
+            &larr; <a class="button is-success" href="{{url_for('metadata.metadata_create_lido_xml', objectid=objectid)}}">Create</a>  Lido XML to METADATA-folder</br>
+            <hr>
+            <!--  
+            &larr; <a class="button is-info" href="{{url_for('metadata.metadata')}}?flag=once">Get</a>  Object report (Word)</br>
+            <hr>
+
+            &larr; <a class="button is-info" href="{{url_for('metadata.metadata')}}?flag=once">Get</a>  Object report (Excel)</br>
+            <hr>
+
+            &larr; <a class="button is-info" href="{{url_for('metadata.metadata')}}?flag=once">Get</a>  Lido Finna suppea XML</br>
+            <hr>
+
+            &larr; <a class="button is-info" href="{{url_for('metadata.metadata')}}?flag=once">Get</a>  Lido Finna laaja XML </br>
+            <hr>
+
+            &larr; <a class="button is-info" href="{{url_for('metadata.metadata')}}?flag=once">Get</a>   Lido PAS XML </br>
+            <hr>
+            -->
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+</br></br>
+
+{% endblock %}

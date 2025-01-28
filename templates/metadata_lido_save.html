@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="columns">
+    <div class="column">
+        &nbsp;
+    </div>
+    <div class="column is-three-fifths">
+        <h4 class="title is-4">Descriptive metadata - Lido-XML</h4>
+        <h5 class="title is-5">{{environment}}</h5>
+
+        {% with errors = get_flashed_messages(category_filter=["success"]) %}
+        {% if errors %}
+        <article class="message is-success">
+            <div class="message-body">
+            {%- for msg in errors %}
+            <strong>{{ msg }}</strong>
+            {% endfor -%}
+            </div>
+        </article>
+        {% endif %}
+        {% endwith %}
+        
+        {% with errors = get_flashed_messages(category_filter=["error"]) %}
+        {% if errors %}
+        <article class="message is-danger">
+            <div class="message-body">
+            {%- for msg in errors %}
+            <strong>{{ msg }}</strong>
+            {% endfor -%}
+            </div>
+        </article>
+        {% endif %}
+        {% endwith %}
+
+
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <table class="table table is-bordered">
+                <tr>
+                    <th style="width:50%">{{ form.classification1.label }}</th>
+                    <th style="width:50%">{{ form.classification1(size=50) }}</th>
+                </tr>
+                <tr>
+                    <th>{{ form.classification2.label }} </th>
+                    <th>{{ form.classification2(size=50) }}</th>
+                </tr>
+                <tr>
+                    <th>{{ form.classification3.label }}</th>
+                    <th>{{ form.classification3(size=50) }}</th>
+                </tr>
+                <tr>
+                    <th>{{ form.mp_inv.label }}</th>
+                    <th>{{ form.mp_inv(size=50) }}</th>
+                </tr>
+                <tr>
+                    <th>{{ form.mp_id.label }}</th>
+                    <th>{{ form.mp_id(size=50) }}</th>
+                </tr>
+                <tr>
+                    <th>{{ form.mp_name.label }}</th>
+                    <th>{{ form.mp_name(size=50) }}</th>
+                </tr>
+                <tr>
+                    <th>{{ form.mp_actor.label }}</th>
+                    <th>{{ form.mp_actor(size=50) }}</th>
+                </tr>
+                <tr>
+                    <th>{{ form.mp_creation.label }} </th>
+                    <th>{{ form.mp_creation(size=50) }}</th>
+                </tr>
+                <tr>
+                    <th>{{ form.mp_repository.label }} </th>
+                    <th>{{ form.mp_repository(size=50) }}</th>
+                </tr>
+                <tr>
+                    <th>{{ form.mp_owner.label }} </th>
+                    <th>{{ form.mp_owner(size=50) }}</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>{{ form.submit(style ='background-color: #4CAF50;
+                        color: white;
+                        font-weight: bold;
+                        width: 100%;
+                        padding: 14px 20px;
+                        margin: 8px 0;
+                        border: none;
+                        border-radius: 4px')  }}
+                    </th>
+                </tr>
+            </table>      
+
+        </form>  
+    </div>
+    <div class="column">
+        &nbsp;
+    </div>
+</div>
+
+
+      
+{% endblock %}

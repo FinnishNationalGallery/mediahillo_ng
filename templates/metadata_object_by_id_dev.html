@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+    
+{% block content %}
+    
+    <h2 class="title">MuseumPlus object: {{objects["__id"]}}</h2>
+    
+    <div class="columns">
+        <div class="column is-one-third">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                    {{objects["ObjObjectVrt"]}}
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                    {% if thumb_stat: %}
+                    <img src="data:image/jpeg;base64,{{objects["thumbnail"]}}">
+                    {% endif %}
+                    <p>{{xml_data["ObjObjectNumberVrt"]}}</p>
+                    <p>{{xml_data["ObjPASLog01Clb"]}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="box">
+                {% if objects: %}
+                <!-- <table id="objects"> -->
+                <table class="table table-bordered table-sm">
+                    <tr class="table-dark text-dark">
+                        <th>XML element name</th>
+                        <th>Value</th>
+                    </tr>
+                    {% for key, val in objects.items(): %}
+                    <tr>
+                        <td>{{key}}</td>
+                        {% if key=="thumbnail": %}
+                            <td>THUMBNAIL</td>
+                        {% else %}
+                            <td>{{val}}</td>
+                        {% endif %}               
+                        
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+    <h5>{% if objects: %}
+            {{objects["__orgUnit"]}}, {{objects["ObjObjectVrt"]}}
+        {% endif %}
+    </h5>
+
+    <h3>
+        XML tietue:
+    </h3>
+    <span style="white-space: pre-wrap"><pre> {{message}} </pre></span>
+
+
+
+{% endblock %}

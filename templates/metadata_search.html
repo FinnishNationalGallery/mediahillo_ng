@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="columns">
+    <div class="column">
+        &nbsp;
+    </div>
+    <div class="column">
+        <h4 class="title is-4">MuseumPlus API - search object</h4>
+        <h5 class="title is-5">{{environment}}</h5>
+        <span class="tag is-warning">Choose only one search field!</span>
+      </br></br>
+
+        {% with errors = get_flashed_messages(category_filter=["success"]) %}
+        {% if errors %}
+        <article class="message is-success">
+            <div class="message-body">
+            {%- for msg in errors %}
+            <strong>{{ msg }}</strong>
+            {% endfor -%}
+            </div>
+        </article>
+        {% endif %}
+        {% endwith %}
+        
+        {% with errors = get_flashed_messages(category_filter=["error"]) %}
+        {% if errors %}
+        <article class="message is-danger">
+            <div class="message-body">
+            {%- for msg in errors %}
+            <strong>{{ msg }}</strong>
+            {% endfor -%}
+            </div>
+        </article>
+        {% endif %}
+        {% endwith %}
+
+
+        <form action="" method="post">
+           {{ form.hidden_tag() }}
+           <div>
+            {{ form.objectid(placeholder="Search by object id",
+              style='width: 100%;
+              font-weight: bold;
+              padding: 12px 20px ;
+              margin: 8px 0;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              box-sizing: border-box') }}
+              {% for error in form.objectid.errors %}
+              <p style="color: red;">{{ error }}</p>
+              {% endfor %}
+              <small>Example: 617656, 389906, 94594, 417057, 642581, 523348</small></br></br>
+           </div>
+           
+           <div>
+              {{ form.inventorynumber(placeholder="Search by inventory number",
+              style='width: 100%;
+              font-weight: bold;
+              padding: 12px 20px ;
+              margin: 8px 0;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              box-sizing: border-box') }}
+              {% for error in form.inventorynumber.errors %}
+              <p style="color: red;">{{ error }}</p>
+              {% endfor %}
+              <small>Example: A I 694, A I 67, N-2015-198:A-C tai N-2017-</small></br></br>
+           </div>
+           
+           <div>
+            {{ form.title(placeholder="Search by title",
+            style='width: 100%;
+            font-weight: bold;
+            padding: 12px 20px ;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box') }}
+            {% for error in form.title.errors %}
+            <p style="color: red;">{{ error }}</p>
+            {% endfor %}
+            <small>Example: Headbone, AlieNATION, Blanka</small></br></br>
+         </div>
+           <p>{{ form.submit(style ='background-color: #4CAF50;
+              color: white;
+              font-weight: bold;
+              width: 100%;
+              padding: 14px 20px;
+              margin: 8px 0;
+              border: none;
+              border-radius: 4px') }}
+           </p>
+        </form>  
+    </div>
+    <div class="column">
+        &nbsp;
+    </div>
+</div>
+
+
+      
+{% endblock %}

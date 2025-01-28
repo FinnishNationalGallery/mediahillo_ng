@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+<div class="columns">
+    <div class="column is-one-third">
+        &nbsp;
+        <div class="content">
+        <h2>Steps for packaging:</h2>
+        <ul>
+            <li> Configure settings page </li>
+            <li> Upload all files to the DATA folder (1) </li>
+            <li> Get objects metadata (2.1 /2.2) </li>
+            <li> Import all files to SIP folder (1) </li>
+            <li> Create METS XML and compress tar-file (3) </li>
+            <li> Send tar-file to PAS service with SFTP program</li>
+            <li> Update information to MuseumPlus system</li>
+        </ul>
+      </div>
+    </div>
+    <div class="column">
+      <figure class="image is-3by2">
+            <img src="/static/FNG-Siptools.jpg">
+      </figure>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div class="column is-one-fifth">
+    </div>
+</div>
+
+<div class="box has-text-centered">
+      <a href="{{url_for('main.ffmpeg')}}"><button class="button is-dark">FFMPEG info</button></a> 
+      <a href="http://digitalpreservation.fi/" target="_blank"><button class="button is-dark">DPS services</button></a> 
+      <a href="https://digitalpreservation.fi/user_guide" target="_blank"><button class="button is-dark">Start Instructions</button></a> 
+      <a href="https://github.com/FinnishNationalGallery/mediajam_2" target="_blank"><button class="button is-dark">Github codes</button></a>     
+</div>
+
+
+      
+{% endblock %}

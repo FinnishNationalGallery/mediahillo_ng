@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="columns">
+    <div class="column is-one-quarter">
+        <div class="box">
+            <h2 class="title">PASLOG database:</h2>
+            <hr>
+            <a href="{{url_for('paslog.get_csc_paslog')}}"><button class="button is-dark" id="hide1">1. Read</button></a> CSC accepted
+            <hr>
+            <a href="{{url_for('paslog.get_mp_paslog')}}"><button class="button is-dark" id="hide2">2. Read</button></a>  MuseumPlus marked
+            <hr>
+            <a href="{{url_for('paslog.paslog_show_data')}}"><button class="button is-success" id="hide3">3. Check</button></a> PASLOG marked
+            <hr>
+            <a href="{{url_for('paslog.make_empty_db')}}"><button class="button is-danger" id="hide4">Reset</button></a> database
+            <hr>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="box">
+            <h5 class="title is-5">{{environment}} & {{environment2}}  </h5>
+        </div>
+        <div class="box">
+            {{message}}
+            <div class="notification is-warning">
+                <strong>WAIT FOR THE PROGRAM!</strong> Mediahillo is processing database actions ...
+            </div>
+        </div>
+    </div>
+    
+</div>
+   
+{% endblock %}

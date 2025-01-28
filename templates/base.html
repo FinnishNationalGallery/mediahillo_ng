@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} {% endblock %}MediaJam</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,300,1,0" />
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+
+    <style type="text/css">
+        .popupcontent {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 200px;
+            text-align: center;
+            background-color: #FFFFE0;
+            border-radius: 6px;
+            border: 2px solid #000000;
+            box-sizing: border-box;
+            padding: 10px;
+            z-index: 100;
+            display: none;
+            /*to hide popup initially*/
+        }
+        
+        .popupclose-btn {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            background-color: black;
+            color: white;
+            border-radius: 50%;
+            padding: 4px;
+        }
+    </style>
+
+</head>
+<script>
+    $(document).ready(function(){
+        $(".notification").hide(0);
+        $("#hide").click(function(){
+            $(".notification").fadeIn(0);
+            $(".button").fadeOut(0);
+        });
+        $("#hide1").click(function(){
+            $(".notification").fadeIn(0);
+            $(".button").fadeOut(0);
+        });
+        $("#hide2").click(function(){
+            $(".notification").fadeIn(0);
+            $(".button").fadeOut(0);
+        });
+        $("#hide3").click(function(){
+            $(".notification").fadeIn(0);
+            $(".button").fadeOut(0);
+        });
+        $("#hide4").click(function(){
+            $(".notification").fadeIn(0);
+            $(".button").fadeOut(0);
+        });
+        $("#hide5").click(function(){
+            $(".notification").fadeIn(0);
+            $(".button").fadeOut(0);
+        });
+        $("#hide6").click(function(){
+            $(".notification").fadeIn(0);
+            $(".button").fadeOut(0);
+        });
+        $("#hide7").click(function(){
+            $(".notification").fadeIn(0);
+            $(".button").fadeOut(0);
+        });
+        $("#hide8").click(function(){
+            $(".notification").fadeIn(0);
+            $(".button").fadeOut(0);
+        });
+        $("#hide9").click(function(){
+            $(".notification").fadeIn(0);
+            $(".button").fadeOut(0);
+        });
+    });
+
+    // Function to show and hide the popup
+    function togglePopup() {
+        $(".popupcontent").toggle();
+    }
+</script>
+<script>
+    $( function() {
+      $( document ).tooltip();
+    } );
+</script>
+<style>
+    label {
+      display: inline-block;
+      width: 5em;
+    }
+</style>
+<body>
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{{url_for('main.index')}}">
+                <span class="has-text-weight-bold">	&#9832;MediaJam</span>
+            </a>
+        
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            </a>
+        </div>
+        
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+            <a class="navbar-item" href="{{url_for('main.settings')}}">
+                Settings
+            </a>
+        
+            <a class="navbar-item" href="{{url_for('data.data')}}">
+                1. DATA
+            </a>
+
+            <a class="navbar-item" href="{{url_for('metadata.metadata_search')}}">
+                2.1 Get metadata
+            </a>
+  
+            <a class="navbar-item" href="{{url_for('metadata.metadata')}}">
+                2.2 METADATA
+            </a>
+
+            <a class="navbar-item" href="{{url_for('sip.sip')}}">
+                3. SIP
+            </a>
+
+            <a class="navbar-item" href="{{url_for('download.download')}}">
+                DOWNLOAD
+            </a>
+
+            <a class="navbar-item" href="{{url_for('sftp.pas_sftp_index')}}">
+                SFTP
+            </a>
+
+            <a class="navbar-item" href="{{url_for('rest.pas_rest_index')}}">
+                REST
+            </a>
+
+            <a class="navbar-item" href="{{url_for('paslog.paslog_index')}}">
+                MuseumPlus LOG
+            </a>
+
+            </div>
+        
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    {% if current_user.is_anonymous %}
+                        <div class="buttons">
+                        <a class="button is-success is-small" href="{{ url_for('auth.register') }}">
+                            <strong>Register</strong>
+                        </a>
+                        <a class="button is-light is-small" href="{{ url_for('auth.login') }}">
+                            Login
+                        </a>
+                        </div>
+                    {% else %}
+                    <div class="buttons">
+                        {% if current_user.id == 1 %}
+                        <a class="button is-success is-small" href="{{ url_for('auth.login_list_registered_users') }}">
+                            <strong>Welcome Admin {{current_user.id}} </strong>
+                        </a>
+                        {% else %}
+                        <button class="button is-white is-outlined is-small">Welcome {{current_user.email}} </button>
+                        {% endif %}
+                        &nbsp; &nbsp;
+                        <a class="button is-warning is-small" href="{{ url_for('auth.logout') }}">
+                            <strong>Log out</strong>
+                        </a>
+                    </div>
+                    {% endif %}
+
+    
+                </div>
+            </div>
+        </div>
+    </nav>
+    </br>
+    <div class="container">
+        {% block content %} {% endblock %}
+    </div>
+
+</body>
+</html>

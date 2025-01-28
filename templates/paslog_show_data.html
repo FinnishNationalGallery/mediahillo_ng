@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+    
+{% block content %}
+
+{% with errors = get_flashed_messages(category_filter=["success"]) %}
+{% if errors %}
+<article class="message is-success">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+{% if errors %}
+<article class="message is-danger">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+<div class="columns">
+
+    <div class="column">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <a href={{url_for('paslog.paslog_index')}}><button class="button is-dark">Back</button></a> &nbsp; &nbsp; Found {{totalSize}} objects without MusemPlus PASLOG mark {{title}}
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    {% if error: %}
+                    <p>{{ error }}</p>
+                    {% endif %}
+                    <table class="table table-sm">
+                        <tr>
+                            <th>Pas MP ID</th>
+                            <th>Pas Created</th>
+                            <th>Pas AIP ID</th>
+                            <th>MP Paslog</th>
+                            <th>Make mark</th>
+                        </tr>
+                        {% for row in data %}
+                            <tr>
+                                <td>{{ row.pas_mp_id }}</td>
+                                <td>{{ row.pas_created }}</td>
+                                <td>{{ row.pas_id }}</td>
+                                <td>{{ row.mp_paslog }}</td>
+                                <td> <a href="{{url_for('paslog.paslog_put_mark')}}?obj_id={{row.pas_mp_id}}&aipid={{row.pas_id}}&timestamp={{row.pas_created}}"><button class="button is-success">MP_LOG</button></a>  </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</br></br>
+
+</br></br>
+
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="title">DATANATIVE-folder </h1>
+
+
+
+{% with errors = get_flashed_messages(category_filter=["success"]) %}
+{% if errors %}
+<article class="message is-success">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+{% if errors %}
+<article class="message is-danger">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+<div class="columns">
+    <div class="column">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                Server total disk space {{diskinfo[1]}} used {{diskinfo[4]}}
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                {% for file in files %}
+
+                <form enctype="multipart/form-data" action="{{url_for('datanative.datanative_import')}}" method="post">
+
+                <a href="{{url_for('datanative.datanative_file_delete')}}?name={{file}}&page=datanative.datanative&path=DATANATIVE"> <span class="material-symbols-outlined has-text-danger">delete_forever</span></a>
+                &rarr; 
+
+                <a href="{{url_for('datanative.mediainfo_datanative')}}?fullfilename={{file}}"> <span class="material-symbols-outlined" onclick="togglePopup()">file_open</span> </a>
+
+                <a href="{{DATANATIVE_path}}{{file}}">{{file}}</a> 
+                <input type="hidden" id="file" name="file" value={{file}}>
+                </br>
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <span class="material-symbols-outlined">subdirectory_arrow_right</span>
+
+                <label for="outcome">Linked:</label>
+                <select id="outcome" name="outcome">
+                {% for file_outcome in files_outcome: %}
+                    <option value={{file_outcome}}>{{file_outcome}}</option>
+                {% endfor %}
+                </select>
+
+                &rarr; 
+
+                <input id="hide" type="submit" value="Import" class="button is-success"/>
+                </form>
+
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="notification is-warning">
+            <strong>WAIT FOR THE PROGRAM!</strong> Mediahillo is processing files ...
+        </div>
+        <div class="box">
+            <div class="content">
+                <strong>IMPORTANT!</strong> </br>
+                Import FIRST files from DATA folder and after that import files from DATANATIVE folder!
+            </div>
+            
+        <strong>LIST OF ALREADY LINKED FILES:</strong>
+        <pre>{{datanative}}</pre>
+    </div>
+</div>
+
+
+{% endblock %}

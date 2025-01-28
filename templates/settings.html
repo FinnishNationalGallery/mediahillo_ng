@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+<div class="columns">
+    <div class="column is-one-quarter">
+        &nbsp;
+    </div>
+    <div class="column">
+        <h4 class="title is-4">Settings</h4>
+        <span class="tag is-warning">You must enter proper settings</span>
+        {% with errors = get_flashed_messages(category_filter=["success"]) %}
+        {% if errors %}
+        <article class="message is-success">
+            <div class="message-body">
+            {%- for msg in errors %}
+            <strong>{{ msg }}</strong>
+            {% endfor -%}
+            </div>
+        </article>
+        {% endif %}
+        {% endwith %}
+        
+        {% with errors = get_flashed_messages(category_filter=["error"]) %}
+        {% if errors %}
+        <article class="message is-danger">
+            <div class="message-body">
+            {%- for msg in errors %}
+            <strong>{{ msg }}</strong>
+            {% endfor -%}
+            </div>
+        </article>
+        {% endif %}
+        {% endwith %}
+        <hr>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <div>
+                Matroska videos normalization date (when were .mkv files created?)
+            {{ form.premis_video_normalization_date(placeholder="premis_video_normalization_date", value=settings['prem_norm_date'], type="datetime-local",
+                style='width: 100%;
+                font-weight: bold;
+                padding: 12px 20px ;
+                margin: 8px 0;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box') }}
+                {% for error in form.premis_video_normalization_date.errors %}
+                <p style="color: red;">{{ error }}</p>
+                {% endfor %}
+                
+            </div>
+            
+            <div>
+                Matroska videos normalization software (what software created .mkv files?)
+                {{ form.premis_video_normalization_agent(placeholder="premis_video_normalization_agent", value=settings['prem_norm_agent'],
+                style='width: 100%;
+                font-weight: bold;
+                padding: 12px 20px ;
+                margin: 8px 0;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box') }}
+                {% for error in form.premis_video_normalization_agent.errors %}
+                <p style="color: red;">{{ error }}</p>
+                {% endfor %}
+                
+            </div>
+            <hr>
+            <div>
+                Createdate value for packet update (original METS createdate value) 
+                {{ form.mets_createdate(placeholder="mets_createdate", value=settings['mets_createdate'],
+                style='width: 100%;
+                font-weight: bold;
+                padding: 12px 20px ;
+                margin: 8px 0;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box') }}
+                {% for error in form.mets_createdate.errors %}
+                <p style="color: red;">{{ error }}</p>
+                {% endfor %}
+                
+            </div>
+
+            <hr>
+            <p>{{ form.submit(style ='background-color: #4CAF50;
+                color: white;
+                font-weight: bold;
+                width: 100%;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                border-radius: 4px') }}
+            </p>
+            
+        </form>  
+    </div>
+    <div class="column is-one-quarter">
+        &nbsp;
+    </div>
+</div>
+
+
+      
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="columns">
+    <div class="column is-one-quarter">
+        <div class="box">
+            <h2 class="title">Paslog database TRUNCED</h2>
+            <hr>
+            <a href="{{url_for('paslog.get_csc_paslog')}}"><button class="button is-dark">1. Update</button></a> CSC accepted
+            <hr>
+            <a href="{{url_for('paslog.get_mp_paslog')}}"><button class="button is-dark">2. Update</button></a>  MuseumPlus paslog
+            <hr>
+            <a href="{{url_for('paslog.get_mp_paslog')}}"><button class="button is-dark">3. Check</button></a> Check difference
+            <hr>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="box">
+            <h5 class="title is-5">{{environment}}</h5>
+        </div>
+        <div class="box">
+            {{message}}
+        </div>
+    </div>
+    
+</div>
+   
+{% endblock %}

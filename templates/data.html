@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="title">DATA-folder </h1>
+<p class="has-text-weight-bold">
+    Load original (Apple ProRes) files to this folder &rarr; <a href="{{url_for('datanative.datanative')}}"><button class="button is-normal is-dark">DATANATIVE</button></a>  
+     Import first files from DATA folder and then files from DATANATIVE folder!
+</p> </br>
+
+{% with errors = get_flashed_messages(category_filter=["success"]) %}
+{% if errors %}
+<article class="message is-success">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+{% if errors %}
+<article class="message is-danger">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+<div class="columns">
+    <div class="column">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                Server total disk space {{diskinfo[1]}} used {{diskinfo[4]}}
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                {% for file in files %}
+                <a href="{{url_for('data.file_delete')}}?name={{file}}&page=data.data&path=DATA" title="Delete file"> <span class="material-symbols-outlined has-text-danger">delete_forever</span></a>
+                &rarr; 
+
+                <a href="{{url_for('data.mediainfo_data')}}?fullfilename={{file}}" title="Make Mediainfo file.txt from file"> <span class="material-symbols-outlined" onclick="togglePopup()">quick_reference_all</span> </a>
+
+                <a href="{{url_for('data.analyze_file')}}?filename={{file}}" title="Validate file"> <span class="material-symbols-outlined" style="color:green;" onclick="togglePopup()">verified</span> </a>
+
+                <a href="{{DATA_path}}{{file}}">{{file}}</a> 
+
+                {# Add fix image button for supported image types #}
+                {% set image_extensions = ['jpeg', 'JPEG', 'jpg', 'JPG', 'tif', 'TIF', 'tiff', 'TIFF', 'png', 'PNG'] %}
+                {% if file.split('.')[-1] in image_extensions %}
+                <a href="{{url_for('data.fix_image_exiftool')}}?filename={{file}}&page=data.data" title="Exiftool fix for image file" > <span class="material-symbols-outlined" style="color:steelblue;" onclick="togglePopup()">build_circle</span> </a>
+                {% endif %}
+
+                {# Add fix image button for supported image types #}
+                {% set image_extensions = ['jpeg', 'JPEG', 'jpg', 'JPG', 'tif', 'TIF', 'tiff', 'TIFF', 'png', 'PNG'] %}
+                {% if file.split('.')[-1] in image_extensions %}
+                <a href="{{url_for('data.fix_image_magick')}}?filename={{file}}&page=data.data" title="ImageMagick fix for image file"> <span class="material-symbols-outlined" style="color:slateblue;" onclick="togglePopup()">photo_library</span> </a>
+                {% endif %}
+
+                {# Add fix image button for supported image types #}
+                {% set image_extensions = ['pdf', 'PDF'] %}
+                {% if file.split('.')[-1] in image_extensions %}
+                <a href="{{url_for('data.fix_pdf_ghostscript')}}?filename={{file}}&page=data.data" title="Ghostscript fix for PDF file"> <span class="material-symbols-outlined" style="color:indianred;" onclick="togglePopup()">build_circle</span> </a>
+                {% endif %}
+
+                </br>
+                {% endfor %}
+                
+                <!-- div containing the popup -->
+                <div class="popupcontent">
+                    <h3>Wait!</h3>
+
+                    <p>
+                        Processing selected operation. Wait until it is finished.
+                    </p>
+                </div>
+            
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            VALIDATION:
+            <pre>{{ output }}</pre>
+        </div>
+    </div>
+    <div class="column">
+        <div class="notification is-warning">
+            <strong>WAIT FOR THE PROGRAM!</strong> Mediahillo is processing files ...
+        </div>
+        <div class="box">
+            &larr; 
+            <a href="{{url_for('data.data_import_all')}}"><button class="button is-success" id="hide" onclick="togglePopup()">Import </button></a> 
+            Import all files and metadata to SIP-folder
+            <hr>
+            OR make operations one at a time
+            <hr>
+            &larr; 
+            <a href="{{url_for('data.data_import_skip')}}?flag=once"><button class="button is-info" id="hide1" onclick="togglePopup()">Import</button></a>
+            Import files to SIP-folder
+            </br></br>
+            &larr; 
+            <a href="{{url_for('data.mix_create')}}?flag=once"><button class="button is-info" id="hide2" onclick="togglePopup()">Create</button></a>
+            MIX-metadata for images (jpg, jpeg, png, tif, tiff)
+            </br></br>
+            &larr; 
+            <a href="{{url_for('data.videomd_create')}}?flag=once"><button class="button is-info" id="hide3" onclick="togglePopup()">Create</button></a>
+            VIDEOMD-metadata for files (mkv, mp4, mpg, mpeg, mov)
+            </br></br>
+            &larr; 
+            <a href="{{url_for('data.audiomd_create')}}?flag=once"><button class="button is-info" id="hide4" onclick="togglePopup()">Create</button></a>
+            AUDIOMD-metadata for files (mkv, mp4, mpg, mpeg, mov, wav)
+            </br></br>
+            &larr; 
+            <a href="{{url_for('data.addml_create')}}?flag=once"><button class="button is-info" id="hide5" onclick="togglePopup()">Create</button></a>
+            ADDML-metadata for files (csv)
+            <hr>
+            AND make PREMIS events for normalization & video frame cheksum
+            <hr>
+            &larr; 
+            <a href="{{url_for('data.data_premis_event_ffmpeg_ffv1')}}?flag=once"><button class="button is-success" id="hide6" onclick="togglePopup()">Create</button></a>
+            Premis-event for .mkv (Matroska) video normalization  
+            <hr> 
+            &larr; 
+            <a href="{{url_for('data.data_premis_event_frame_md')}}?flag=once"><button class="button is-success" id="hide7" onclick="togglePopup()">Create</button></a>
+            Premis-event for .mkv (Matroska) video frame MD5-checksum   
+        </div>
+        <div class="box">
+            &larr; 
+            <a href="{{url_for('data.data_delete')}}"><button class="button is-danger">Delete</button></a>  
+            Delete all files from DATA-folder
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

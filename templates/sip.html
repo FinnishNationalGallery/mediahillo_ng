@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="title">SIP-folder > Server total disk space {{diskinfo[1]}} used {{diskinfo[4]}}</h1>
+
+{% with errors = get_flashed_messages(category_filter=["success"]) %}
+{% if errors %}
+<article class="message is-success">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+{% if errors %}
+<article class="message is-danger">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+<div class="columns">
+    <div class="column">
+        <div class="card">
+            <header class="card-header has-background-warning-light">
+                <p class="card-header-title">
+                {% if session['mp_name'] %}
+                Object: {{session['mp_name']}}&nbsp;&nbsp;
+                {% endif %}
+                {% if session['mp_id'] %}
+                <span class="tag is-link is-medium">{{session['mp_id']}}</span>
+                {% else %}
+                <span class="tag is-danger is-medium">Object = ?</span>
+                {% endif %}
+                {% if session['mp_inv'] %}
+                <span class="tag is-info is-medium">{{session['mp_inv']}}</span>
+                {% endif %}
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                {% for file in files %}
+                <a href="{{url_for('sip.sip_file_delete')}}?name={{file}}&page=sip.sip&path=SIP"><span class="material-symbols-outlined has-text-danger">delete_forever</span></a>
+                &rarr;
+                <span class="material-symbols-outlined">file_open</span>
+                <a href="{{SIP_path}}{{file}}">{{file}}</a> </br>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="notification is-warning">
+            <strong>WAIT FOR THE PROGRAM!</strong> Mediahillo is processing files ...
+        </div>
+        <div class="box">
+            &larr;
+            <a href="{{url_for('sip.sip_make_all')}}"><button class="button is-success" id="hide">Create</button></a>
+            Create METS-XML and file folders
+            <hr>
+            &larr;
+            <a href="{{url_for('sip.sip_make_tar')}}?flag=once"><button class="button is-success" id="hide1">Compress</button></a>
+            Compress tar-package which you can send to preservation
+            <hr>
+            <strong>OR</strong> make operations one at a time (METS update package possible this way)
+            <hr>     
+            &larr;
+            <a href="{{url_for('sip.sip_premis_event_created')}}?flag=once"><button class="button is-info" id="hide2">Add-premis-event</button></a>
+            Add premis event for digital object creation
+            </br></br>
+            &larr;
+            <a href="{{url_for('sip.sip_compile_structmap')}}?flag=once"><button class="button is-info" id="hide3">Compile-structmap</button></a>
+            Compile METS structmap
+            </br></br>
+            &larr;
+            <a href="{{url_for('sip.sip_compile_mets')}}?flag=once"><button class="button is-info" id="hide4">Compile-mets</button></a>
+            <strong>OR</strong>
+            <a href="{{url_for('sip.sip_compile_mets_update')}}?flag=once"><button class="button is-warning" id="hide5">METS-update</button></a>
+            Compile METS XML file
+            </br></br>
+            &larr;
+            <a href="{{url_for('sip.sip_sign_mets')}}?flag=once"><button class="button is-info" id="hide6">Sign-mets</button></a>
+            Sign SIP METS
+            </br></br>
+            &larr;
+            <a href="{{url_for('sip.sip_make_tar')}}?flag=once"><button class="button is-info" id="hide7">Copress tar</button></a>
+            Compress SIP to tar file
+        </div>
+        <div class="box">
+            &larr;
+            <a href="{{url_for('sip.sip_delete')}}"><button class="button is-danger">Delete</button></a> 
+            Delete all files from SIP-folder
+              
+        </div>
+    </div>
+</div>
+
+<div class="box">
+    OUTERR:
+    <pre>{{ outerr }}</pre>
+</div>
+<div class="box">
+    OUTPUT:
+    <pre>{{ output }}</pre>
+</div>
+
+{% endblock %}

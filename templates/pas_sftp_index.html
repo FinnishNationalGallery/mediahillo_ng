@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="columns">
+    <div class="column is-one-third">
+        <div class="box">
+        <h2 class="title">SFTP folders:</h2>
+        <hr>
+        <a href="{{url_for('sftp.pas_sftp_folder')}}?folder=/accepted" class="has-text-weight-bold">Accepted</a> - folder for accepted packages 
+        <hr>
+        <a href="{{url_for('sftp.pas_sftp_folder')}}?folder=/rejected" class="has-text-weight-bold">Rejected</a> -  folder for rejected packages
+        <hr>
+        <a href="{{url_for('sftp.pas_sftp_folder')}}?folder=/transfer" class="has-text-weight-bold">Transfer</a> -  folder for files under transfer
+        <hr>
+        <a href="{{url_for('sftp.pas_sftp_folder')}}?folder=/disseminated" class="has-text-weight-bold">Disseminated</a> - folder for retrieved packages
+        <hr>   
+      </div>
+    </div>
+
+    <div class="column">
+        <div class="box">
+            <h5 class="title is-5">{{environment}}</h5>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+    </div>
+    
+</div>
+   
+{% endblock %}

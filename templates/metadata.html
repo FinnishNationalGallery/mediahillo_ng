@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="title">METADATA-folder </h1>
+
+{% with errors = get_flashed_messages(category_filter=["success"]) %}
+{% if errors %}
+<article class="message is-success">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+{% if errors %}
+<article class="message is-danger">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+<div class="columns">
+    <div class="column">
+
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title has-background-warning-light">
+                    {% if session['mp_name'] %}
+                    Object: {{session['mp_name']}}&nbsp;&nbsp;
+                    {% endif %}
+                    {% if session['mp_id'] %}
+                    <span class="tag is-link is-medium">{{session['mp_id']}}</span>
+                    {% else %}
+                    <span class="tag is-danger is-medium">Object = ?</span>
+                    {% endif %}
+                    {% if session['mp_inv'] %}
+                    <span class="tag is-info is-medium">{{session['mp_inv']}}</span>
+                    {% endif %}
+                    
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                {% for file in files %}
+                <a href="{{url_for('metadata.metadata_file_delete')}}?name={{file}}&page=metadata.metadata&path=METADATA"><span class="material-symbols-outlined has-text-danger">delete_forever</span></a>
+                <span class="material-symbols-outlined">arrow_forward</span>
+                <span class="material-symbols-outlined">file_open</span>
+                <a href="{{METADATA_path}}{{file}}">{{file}}</a> </br>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="notification is-warning">
+            <strong>WAIT FOR THE PROGRAM!</strong> Mediahillo is processing files ...
+        </div>
+        <div class="box">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <a href="{{url_for('metadata.metadata_read_lido_xml')}}"><button class="button is-warning" id="hide">Read</button></a> 
+            Read lido_description.xml information and get ObjectID!
+            </br>  </br>
+            <span class="material-symbols-outlined">arrow_back</span>
+            <a href="{{url_for('metadata.metadata_import_description')}}"><button class="button is-success" id="hide1">Import</button></a>
+            Import lido_desxription.xml to SIP-folder      
+        </div>
+
+        <div class="box">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <a href="{{url_for('metadata.metadata_lido_save')}}"><button class="button is-info">Lido-XML</button></a>  
+            Make new Lido-XML description file
+        </br> </br>
+        <span class="material-symbols-outlined">arrow_back</span>
+        <a href="{{url_for('metadata.metadata_lido_edit')}}"><button class="button is-warning">Lido-XML</button></a>  
+        Edit Lido-XML description file
+        </div>
+
+        <div class="box">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <a href="{{url_for('metadata.metadata_delete')}}"><button class="button is-danger">Delete</button></a>  
+            Delete all files from METADATA-folder
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

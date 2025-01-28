@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="columns">
+    <div class="column">
+        &nbsp;
+    </div>
+    <div class="column">
+        <h4 class="title is-4">MuseumPlus API - search object</h4>
+        {% for message in get_flashed_messages() %}
+        <p style="color: red;">{{ message }}</p>
+        {% endfor %}
+        <p>{{session['mp_api_id']}} {{session['mp_api_invnumber']}} {{session['mp_api_title']}}</p>
+        <p>{{message}}</p>
+        <form action="" method="post">
+           {{ form.hidden_tag() }}
+           <div>
+              {{ form.objectid(placeholder="Search by object id",
+              style='width: 100%;
+              font-weight: bold;
+              padding: 12px 20px ;
+              margin: 8px 0;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              box-sizing: border-box') }}
+              {% for error in form.objectid.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+              <small>Esimerkiksi: 617656, 389906, 94594, 417057, 21447, 642581 tai 523348</small>
+           </div>
+           
+           <div>
+              {{ form.inventorynumber(placeholder="Search by inventory number",
+              style='width: 100%;
+              font-weight: bold;
+              padding: 12px 20px ;
+              margin: 8px 0;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              box-sizing: border-box') }}
+              {% for error in form.inventorynumber.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+              <small>Esimerkiksi: A I 694, A I 67, N-2015-198:A-C tai N-2017-
+               Huom! Max 50 objektia haetaan</small>
+           </div>
+           
+           <div>
+            {{ form.title(placeholder="Search by title",
+            style='width: 100%;
+            font-weight: bold;
+            padding: 12px 20px ;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box') }}
+            {% for error in form.title.errors %}
+            <p>{{ error }}</p>
+            {% endfor %}
+            <small>Esimerkiksi: Headbone, AlieNATION, Blanka, Conversation with Angels
+               Huom! Max 50 objektia haetaan</small>
+         </div>
+           <p>{{ form.submit(style ='background-color: #4CAF50;
+              color: white;
+              font-weight: bold;
+              width: 100%;
+              padding: 14px 20px;
+              margin: 8px 0;
+              border: none;
+              border-radius: 4px') }}
+           </p>
+        </form>  
+    </div>
+    <div class="column">
+        &nbsp;
+    </div>
+</div>
+
+
+      
+{% endblock %}

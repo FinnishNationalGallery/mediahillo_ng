@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+    
+{% block content %}
+
+{% with errors = get_flashed_messages(category_filter=["success"]) %}
+{% if errors %}
+<article class="message is-success">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+{% if errors %}
+<article class="message is-danger">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+<div class="columns">
+
+    <div class="column">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <a href={{url_for('paslog.paslog_show_data')}}><button class="button is-dark">Back</button></a> &nbsp; &nbsp; MusemPlus PASLOG mark done:{{title}}
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    <ul>
+                        <li>Response status code: {{ response_status }} (204 = OK, 400 = Bad request, 403 = Forbidden</li>
+                        <li>MuseumPlus Object ID: {{ obj_id }}</li>
+                        <li>PAS AIP ID: {{ aipid }}</li>
+                        <li>PAS Timestamp: {{ timestamp }}</li>
+                        <li>You can watch object data: <a href="{{url_for('metadata.metadata_object_by_id')}}?objectid={{obj_id}}"><button class="button is-dark">Object</button></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</br></br>
+
+</br></br>
+
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+    
+{% block content %}
+
+{% with errors = get_flashed_messages(category_filter=["success"]) %}
+{% if errors %}
+<article class="message is-success">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+{% if errors %}
+<article class="message is-danger">
+    <div class="message-body">
+    {%- for msg in errors %}
+    <strong>{{ msg }}</strong>
+    {% endfor -%}
+    </div>
+</article>
+{% endif %}
+{% endwith %}
+
+<div class="columns">
+
+    <div class="column">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <a href={{url_for('paslog.paslog_index')}}><button class="button is-dark">Back</button></a> &nbsp; &nbsp; Found {{totalSize}} MuseumPlus objects with PASLOG marked (max. 10 000 objects can be listed) {{title}}
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+
+                    {% if objects: %}
+                    <table class="table table-sm ">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>MP ID</th>
+                                <th>MP INV & Name</th>
+                                <th>MP PASLOG</th>
+                            </tr>
+                        </thead>
+                        {% for mp_id_value, mp_data in objects.items(): %}
+                        <tr>
+                            <td> <a href="{{url_for('metadata.metadata_object_by_id')}}?objectid={{mp_id_value}}"><button class="button is-dark">Object</button></a> </td> 
+                            <td>{{mp_id_value}}</td>
+                            <td>{{mp_data["ObjObjectVrt"]}}</td>
+                            <td>{{mp_data["ObjPASLog01Clb"]}}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</br></br>
+</br></br>
+
+{% endblock %}

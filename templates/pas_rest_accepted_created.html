@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="columns">
+    <div class="column is-one-quarter">
+        <div class="box">
+            <h2 class="title">REST commands:</h2>
+            <hr>
+            <a href="{{url_for('rest.pas_rest_status')}}" class="has-text-weight-bold">Status</a> - information
+            <hr>
+            <a href="{{url_for('rest.pas_rest_accepted_created')}}" class="has-text-weight-bold">Accepted</a> - by CREATED <span class="tag is-primary"> > </span> 
+            <hr>
+            <a href="{{url_for('rest.pas_rest_accepted_mpid')}}" class="has-text-weight-bold">Accepted</a> - by MP_ID
+            <hr>
+            <a href="{{url_for('rest.pas_rest_accepted_mpinv')}}" class="has-text-weight-bold">Accepted</a> - by MP_INV
+            <hr>
+        </div>
+    </div>
+
+    <div class="column is-three-quarters">
+        <div class="box">
+            <h5 class="title is-5">{{environment}}</h5>
+        </div>
+        <div class="box">
+
+            <form action="{{url_for('rest.pas_rest_accepted_created')}}" method="post">
+                <div class="field is-grouped">
+                    <div class="control">
+                        <input class="input" type="text" id="created" name="created" size="40" value="{{value}}"  placeholder="Search year like this: 2022 or month: 2022-04"></input>
+                    </div>
+                    <div class="control">
+                        <button type="submit" value="Search" class="button is-primary">Search</button>
+                    </div>
+                    <div class="control">
+                        <p>Search by year or month (type * for all)</p>
+                    </div>
+                </div>
+            </form>
+
+            <h6 class="title is-6">Found packages: {{counter}} (max 1000 can be displayed)</h6>
+
+            {% if message['data'] is defined and message['data']['results'] is defined %}
+
+            <div class="table-container">
+                <table class="table">
+                <thead>
+                    <tr>
+                        <th>CREATED</th>
+                        <th>LASTMODDATE</th>
+                        <th>MP_ID</th>
+                        <th>MP_INV</th>
+                        <th>Type</th>
+                        <th>Fetch</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in message['data']['results']: %}
+                    <tr>
+                        {% if result is defined %}
+                        <td>{{result['createdate']}}</td>
+                        {% else %}
+                        <td class="has-text-danger">Something went wrong</td>
+                        {% endif %}
+
+                        {% if result is defined and result['lastmoddate'] is defined %}
+                        <td>{{result['lastmoddate'][-1]}}</td>
+                        {% else %}
+                        <td class="has-text-danger"></td>
+                        {% endif %}
+
+                        {% if result is defined and result['match'] is defined and result['match']['mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_recordWrap_recordID'] is defined %}
+                        <td>{{result['match']['mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_recordWrap_recordID'][0]}}</td>
+                        {% else %}
+                        <td class="has-text-danger">Something went wrong</td>
+                        {% endif %}
+
+                        {% if result is defined and result['match'] is defined and result['match']['mets_OBJID'] is defined %}
+                        <td>{{result['match']['mets_OBJID'][0]}}</td>
+                        {% else %}
+                        <td class="has-text-danger">Something went wrong</td>
+                        {% endif %}
+                        
+                        <td>{{result['pkg_type']}}</td>
+                        <td>
+                            <form action="{{url_for('rest.pas_rest_disseminate_aip')}}" method="post">
+                                <button class="button is-small is-success" name="aipid" value={{result['id']}}>Disseminate</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+                </table>
+            </div>
+            {% else %}
+                </br> {{message}}
+            {%endif%}
+        </div>
+    </div>
+</div>
+   
+{% endblock %}
