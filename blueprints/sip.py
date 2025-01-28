@@ -56,7 +56,6 @@ def sip_ng():
          directory_path="static/DATA",  # Mukauta polku
          mets=mets
       )
-
       # Lisätään provenienssimetadata (DigitalProvenanceEventMetadata)
       provenance_md = DigitalProvenanceEventMetadata(
          event_type="creation",
@@ -65,13 +64,12 @@ def sip_ng():
          outcome_detail="Another detail",
       )
       sip.add_metadata([provenance_md])
-
-      # Tallennetaan SIP Flask-sovelluksen configiin
-      current_app.config["dpres_sip"] = sip
-
       # Import descriptive metadata from an XML source, and add it to SIP
       descriptive_md = ImportedMetadata.from_path("static/METADATA/lido_description.xml")
       sip.add_metadata([descriptive_md])
+
+      # Tallennetaan SIP Flask-sovelluksen configiin
+      # current_app.config["dpres_sip"] = sip
 
       sip.finalize(
          output_filepath="static/SIP/example-automated-sip.tar",
