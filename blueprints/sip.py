@@ -50,30 +50,29 @@ def sip_ng():
       creator_name="Sigmund Sipenthusiast",
       creator_type="INDIVIDUAL"
    )
-
-   # Generoidaan SIP hakemiston pohjalta
-   sip = SIP.from_directory(
-      directory_path="static/DATA",  # Mukauta polku
-      mets=mets
-   )
-
-   # Lisätään provenienssimetadata (DigitalProvenanceEventMetadata)
-   provenance_md = DigitalProvenanceEventMetadata(
-      event_type="creation",
-      detail="This is a detail",
-      outcome="success",
-      outcome_detail="Another detail",
-   )
-   sip.add_metadata([provenance_md])
-
-   # Tallennetaan SIP Flask-sovelluksen configiin
-   current_app.config["dpres_sip"] = sip
-
-   # Import descriptive metadata from an XML source, and add it to SIP
-   descriptive_md = ImportedMetadata.from_path("static/METADATA/lido_description.xml")
-   sip.add_metadata([descriptive_md])
-
    try:
+      # Generoidaan SIP hakemiston pohjalta
+      sip = SIP.from_directory(
+         directory_path="static/DATA",  # Mukauta polku
+         mets=mets
+      )
+
+      # Lisätään provenienssimetadata (DigitalProvenanceEventMetadata)
+      provenance_md = DigitalProvenanceEventMetadata(
+         event_type="creation",
+         detail="This is a detail",
+         outcome="success",
+         outcome_detail="Another detail",
+      )
+      sip.add_metadata([provenance_md])
+
+      # Tallennetaan SIP Flask-sovelluksen configiin
+      current_app.config["dpres_sip"] = sip
+
+      # Import descriptive metadata from an XML source, and add it to SIP
+      descriptive_md = ImportedMetadata.from_path("static/METADATA/lido_description.xml")
+      sip.add_metadata([descriptive_md])
+      
       sip.finalize(
          output_filepath="static/SIP/example-automated-sip.tar",
          sign_key_filepath="signature/sip_sign_pas.pem"
