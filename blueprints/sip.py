@@ -193,7 +193,13 @@ def sip_delete():
       try:
          try:
             os.remove(SIPLOG_path+"output.txt")
+         except:
+            pass
+         try:
             os.remove(SIPLOG_path+"outerror.txt")
+         except:
+            pass
+         try:
             os.remove(SIPLOG_path+"datanative.txt")
          except:
             pass
