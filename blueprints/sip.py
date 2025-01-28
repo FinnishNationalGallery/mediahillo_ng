@@ -72,7 +72,7 @@ def sip_ng():
       # Import descriptive metadata from an XML source, and add it to SIP
       descriptive_md = ImportedMetadata.from_path("static/METADATA/lido_description.xml")
       sip.add_metadata([descriptive_md])
-      
+
       sip.finalize(
          output_filepath="static/SIP/example-automated-sip.tar",
          sign_key_filepath="signature/sip_sign_pas.pem"
@@ -185,21 +185,15 @@ def sip_make_tar():
    return True
 
 
-
-
-
-
-
-
 @sip_bp.route("/sip_delete")
 @login_required
 def sip_delete():
    delete_really = request.args.get('delete') 
    if delete_really == "True":
       try:
-         os.remove(SIPLOG_path+"output.txt")
-         os.remove(SIPLOG_path+"outerror.txt")
          try:
+            os.remove(SIPLOG_path+"output.txt")
+            os.remove(SIPLOG_path+"outerror.txt")
             os.remove(SIPLOG_path+"datanative.txt")
          except:
             pass
