@@ -9,8 +9,9 @@ from modules import mp_metadata
 from utils import logfile_output, logfile_outerror, logfile_datanative, subprocess_args, get_diskinfo
 from dotenv import dotenv_values
 from markupsafe import Markup
-from mets_builder import METS, MetsProfile
+from mets_builder import METS, MetsProfile, StructuralMapDiv, StructuralMap
 from mets_builder.metadata import DigitalProvenanceEventMetadata, ImportedMetadata
+
 from siptools_ng.file import File
 from siptools_ng.sip import SIP
 
@@ -125,7 +126,16 @@ def sip_from_files():
                      digital_object_path=digital_object_path
                   )
                )
-      print(files)
+      
+      digital_objects_list = [file_obj.digital_object for file_obj in files]
+      root_div = StructuralMapDiv(
+         "custom_div",
+         digital_objects=digital_objects_list,
+      )
+      structural_map = StructuralMap(root_div=root_div)
+      mets.add_structural_maps([structural_map])
+
+
       sip = SIP.from_files(mets=mets, files=files)
 
       # Import descriptive metadata from an XML source, and add it to SIP
