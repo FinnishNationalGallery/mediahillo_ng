@@ -39,7 +39,6 @@ def sip():
    except:
       outerr = ""
    files = sorted(os.listdir(SIP_path))
-   print(files)
    ###
    return render_template('sip.html', files=files, diskinfo=diskinfo, output=output, outerr=outerr, SIP_path=SIP_path)
 
@@ -110,23 +109,13 @@ def sip_from_files():
       #]
 
       files = []
-      print(os.listdir(SIP_path))
+      print("for item in os.listdir(SIP_path):")
       for item in os.listdir(SIP_path):
          full_path = os.path.join(SIP_path, item)
          print("SIP_path:",SIP_path)
          print("item:",item)
          print("full_path:",full_path)
-         # Tarkistetaan, että kyseessä on tiedosto (ei alihakemisto)
-         if os.path.isfile(full_path):
-            # Muodostetaan polut vaaditussa muodossa
-            do_path = "DATA/"+item
-            static_path = "static/"+do_path               
-            files.append(
-               File(
-                  path=static_path,
-                  digital_object_path=do_path
-               )
-            )
+
 
 
       sip = SIP.from_files(mets=mets, files=files)
