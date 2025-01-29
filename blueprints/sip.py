@@ -106,6 +106,26 @@ def sip_from_files():
             digital_object_path="DATA/Telefunken_FFV1_FLAC.mkv"
          )
       ]
+      print(files)
+
+      files = []
+
+      for item in os.listdir(SIP_path):
+         full_path = os.path.join(SIP_path, item)
+         
+         # Tarkistetaan, että kyseessä on tiedosto (ei alihakemisto)
+         if os.path.isfile(full_path):
+               # Muodostetaan polut vaaditussa muodossa
+               digital_object_path = f"DATA/{item}"
+               static_path = f"static/{digital_object_path}"
+               
+               files.append(
+                  File(
+                     path=static_path,
+                     digital_object_path=digital_object_path
+                  )
+               )
+      print(files)
       sip = SIP.from_files(mets=mets, files=files)
 
       # Import descriptive metadata from an XML source, and add it to SIP
