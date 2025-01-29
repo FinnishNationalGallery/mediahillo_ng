@@ -39,6 +39,7 @@ def sip():
    except:
       outerr = ""
    files = sorted(os.listdir(SIP_path))
+   print(files)
    ###
    return render_template('sip.html', files=files, diskinfo=diskinfo, output=output, outerr=outerr, SIP_path=SIP_path)
 
