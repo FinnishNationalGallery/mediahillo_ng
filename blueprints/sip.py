@@ -19,6 +19,7 @@ sip_bp = Blueprint('sip', __name__)
 
 config = dotenv_values(".env")
 SIGNATURE = config['SIGNATURE']
+DATA_path = config['DATA_FOLDER']
 SIP_path = config['SIP_FOLDER']
 SIPLOG_path = config['SIPLOG_FOLDER']
 ORGANIZATION = config['ORGANIZATION']
@@ -40,14 +41,6 @@ def sip():
       outerr = ""
    files = sorted(os.listdir(SIP_path))
    ###
-   files_string = str(files)
-   print(files_string)
-   print("for loop next")
-   for item in files:
-      #full_path = os.path.join(SIP_path, item)
-      print("SIP_path:",SIP_path)
-      print("item:",item)
-      #print("full_path:",full_path)
    return render_template('sip.html', files=files, diskinfo=diskinfo, output=output, outerr=outerr, SIP_path=SIP_path)
 
 @sip_bp.route('/sip_from_directory')
@@ -117,9 +110,8 @@ def sip_from_files():
       #]
 
       files = []
-      print("for item in os.listdir(SIP_path):", SIP_path)
-      for item in os.listdir(SIP_path):
-         full_path = os.path.join(SIP_path, item)
+      for item in os.listdir(DATA_path):
+         full_path = os.path.join(DATA_path, item)
          print("SIP_path:",SIP_path)
          print("item:",item)
          print("full_path:",full_path)
