@@ -151,6 +151,7 @@ def sip_from_files():
          output_filepath="static/SIP/example-automated-sip.tar",
          sign_key_filepath="signature/sip_sign_pas.pem"
       )
+      sip.mets.write(SIP_path+"mets.xml")
       # Onnistunut finalize
       flash("SIP created from files!", "success")
       return redirect(url_for('sip.sip'))
