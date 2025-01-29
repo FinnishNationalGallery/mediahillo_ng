@@ -86,6 +86,24 @@ def sip_from_directory():
       flash(f"Error creating SIP! : {str(e)}", "error")
       return redirect(url_for('sip.sip'))
 
+def read_all_files(DATA_path):
+   files = []
+   for item in os.listdir(DATA_path):
+      full_path = os.path.join(DATA_path, item)
+      
+      # Tarkistetaan, että kyseessä on tiedosto (ei alihakemisto)
+      if os.path.isfile(full_path):
+         digital_object_path = f"DATA/{item}"
+         static_path = f"static/{digital_object_path}"
+         
+         files.append(
+               File(
+                  path=static_path,
+                  digital_object_path=digital_object_path
+               )
+         )
+   return files
+
 @sip_bp.route('/sip_from_files')
 @login_required
 def sip_from_files():
@@ -109,14 +127,7 @@ def sip_from_files():
       #   )
       #]
 
-      files = []
-      for item in os.listdir(DATA_path):
-         full_path = os.path.join(DATA_path, item)
-         print("SIP_path:",SIP_path)
-         print("item:",item)
-         print("full_path:",full_path)
-
-
+      files = read_all_files()
 
       sip = SIP.from_files(mets=mets, files=files)
 
