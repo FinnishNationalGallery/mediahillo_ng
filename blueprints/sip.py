@@ -96,7 +96,16 @@ def sip_from_files():
    )
    try:
       # SIP from files
-      files = read_all_files(SIP_path)
+      files = [
+         File(
+            path="static/DATA/KG2024DK221.jpg",
+            digital_object_path="DATA/KG2024DK221.jpg"
+         ),
+         File(
+            path="static/DATA/Telefunken_FFV1_FLAC.mkv",
+            digital_object_path="DATA/Telefunken_FFV1_FLAC.mkv"
+         )
+      ]
       sip = SIP.from_files(mets=mets, files=files)
 
       # Import descriptive metadata from an XML source, and add it to SIP
@@ -127,26 +136,7 @@ def sip_from_files():
       flash(f"Error creating SIP! : {str(e)}", "error")
       return redirect(url_for('sip.sip'))
 
-def read_all_files(SIP_path):
-    files = []
-    for item in os.listdir(SIP_path):
-        full_path = os.path.join(SIP_path, item)
-        
-        # Tarkistetaan, että kyseessä on tiedosto (ei alihakemisto)
-        if os.path.isfile(full_path):
-            digital_object_path = f"DATA/{item}"
-            static_path = f"static/{digital_object_path}"
-            
-            files.append(
-                File(
-                    path=static_path,
-                    digital_object_path=digital_object_path
-                )
-            )
 
-    return files
-
-##############################################################################
 @sip_bp.route("/sip_make_all")
 @login_required
 def sip_make_all():
