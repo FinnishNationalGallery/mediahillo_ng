@@ -191,7 +191,7 @@ def data_premis_event_frame_md():
          CreateDate = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat() # "2018-04-12T14:09:00.233"
          #subprocess_args('premis-event', 'message digest calculation', CreateDate, '--event_detail', 'ffmpeg -loglevel error -i ' + file + ' -map 0:v -f md5 -', '--event_outcome', 'success', '--event_outcome_detail', session['message_md5'], '--workspace', SIP_path, '--agent_name', SERVER_ffmpeg, '--agent_type', 'software', '--event_target', filepath.replace("./",""))
     # Kirjoitetaan tuloste tiedostoon filename-mediainfo.txt
-         output_file = f"{file}.VideoFrameMD5.txt"
+         output_file = f"{file}.FrameMD5.txt"
          with open(os.path.join(DATA_path, output_file), "w", encoding="utf-8") as f:
             f.write(session['message_md5'])
    if redir == 'once':
