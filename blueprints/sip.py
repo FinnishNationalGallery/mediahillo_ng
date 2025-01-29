@@ -112,7 +112,9 @@ def sip_from_files():
 
       for item in os.listdir(SIP_path):
          full_path = os.path.join(SIP_path, item)
-         
+         print(SIP_path)
+         print(item)
+         print(full_path)
          # Tarkistetaan, että kyseessä on tiedosto (ei alihakemisto)
          if os.path.isfile(full_path):
                # Muodostetaan polut vaaditussa muodossa
