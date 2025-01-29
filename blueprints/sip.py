@@ -42,6 +42,7 @@ def sip():
    ###
    files_string = str(files)
    print(files_string)
+   print("for loop next")
    for item in files:
       #full_path = os.path.join(SIP_path, item)
       print("SIP_path:",SIP_path)
