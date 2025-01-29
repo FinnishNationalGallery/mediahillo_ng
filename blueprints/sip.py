@@ -127,7 +127,7 @@ def sip_from_files():
       #   )
       #]
 
-      files = read_all_files()
+      files = read_all_files(DATA_path)
 
       sip = SIP.from_files(mets=mets, files=files)
 
