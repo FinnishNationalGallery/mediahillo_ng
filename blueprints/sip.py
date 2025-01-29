@@ -11,6 +11,7 @@ from dotenv import dotenv_values
 from markupsafe import Markup
 from mets_builder import METS, MetsProfile
 from mets_builder.metadata import DigitalProvenanceEventMetadata, ImportedMetadata
+from siptools_ng.file import File
 from siptools_ng.sip import SIP
 
 sip_bp = Blueprint('sip', __name__)
@@ -40,9 +41,9 @@ def sip():
    ###
    return render_template('sip.html', files=files, diskinfo=diskinfo, output=output, outerr=outerr, SIP_path=SIP_path)
 
-@sip_bp.route('/sip_ng')
+@sip_bp.route('/sip_from_directory')
 @login_required
-def sip_ng():
+def sip_from_directory():
    # Luodaan METS-olio dpres-mets-builderin avulla
    mets = METS(
       mets_profile=MetsProfile.RESEARCH_DATA,
@@ -76,13 +77,65 @@ def sip_ng():
          sign_key_filepath="signature/sip_sign_pas.pem"
       )
       # Onnistunut finalize
-      flash("SIP finalisointi onnistui!", "success")
+      flash("SIP created from directory!", "success")
       return redirect(url_for('sip.sip'))
    except Exception as e:
       # Mikäli finalize() heittää poikkeuksen, siepataan virhe
-      flash(f"Virhe finalisoinnissa: {str(e)}", "error")
+      flash(f"Error creating SIP! : {str(e)}", "error")
       return redirect(url_for('sip.sip'))
 
+@sip_bp.route('/sip_from_files')
+@login_required
+def sip_from_files():
+   # Luodaan METS-olio dpres-mets-builderin avulla
+   mets = METS(
+      mets_profile=MetsProfile.RESEARCH_DATA,
+      contract_id="urn:uuid:abcd1234-abcd-1234-5678-abcd1234abcd",
+      creator_name="Sigmund Sipenthusiast",
+      creator_type="INDIVIDUAL"
+   )
+   try:
+      # SIP from files
+      files = [
+         File(
+            path="static/DATA/KG2024DK221.jpg",
+            digital_object_path="DATA/KG2024DK221.jpg"
+         ),
+         File(
+            path="static/DATA/Telefunken_FFV1_FLAC.mkv",
+            digital_object_path="DATA/Telefunken_FFV1_FLAC.mkv"
+         )
+      ]
+      sip = SIP.from_files(mets=mets, files=files)
+
+      # Import descriptive metadata from an XML source, and add it to SIP
+      descriptive_md = ImportedMetadata.from_path("static/METADATA/lido_description.xml")
+      sip.add_metadata([descriptive_md])
+
+      # Lisätään provenienssimetadata (DigitalProvenanceEventMetadata)
+      provenance_md = DigitalProvenanceEventMetadata(
+         event_type="creation",
+         detail="This is a detail",
+         outcome="success",
+         outcome_detail="Another detail",
+      )
+      sip.add_metadata([provenance_md])
+
+      # Tallennetaan SIP Flask-sovelluksen configiin
+      # current_app.config["dpres_sip"] = sip
+
+      sip.finalize(
+         output_filepath="static/SIP/example-automated-sip.tar",
+         sign_key_filepath="signature/sip_sign_pas.pem"
+      )
+      # Onnistunut finalize
+      flash("SIP created from files!", "success")
+      return redirect(url_for('sip.sip'))
+   except Exception as e:
+      # Mikäli finalize() heittää poikkeuksen, siepataan virhe
+      flash(f"Error creating SIP! : {str(e)}", "error")
+      return redirect(url_for('sip.sip'))
+   
 @sip_bp.route("/sip_make_all")
 @login_required
 def sip_make_all():
