@@ -116,9 +116,8 @@ def sip_from_files():
          # Tarkistetaan, että kyseessä on tiedosto (ei alihakemisto)
          if os.path.isfile(full_path):
                # Muodostetaan polut vaaditussa muodossa
-               digital_object_path = f"DATA/{item}"
-               static_path = f"static/{digital_object_path}"
-               
+               digital_object_path = "DATA/"+item
+               static_path = "static/"+digital_object_path               
                files.append(
                   File(
                      path=static_path,
