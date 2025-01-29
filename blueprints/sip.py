@@ -109,7 +109,7 @@ def sip_from_files():
       #]
 
       files = []
-      print("for item in os.listdir(SIP_path):")
+      print("for item in os.listdir(SIP_path):", SIP_path)
       for item in os.listdir(SIP_path):
          full_path = os.path.join(SIP_path, item)
          print("SIP_path:",SIP_path)
