@@ -40,8 +40,9 @@ def sip():
       outerr = ""
    files = sorted(os.listdir(SIP_path))
    ###
-   fruits = ["apple", "banana", "cherry"]
-   for item in fruits:
+   files_string = str(files)
+   print(files_string)
+   for item in files:
       #full_path = os.path.join(SIP_path, item)
       print("SIP_path:",SIP_path)
       print("item:",item)
