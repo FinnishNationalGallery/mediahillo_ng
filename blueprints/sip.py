@@ -97,17 +97,16 @@ def sip_from_files():
    )
    try:
       # SIP from files
-      files = [
-         File(
-            path="static/DATA/KG2024DK221.jpg",
-            digital_object_path="DATA/KG2024DK221.jpg"
-         ),
-         File(
-            path="static/DATA/Telefunken_FFV1_FLAC.mkv",
-            digital_object_path="DATA/Telefunken_FFV1_FLAC.mkv"
-         )
-      ]
-      print(files)
+      #files = [
+      #   File(
+      #      path="static/DATA/KG2024DK221.jpg",
+      #      digital_object_path="DATA/KG2024DK221.jpg"
+      #   ),
+      #   File(
+      #      path="static/DATA/Telefunken_FFV1_FLAC.mkv",
+      #      digital_object_path="DATA/Telefunken_FFV1_FLAC.mkv"
+      #   )
+      #]
 
       files = []
 
