@@ -41,10 +41,10 @@ def sip():
    files = sorted(os.listdir(SIP_path))
    ###
    for item in files:
-      full_path = os.path.join(SIP_path, item)
+      #full_path = os.path.join(SIP_path, item)
       print("SIP_path:",SIP_path)
       print("item:",item)
-      print("full_path:",full_path)
+      #print("full_path:",full_path)
    return render_template('sip.html', files=files, diskinfo=diskinfo, output=output, outerr=outerr, SIP_path=SIP_path)
 
 @sip_bp.route('/sip_from_directory')
