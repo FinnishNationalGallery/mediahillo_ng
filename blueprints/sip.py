@@ -125,14 +125,6 @@ def sip_from_files():
                      digital_object_path=digital_object_path
                   )
                )
-      
-      digital_objects_list = [file_obj.digital_object for file_obj in files]
-      root_div = StructuralMapDiv(
-         "custom_div",
-         digital_objects=digital_objects_list,
-      )
-      structural_map = StructuralMap(root_div=root_div)
-      mets.add_structural_maps([structural_map])
 
 
       sip = SIP.from_files(mets=mets, files=files)
