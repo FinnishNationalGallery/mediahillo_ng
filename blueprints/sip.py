@@ -158,6 +158,8 @@ def sip_from_files():
       creator_type="INDIVIDUAL"
    )
    try:
+      files = read_all_files(DATA_path)
+      sip = SIP.from_files(mets=mets, files=files)
       files = read_all_files_mkv(DATA_path)
       sip = SIP.from_files(mets=mets, files=files)
 
