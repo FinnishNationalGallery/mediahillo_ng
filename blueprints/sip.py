@@ -127,6 +127,7 @@ def read_all_files_mkv(DATA_path):
                     event_type="creation",
                     datetime="2024-01-01",
                     outcome="success",
+                    detail = "What the fuck?",
                     outcome_detail="The file was uploaded into the collection management system ArchiveStar"
                 )
                 agent = DigitalProvenanceAgentMetadata(
