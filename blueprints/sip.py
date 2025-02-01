@@ -10,7 +10,7 @@ from utils import logfile_output, logfile_outerror, logfile_datanative, subproce
 from dotenv import dotenv_values
 from markupsafe import Markup
 from mets_builder import METS, MetsProfile, StructuralMapDiv, StructuralMap
-from mets_builder.metadata import DigitalProvenanceEventMetadata, ImportedMetadata
+from mets_builder.metadata import DigitalProvenanceEventMetadata, DigitalProvenanceAgentMetadata, ImportedMetadata
 
 from siptools_ng.file import File
 from siptools_ng.sip import SIP
@@ -85,6 +85,7 @@ def sip_from_directory():
       # Mikäli finalize() heittää poikkeuksen, siepataan virhe
       flash(f"Error creating SIP! : {str(e)}", "error")
       return redirect(url_for('sip.sip'))
+####################
 
 def read_all_files(DATA_path):
    files = []
@@ -104,6 +105,48 @@ def read_all_files(DATA_path):
          )
    return files
 
+def read_all_files_mkv(DATA_path):
+    files = []
+    for item in os.listdir(DATA_path):
+        full_path = os.path.join(DATA_path, item)
+        
+        # Tarkistetaan, että kyseessä on tiedosto (ei alihakemisto)
+        if os.path.isfile(full_path):
+            digital_object_path = f"DATA/{item}"
+            static_path = f"static/{digital_object_path}"
+            
+            # Luodaan File-objekti
+            file_obj = File(
+                path=static_path,
+                digital_object_path=digital_object_path
+            )
+            
+            # Jos tiedosto on .mkv, liitetään automaattisesti metatietoa
+            if item.lower().endswith('.mkv'):
+                event = DigitalProvenanceEventMetadata(
+                    event_type="creation",
+                    datetime="2024-01-01",
+                    outcome="success",
+                    detail="The file was uploaded into the collection management system ArchiveStar"
+                )
+                agent = DigitalProvenanceAgentMetadata(
+                    name="ArchiveStar",
+                    agent_type="software",
+                    version="1.2.0"
+                )
+                event.link_agent_metadata(
+                    agent,
+                    agent_role="executing program"
+                )
+                
+                # Lisätään tapahtuma file_obj:iin
+                file_obj.add_metadata([event])
+            
+            # Lisätään tiedosto listaan
+            files.append(file_obj)
+    
+    return files
+####################
 @sip_bp.route('/sip_from_files')
 @login_required
 def sip_from_files():
@@ -115,7 +158,7 @@ def sip_from_files():
       creator_type="INDIVIDUAL"
    )
    try:
-      files = read_all_files(DATA_path)
+      files = read_all_files_mkv(DATA_path)
       sip = SIP.from_files(mets=mets, files=files)
 
       # Import descriptive metadata from an XML source, and add it to SIP
