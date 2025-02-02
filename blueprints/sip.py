@@ -151,13 +151,21 @@ def read_all_files_mkv(DATA_path):
 @sip_bp.route('/sip_from_files')
 @login_required
 def sip_from_files():
+   ###
+   file = open("settings.json", "r")
+   content = file.read()
+   settings = json.loads(content)
+   file.close()
+   mets_createdate = settings['mets_createdate']
+   ###
    # Luodaan METS-olio dpres-mets-builderin avulla
    mets = METS(
       mets_profile=MetsProfile.RESEARCH_DATA,
       contract_id="urn:uuid:abcd1234-abcd-1234-5678-abcd1234abcd",
       creator_name="Sigmund Sipenthusiast",
       creator_type="INDIVIDUAL",
-      last_mod_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat() 
+      create_date= mets_createdate,
+      last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat() 
    )
    try:
       files = read_all_files_mkv(DATA_path)
