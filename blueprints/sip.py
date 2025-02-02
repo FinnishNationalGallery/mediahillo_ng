@@ -52,6 +52,7 @@ def sip_from_directory():
       contract_id="urn:uuid:abcd1234-abcd-1234-5678-abcd1234abcd",
       creator_name="Sigmund Sipenthusiast",
       creator_type="INDIVIDUAL",
+      create_date =  "2024-02-02T11:06:26+00:00",
       last_mod_date = "2025-02-02T11:06:26+00:00"
    )
    try:
