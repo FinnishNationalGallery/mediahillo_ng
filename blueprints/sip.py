@@ -167,7 +167,7 @@ def sip_from_files():
       contract_id="urn:uuid:abcd1234-abcd-1234-5678-abcd1234abcd",
       creator_name="Sigmund Sipenthusiast",
       creator_type="INDIVIDUAL",
-      create_date= date_obj.isoformat()
+      create_date= date_obj.isoformat(),
       last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat() 
    )
    try:
