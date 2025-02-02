@@ -1,8 +1,7 @@
 import json
 import os
 import shutil
-#import datetime
-from datetime import datetime
+import datetime
 import uuid
 from flask import Blueprint, current_app, render_template, request, url_for, flash, redirect, send_file, session, jsonify
 from flask_login import login_required, current_user
@@ -168,7 +167,7 @@ def sip_from_files():
       creator_name="Sigmund Sipenthusiast",
       creator_type="INDIVIDUAL",
       create_date= date_obj.isoformat(),
-      last_mod_date= datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat() 
+      last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat() 
    )
    try:
       files = read_all_files_mkv(DATA_path)
