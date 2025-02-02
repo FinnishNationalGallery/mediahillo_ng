@@ -157,9 +157,7 @@ def sip_from_files():
    settings = json.loads(content)
    file.close()
    mets_createdate = settings['mets_createdate']
-   ###
-   date_str = "2025-01-01"
-   date_obj = datetime.datetime.fromisoformat(date_str)
+   date_obj = datetime.datetime.fromisoformat(mets_createdate)
    # Luodaan METS-olio dpres-mets-builderin avulla
    mets = METS(
       mets_profile=MetsProfile.RESEARCH_DATA,
