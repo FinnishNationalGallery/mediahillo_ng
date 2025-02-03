@@ -39,103 +39,6 @@ def data():
    return render_template('data.html', files=files, diskinfo=diskinfo, output=output, DATA_path=DATA_path)
 
 
-
-
-@data_bp.route('/data_import_all')
-@login_required
-def data_import_all():
-   #data_import_skip()
-   data_import()
-   mix_create()
-   videomd_create()
-   audiomd_create()
-   message = Markup("All files are imported to SIP folder")
-   flash(message, 'success')
-   return redirect(url_for('sip.sip'))
-
-@data_bp.route('/data_import_skip')
-@login_required
-def data_import_skip():
-   redir = request.args.get('flag')
-   subprocess_args('import-object', '--workspace', SIP_path, '--skip_wellformed_check', DATA_path)
-   #executor.submit_stored('IMPORT', subprocess_args, 'import-object', '--workspace', SIP_path, '--skip_wellformed_check', DATA_path)
-   if redir == 'once':
-      return redirect(url_for('sip.sip'))
-   return True
-
-@data_bp.route('/data_import')
-@login_required
-def data_import():
-   redir = request.args.get('flag')
-   subprocess_args('import-object', '--workspace', SIP_path, DATA_path)
-   #executor.submit_stored('IMPORT', subprocess_args, 'import-object', '--workspace', SIP_path, '--skip_wellformed_check', DATA_path)
-   if redir == 'once':
-      return redirect(url_for('sip.sip'))
-   return True
-
-@data_bp.route('/mix_create')
-@login_required
-def mix_create():
-   redir = request.args.get('flag') # If you want to make own button for this function
-   files = os.listdir(DATA_path)
-   for file in files:
-      filesplit = file.split('.')
-      extension = filesplit[-1].lower()
-      filepath = DATA_path + file
-      if extension in ['jpg', 'jpeg', 'png', 'tif', 'tiff']:
-         subprocess_args('create-mix','--workspace', SIP_path, filepath)
-         #executor.submit_stored('MIX', subprocess_args, 'create-mix','--workspace', SIP_path, filepath)
-   if redir == 'once':
-      return redirect(url_for('sip.sip'))
-   return True
-
-@data_bp.route('/videomd_create')
-@login_required
-def videomd_create():
-   redir = request.args.get('flag') # If you want to make own button for this function
-   files = os.listdir(DATA_path)
-   for file in files:
-      filesplit = file.split('.')
-      extension = filesplit[-1].lower()
-      filepath = DATA_path + file
-      if extension in ['mp4', 'mpg', 'mpeg', 'mov', 'mkv', 'avi']:
-         subprocess_args('create-videomd', '--workspace', SIP_path, filepath)
-         #executor.submit_stored('VIDEOMD', subprocess_args, 'create-videomd', '--workspace', SIP_path, filepath)
-   if redir == 'once':
-      return redirect(url_for('sip.sip'))
-   return True
-
-@data_bp.route('/audiomd_create')
-@login_required
-def audiomd_create():
-   redir = request.args.get('flag') # If you want to make own button for this function
-   files = os.listdir(DATA_path)
-   for file in files:
-      filesplit = file.split('.')
-      extension = filesplit[-1].lower()
-      filepath = DATA_path + file
-      if extension in ['mp4', 'mpg', 'mpeg', 'mov', 'mkv', 'avi', 'wav']:
-         subprocess_args('create-audiomd','--workspace', SIP_path, filepath)
-         #executor.submit_stored('AUDIOMD', subprocess_args, 'create-audiomd','--workspace', SIP_path, filepath)
-   if redir == 'once':
-      return redirect(url_for('sip.sip'))
-   return True
-
-@data_bp.route('/addml_create')
-@login_required
-def addml_create():
-   redir = request.args.get('flag') # If you want to make own button for this function
-   files = os.listdir(DATA_path)
-   for file in files:
-      filesplit = file.split('.')
-      extension = filesplit[-1].lower()
-      filepath = DATA_path + file
-      if extension in ['csv']:
-         subprocess_args('create-addml',filepath, '--workspace', SIP_path, '--header', '--charset', 'UTF8', '--sep', 'CR+LF', '--quot', '"', '--delim', ',')
-   if redir == 'once':
-      return redirect(url_for('sip.sip'))
-   return True
-
 @data_bp.route('/data_premis_event_ffmpeg_ffv1')
 @login_required
 def data_premis_event_ffmpeg_ffv1(): # Matroska video FFMPEG normalization event
@@ -168,10 +71,12 @@ def data_premis_event_ffmpeg_ffv1(): # Matroska video FFMPEG normalization event
       return redirect(url_for('sip.sip'))
    return True
 
+#######################
+### VIDEO FRAME CHECKSUM
+#######################
 @data_bp.route('/data_premis_event_frame_md') # Calculate video frame checksum
 @login_required
 def data_premis_event_frame_md():
-   redir = request.args.get('flag') # If you want to make own button for this function
    files = os.listdir(DATA_path)
    for file in files:
       filesplit = file.split('.')
@@ -187,56 +92,11 @@ def data_premis_event_frame_md():
             session['message_md5'] = out.stdout
          except:
             logfile_outerror(out.stderr)
-         # Create Premis-event for frame checksum
-         CreateDate = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat() # "2018-04-12T14:09:00.233"
-         #subprocess_args('premis-event', 'message digest calculation', CreateDate, '--event_detail', 'ffmpeg -loglevel error -i ' + file + ' -map 0:v -f md5 -', '--event_outcome', 'success', '--event_outcome_detail', session['message_md5'], '--workspace', SIP_path, '--agent_name', SERVER_ffmpeg, '--agent_type', 'software', '--event_target', filepath.replace("./",""))
-    # Kirjoitetaan tuloste tiedostoon filename-mediainfo.txt
+         CreateDate = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat()
          output_file = f"{file}.FrameMD5.txt"
          with open(os.path.join(DATA_path, output_file), "w", encoding="utf-8") as f:
             f.write(session['message_md5'])
-   if redir == 'once':
-      return redirect(url_for('sip.sip'))
-   return True
-
-@data_bp.route("/data_delete")
-@login_required
-def data_delete():
-   delete_really = request.args.get('delete') 
-   if delete_really == "True":
-      try:
-         shutil.rmtree(DATA_path)
-         os.mkdir(DATA_path)
-         session['mp_inv'] = ""
-         session['mp_id'] = ""
-         session['mp_name'] = ""
-         session['mp_created'] = ""
-      except:
-         message = "Could not delete folder!"
-         flash(message, 'error')
-   else:
-      message = Markup("Do you really want to delete this folder? <a href=" + url_for('data.data_delete', delete="True") + "><button class=\"button is-danger\">Delete</button></a> "+" <a href=" + url_for('data.data') + "><button class=\"button is-dark\">Cancel</button> </a>")
-      flash(message, 'error')
-   return redirect(url_for('data.data'))
-
-@data_bp.route("/file_delete")
-@login_required
-def file_delete():
-   path = request.args.get('path')
-   file = request.args.get('name')
-   view = request.args.get('page')
-   path = DATA_path # This is dummy but secure
-   deleteMessage = ""
-   if os.path.isfile(path + file):
-      try:
-         os.remove(path + file)
-      except:
-         deleteMessage = "Cannot delete file!"
-   elif os.path.isdir(path + file):
-      try:
-         shutil.rmtree(path + file)
-      except:
-         deleteMessage = "Cannot delete directory!"
-   return redirect(url_for(view))
+   return redirect(url_for('sip.sip'))
 
 #######################
 ### FILE VALIDATION ###
@@ -510,3 +370,46 @@ def fix_pdf_ghostscript():
         flash(message, 'error')
     
     return redirect(url_for(view))
+
+#######################
+### DELETE FUNCTIONS
+#######################
+@data_bp.route("/data_delete")
+@login_required
+def data_delete():
+   delete_really = request.args.get('delete') 
+   if delete_really == "True":
+      try:
+         shutil.rmtree(DATA_path)
+         os.mkdir(DATA_path)
+         session['mp_inv'] = ""
+         session['mp_id'] = ""
+         session['mp_name'] = ""
+         session['mp_created'] = ""
+      except:
+         message = "Could not delete folder!"
+         flash(message, 'error')
+   else:
+      message = Markup("Do you really want to delete this folder? <a href=" + url_for('data.data_delete', delete="True") + "><button class=\"button is-danger\">Delete</button></a> "+" <a href=" + url_for('data.data') + "><button class=\"button is-dark\">Cancel</button> </a>")
+      flash(message, 'error')
+   return redirect(url_for('data.data'))
+
+@data_bp.route("/file_delete")
+@login_required
+def file_delete():
+   path = request.args.get('path')
+   file = request.args.get('name')
+   view = request.args.get('page')
+   path = DATA_path # This is dummy but secure
+   deleteMessage = ""
+   if os.path.isfile(path + file):
+      try:
+         os.remove(path + file)
+      except:
+         deleteMessage = "Cannot delete file!"
+   elif os.path.isdir(path + file):
+      try:
+         shutil.rmtree(path + file)
+      except:
+         deleteMessage = "Cannot delete directory!"
+   return redirect(url_for(view))
