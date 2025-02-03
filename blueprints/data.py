@@ -86,16 +86,16 @@ def data_premis_event_frame_md():
          try: # Get MD5 video frame checksum from file
             cmd = 'ffmpeg -loglevel error -i ' + filepath + ' -map 0:v -f md5 -'
             out = subprocess.run(cmd, shell=True, executable='/bin/bash',stdout=PIPE, stderr=PIPE, universal_newlines=True)
-            logfile_output(cmd+"\n")
-            logfile_output(out.stdout+"\n")
-            logfile_outerror(out.stderr)
+            #logfile_output(cmd+"\n")
+            #logfile_output(out.stdout+"\n")
+            #logfile_outerror(out.stderr)
             session['message_md5'] = out.stdout
          except:
             logfile_outerror(out.stderr)
          CreateDate = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat()
          output_file = f"{file}.FrameMD5.txt"
          with open(os.path.join(DATA_path, output_file), "w", encoding="utf-8") as f:
-            f.write(f"ffmpeg -loglevel error -i {file} -map 0:v -f md5 -")
+            f.write(f"ffmpeg -loglevel error -i {file} -map 0:v -f md5 -\n")
             f.write(session['message_md5'])
    return redirect(url_for('sip.sip'))
 
@@ -110,11 +110,6 @@ def analyze_file_validation(file_path):
         capture_output=True,
         check=False  # Ei heitä poikkeusta, vaikka komento epäonnistuisi
     )
-
-    # Tulosta stdout, stderr ja returncode nähdäksesi, mitä komento palauttaa
-    # print("Command stdout:", result.stdout)
-    # print("Command stderr:", result.stderr)
-    # print("Command return code:", result.returncode)
     
     # Jos komennon palautuskoodi ei ole 0, se tarkoittaa virhettä
     if result.returncode != 0:
