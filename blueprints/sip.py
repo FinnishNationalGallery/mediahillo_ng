@@ -3,6 +3,7 @@ import os
 import shutil
 import datetime
 import uuid
+from dateutil import parser
 from flask import Blueprint, current_app, render_template, request, url_for, flash, redirect, send_file, session, jsonify
 from flask_login import login_required, current_user
 from modules import mp_metadata
@@ -123,31 +124,44 @@ def read_all_files_mkv(DATA_path):
             
             # Jos tiedosto on .mkv, liitetään automaattisesti metatietoa
             if item.lower().endswith('.mkv'):
-                event = DigitalProvenanceEventMetadata(
-                    event_type="creation",
-                    datetime="2024-01-01",
-                    outcome="success",
-                    detail = "What the fuck?",
-                    outcome_detail="The file was uploaded into the collection management system ArchiveStar"
-                )
-                agent = DigitalProvenanceAgentMetadata(
-                    name="ArchiveStar",
-                    agent_type="software",
-                    version="1.2.0"
-                )
-                event.link_agent_metadata(
-                    agent,
-                    agent_role="executing program"
-                )
-                
-                # Lisätään tapahtuma file_obj:iin
-                file_obj.add_metadata([event])
+               ###
+               file = open("settings.json", "r")
+               content = file.read()
+               settings = json.loads(content)
+               file.close()
+               event_time = settings['prem_norm_date']
+               agent_name = settings['prem_norm_agent']
+               ###
+               datetime_obj = parser.parse(event_time)
+               CreateDate = datetime_obj.isoformat()
+               event = DigitalProvenanceEventMetadata(
+                  event_type="normalization",
+                  datetime=CreateDate,
+                  outcome="success",
+                  detail = "File conversion with FFMPEG program",
+                  outcome_detail="FFV1 video in Matroska container"
+               )
+               agent = DigitalProvenanceAgentMetadata(
+                  name=agent_name,
+                  agent_type="software",
+                  #version="1.2.0"
+               )
+               event.link_agent_metadata(
+                  agent,
+                  agent_role="executing program"
+               )
+               
+               # Lisätään tapahtuma file_obj:iin
+               file_obj.add_metadata([event])
             
             # Lisätään tiedosto listaan
             files.append(file_obj)
     
     return files
-####################
+
+#######################
+### SIP FROM FILES
+#######################
 @sip_bp.route('/sip_from_files')
 @login_required
 def sip_from_files():
@@ -200,16 +214,6 @@ def sip_from_files():
       flash(f"Error creating SIP! : {str(e)}", "error")
       return redirect(url_for('sip.sip'))
 
-
-@sip_bp.route("/sip_make_all")
-@login_required
-def sip_make_all():
-   sip_premis_event_created()
-   sip_compile_structmap()
-   sip_compile_mets()
-   sip_sign_mets()
-   return redirect(url_for('sip.sip'))
-
 @sip_bp.route("/sip_premis_event_created") # MuseumPlus digital object creation
 @login_required
 def sip_premis_event_created():
@@ -228,79 +232,9 @@ def sip_premis_event_created():
       return redirect(url_for('sip.sip'))
    return True
 
-@sip_bp.route("/sip_compile_structmap")
-@login_required
-def sip_compile_structmap():
-   redir = request.args.get('flag') # If you want to make own button for this function
-   subprocess_args('compile-structmap', '--workspace', SIP_path)
-   if redir == 'once':
-      return redirect(url_for('sip.sip'))
-   return True
-
-@sip_bp.route("/sip_compile_mets")
-@login_required
-def sip_compile_mets():
-   redir = request.args.get('flag') # If you want to make own button for this function
-   if not session.get('mp_inv'):
-      objid = str(uuid.uuid1())
-   else:
-      objid = session['mp_inv']
-   subprocess_args('compile-mets','--workspace', SIP_path , 'ch', ORGANIZATION, CONTRACTID, '--objid',objid, '--copy_files', '--clean')
-   if redir == 'once':
-      return redirect(url_for('sip.sip'))
-   return True
-
-@sip_bp.route("/sip_compile_mets_update")
-@login_required
-def sip_compile_mets_update():
-   redir = request.args.get('flag') # If you want to make own button for this function
-   LastmodDate = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat() 
-   ###
-   file = open("settings.json", "r")
-   content = file.read()
-   settings = json.loads(content)
-   file.close()
-   mets_createdate = settings['mets_createdate']
-   ###
-   if session['mp_inv']:
-      objid = session['mp_inv']
-   else:
-      objid = str(uuid.uuid1())
-   subprocess_args('compile-mets','--workspace', SIP_path , 'ch', ORGANIZATION, CONTRACTID, '--objid',objid, '--create_date', mets_createdate, '--last_moddate', LastmodDate, '--record_status', 'update', '--copy_files', '--clean')
-   if redir == 'once':
-      return redirect(url_for('sip.sip'))
-   return True
-
-@sip_bp.route("/sip_sign_mets")
-@login_required
-def sip_sign_mets():
-   redir = request.args.get('flag') # If you want to make own button for this function
-   #subprocess_args('./sign.sh', SIGNATURE, SIP_path)
-   subprocess_args('sign-mets', SIGNATURE, '--workspace', SIP_path)
-   if redir == 'once':
-      return redirect(url_for('sip.sip'))
-   return True
-
-@sip_bp.route("/sip_make_tar")
-@login_required
-def sip_make_tar():
-   redir = request.args.get('flag') # If you want to make own button for this function
-   lido_inv, lido_id, lido_name, lido_created = mp_metadata.read_mets_lido_xml()
-   if lido_id > "":
-      sip_filename = lido_id + '.tar'
-      message = "TAR package from mets.xml file: "+lido_name + ", Inv nro: " +lido_inv + ", MuseumPlus ID: " + lido_id
-      msg_status = "success"
-   else:
-      sip_filename = str(uuid.uuid1()) + '.tar'
-      message = "SOMETHING WENT WRONG! TAR package name is: " + sip_filename
-      msg_status = "error"
-   subprocess_args('compress', '--tar_filename',  sip_filename, SIP_path)
-   if redir == 'once':
-      flash( message,msg_status)
-      return redirect(url_for('sip.sip'))
-   return True
-
-
+#######################
+### DELETE FUNCTIONS
+#######################
 @sip_bp.route("/sip_delete")
 @login_required
 def sip_delete():
