@@ -57,8 +57,8 @@ def datanative_import():
       CreateDate = datetime_obj.isoformat()
       logfile_datanative("Source:"+file+" > "+"Outcome:"+outcome+"\n")   
 
-   #return redirect(url_for('datanative.datanative'))
-   return render_template('datanative.html', file=file, outcome=outcome, diskinfo=diskinfo, datanative=datanative)
+   return redirect(url_for('datanative.datanative'))
+   #return render_template('datanative.html', file=file, outcome=outcome, diskinfo=diskinfo, datanative=datanative)
 
 @datanative_bp.route("/datanative_file_delete")
 @login_required
