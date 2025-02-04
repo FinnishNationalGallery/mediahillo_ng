@@ -152,9 +152,8 @@ def read_all_files_mkv(DATA_path):
                )
                # Lisätään tapahtuma file_obj:iin
                file_obj.add_metadata([event])
-               ##### Read Frame MD5 information
+               # >Read Frame MD5 information
                video_frame_file_path = os.path.join(DATA_path, f"{item}.FrameMD5.txt")
-               print(video_frame_file_path)
                try:
                   with open(video_frame_file_path, "r", encoding="utf-8") as video_frame_file:
                         for line in video_frame_file:
@@ -162,18 +161,17 @@ def read_all_files_mkv(DATA_path):
                               video_frame_md = line.strip()
                   provenance_md = DigitalProvenanceEventMetadata(
                      event_type="message digest calculation",
-                     detail=f"ffmpeg -loglevel error -i ' {item} ' -map 0:v -f md5 -",
+                     detail=f"ffmpeg -loglevel error -i {item} -map 0:v -f md5 -",
                      outcome="success",
                      outcome_detail=video_frame_md,
                   )
                   print(video_frame_md)
                   file_obj.add_metadata([provenance_md])
                except FileNotFoundError:
-                  print(f"Tiedostoa ei löytynyt polusta: {DATA_path}")
+                  pass
                except Exception as e:
-                  print(f"Tapahtui virhe tiedostoa luettaessa: {e}")
-
-            # Lisätään tiedosto listaan
+                  pass
+               # <Read Frame MD5 information
             files.append(file_obj)
     
     return files
