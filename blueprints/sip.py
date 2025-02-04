@@ -110,28 +110,25 @@ def read_all_files_mkv(DATA_path):
     files = []
     for item in os.listdir(DATA_path):
         full_path = os.path.join(DATA_path, item)
-        
-        # Tarkistetaan, että kyseessä on tiedosto (ei alihakemisto)
+        # Check if is file and not folder
         if os.path.isfile(full_path):
             digital_object_path = f"DATA/{item}"
             static_path = f"static/{digital_object_path}"
-            
-            # Luodaan File-objekti
+            # Create file object
             file_obj = File(
                 path=static_path,
                 digital_object_path=digital_object_path
             )
-            
-            # Jos tiedosto on .mkv, liitetään automaattisesti metatietoa
+            # Check if is .mkv file
             if item.lower().endswith('.mkv'):
-               ###
+               # Read settings file
                file = open("settings.json", "r")
                content = file.read()
                settings = json.loads(content)
                file.close()
                event_time = settings['prem_norm_date']
                agent_name = settings['prem_norm_agent']
-               ###
+               # Create Premis event
                datetime_obj = parser.parse(event_time)
                CreateDate = datetime_obj.isoformat()
                event = DigitalProvenanceEventMetadata(
@@ -150,9 +147,9 @@ def read_all_files_mkv(DATA_path):
                   agent,
                   agent_role="executing program"
                )
-               # Lisätään tapahtuma file_obj:iin
+               # Add Premis event to file object
                file_obj.add_metadata([event])
-               # >Read Frame MD5 information
+               # Read Frame MD5 information
                video_frame_file_path = os.path.join(DATA_path, f"{item}.FrameMD5.txt")
                try:
                   with open(video_frame_file_path, "r", encoding="utf-8") as video_frame_file:
@@ -165,13 +162,13 @@ def read_all_files_mkv(DATA_path):
                      outcome="success",
                      outcome_detail=video_frame_md,
                   )
-                  print(video_frame_md)
+                  # Add Premis metadata to file object
                   file_obj.add_metadata([provenance_md])
                except FileNotFoundError:
                   pass
                except Exception as e:
                   pass
-               # <Read Frame MD5 information
+            # Add file object to files list
             files.append(file_obj)
     
     return files

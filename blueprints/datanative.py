@@ -55,9 +55,6 @@ def datanative_import():
       outcome = request.form['outcome']
       datetime_obj = parser.parse(event_time)
       CreateDate = datetime_obj.isoformat()
-      subprocess_args('import-object', '--workspace', SIP_path, '--skip_wellformed_check', DATANATIVE_path + file)
-      subprocess_args('premis-event', 'normalization', CreateDate, '--workspace', SIP_path, '--event_detail', 'File conversion with FFMPEG program', '--event_outcome', 'success', '--event_outcome_detail', 'FFV1 video in Matroska container', '--agent_name', agent_name, '--agent_type', 'software', '--linking_object', 'source', DATANATIVE_path + file, '--linking_object', 'outcome', DATA_path + outcome, '--add_object_links')
-      #
       logfile_datanative("Original file: "+file+" >>> "+"Normalized file: "+outcome+"\n")   
 
    #return redirect(url_for('datanative.datanative'))
