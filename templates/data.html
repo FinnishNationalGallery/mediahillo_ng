@@ -3,8 +3,7 @@
 {% block content %}
 <h1 class="title">DATA-folder </h1>
 <p class="has-text-weight-bold">
-    Load original (Apple ProRes) files to this folder &rarr; <a href="{{url_for('datanative.datanative')}}"><button class="button is-normal is-dark">DATANATIVE</button></a>  
-     Import first files from DATA folder and then files from DATANATIVE folder!
+    Load original (Apple ProRes) files to this folder &rarr; <a href="{{url_for('datanative.datanative')}}"><button class="button is-normal is-dark">DATANATIVE</button></a> 
 </p> </br>
 
 {% with errors = get_flashed_messages(category_filter=["success"]) %}
