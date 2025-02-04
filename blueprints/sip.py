@@ -153,7 +153,7 @@ def read_all_files_mkv(DATA_path):
                # Lisätään tapahtuma file_obj:iin
                file_obj.add_metadata([event])
                ##### Read Frame MD5 information
-               video_frame_file_path = os.path.join(DATA_path, f"{item}.FrameMD.txt")
+               video_frame_file_path = os.path.join(DATA_path, f"{item}.FrameMD5.txt")
                print(video_frame_file_path)
                try:
                   with open(video_frame_file_path, "r", encoding="utf-8") as video_frame_file:
