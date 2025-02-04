@@ -154,6 +154,7 @@ def read_all_files_mkv(DATA_path):
                file_obj.add_metadata([event])
                ##### Read Frame MD5 information
                video_frame_file_path = os.path.join(SIP_path, f"{item}.FrameMD.txt")
+               print(video_frame_file_path)
                try:
                   with open(video_frame_file_path, "r", encoding="utf-8") as video_frame_file:
                         for line in video_frame_file:
@@ -165,6 +166,7 @@ def read_all_files_mkv(DATA_path):
                      outcome="success",
                      outcome_detail=video_frame_md,
                   )
+                  print(video_frame_md)
                   file_obj.add_metadata([provenance_md])
                except FileNotFoundError:
                   print(f"Tiedostoa ei löytynyt polusta: {SIP_path}")
