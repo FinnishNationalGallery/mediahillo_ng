@@ -80,6 +80,18 @@ def datanative_file_delete():
          deleteMessage = "Cannot delete directory!"
    return redirect(url_for(view))
 
+@datanative_bp.route("/datanative_linklog_delete")
+@login_required
+def datanative_linklog_delete():
+   path = SIPLOG_path+"datanative.txt"
+   deleteMessage = ""
+   if os.path.isfile(path):
+      try:
+         os.remove(path)
+      except:
+         deleteMessage = "Cannot delete file!"
+   return redirect(url_for('datanative.datanative'))
+
 #######################
 ### FILE MEDIAINFO  ###
 #######################
