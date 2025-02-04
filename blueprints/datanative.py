@@ -55,10 +55,10 @@ def datanative_import():
       outcome = request.form['outcome']
       datetime_obj = parser.parse(event_time)
       CreateDate = datetime_obj.isoformat()
-      logfile_datanative("Original file: "+file+" >>> "+"Normalized file: "+outcome+"\n")   
+      logfile_datanative("Original:"+file+" > "+"Normalized:"+outcome+"\n")   
 
    #return redirect(url_for('datanative.datanative'))
-   return render_template('datanative_import.html', file=file, outcome=outcome, diskinfo=diskinfo, datanative=datanative)
+   return render_template('datanative.html', file=file, outcome=outcome, diskinfo=diskinfo, datanative=datanative)
 
 @datanative_bp.route("/datanative_file_delete")
 @login_required
