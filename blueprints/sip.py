@@ -159,17 +159,18 @@ def read_all_files_mkv(DATA_path):
                         for line in video_frame_file:
                            if line.startswith("MD5="):
                               video_frame_md = line.strip()
+                              provenance_md = DigitalProvenanceEventMetadata(
+                                 event_type="message digest calculation",
+                                 detail=f"ffmpeg -loglevel error -i ' {item} ' -map 0:v -f md5 -",
+                                 outcome="success",
+                                 outcome_detail=video_frame_md,
+                              )
+                              file_obj.add_metadata([provenance_md])
                except FileNotFoundError:
                   print(f"Tiedostoa ei löytynyt polusta: {SIP_path}")
                except Exception as e:
                   print(f"Tapahtui virhe tiedostoa luettaessa: {e}")
-               provenance_md = DigitalProvenanceEventMetadata(
-                  event_type="message digest calculation",
-                  detail=f"ffmpeg -loglevel error -i ' {item} ' -map 0:v -f md5 -",
-                  outcome="success",
-                  outcome_detail=video_frame_md,
-               )
-               file_obj.add_metadata([provenance_md])
+
             # Lisätään tiedosto listaan
             files.append(file_obj)
     
