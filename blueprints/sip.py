@@ -178,17 +178,17 @@ def read_all_files_mkv(DATA_path):
                   #   digital_object_path="data/Telefunken_FFV1_FLAC.mkv"
                   #)
                   #file_a, file_b = make_datanative_premis(source_file, outcome_file)
-                  file_a = make_datanative_premis(source_file)#, outcome_file)
-                  files.append(file_a)
+                  file_obj_source = make_datanative_premis(source_file, file_obj)
+                  files.append(file_obj_source)
                   #files.append(file_b)
             # Add file object to files list
             files.append(file_obj)
 
     return files
 
-def make_datanative_premis(source_file):#, outcome_file):
+def make_datanative_premis(source_file, outcome_file):
    source_file.generate_technical_metadata()
-   #outcome_file.generate_technical_metadata()
+   outcome_file.generate_technical_metadata()
    source_file.digital_object.use = "fi-dpres-no-file-format-validation"
    event = DigitalProvenanceEventMetadata(
       event_type = "migration",
@@ -208,18 +208,18 @@ def make_datanative_premis(source_file):#, outcome_file):
       source_file_techmd,
       object_role="source"
    )
-   #outcome_file_techmd = next(
-   #   metadata for metadata in outcome_file.metadata
-   #   if metadata.metadata_type.value == "technical"
-   #   and metadata.metadata_format.value == "PREMIS:OBJECT"
-   #)
-   #event.link_object_metadata(
-   #   outcome_file_techmd,
-   #   object_role="outcome"
-   #)
+   outcome_file_techmd = next(
+      metadata for metadata in outcome_file.metadata
+      if metadata.metadata_type.value == "technical"
+      and metadata.metadata_format.value == "PREMIS:OBJECT"
+   )
+   event.link_object_metadata(
+      outcome_file_techmd,
+      object_role="outcome"
+   )
    source_file.add_metadata([event])
-   #outcome_file.add_metadata([event])
-   return source_file#, outcome_file
+   outcome_file.add_metadata([event])
+   return source_file
 
 #######################
 ### SIP FROM FILES
