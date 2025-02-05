@@ -170,8 +170,8 @@ def read_all_files_mkv(DATA_path):
                   pass
                if item ==  "Telefunken_FFV1_FLAC.mkv":
                   source_file = File(
-                     path="static/DATANATIVE/Telefunken.mov.mov",
-                     digital_object_path="datanative/Telefunken.mov.mov"
+                     path="static/DATANATIVE/Telefunken.mov",
+                     digital_object_path="datanative/Telefunken.mov"
                   )
                   outcome_file = File(
                      path="static/DATA/Telefunken_FFV1_FLAC.mkv",
