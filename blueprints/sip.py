@@ -172,7 +172,7 @@ def read_all_files_mkv(DATA_path):
                if item ==  "Telefunken_FFV1_FLAC.mkv":
                   source_file = File(
                      path="static/DATANATIVE/Telefunken.mov",
-                     digital_object_path="datanative/Telefunken.mov"
+                     digital_object_path="DATANATIVE/Telefunken.mov"
                   )
                   file_obj_source = make_datanative_premis(source_file, file_obj)
                   files.append(file_obj_source)
@@ -237,7 +237,7 @@ def sip_from_files():
       creator_name=ORGANIZATION,
       creator_type="ORGANIZATION",
       create_date= date_obj,
-      last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3)))
+      #last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3)))
    )
    try:
       files = read_all_files_mkv(DATA_path)
