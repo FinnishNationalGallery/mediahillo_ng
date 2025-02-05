@@ -162,16 +162,60 @@ def read_all_files_mkv(DATA_path):
                      outcome="success",
                      outcome_detail=video_frame_md,
                   )
-                  # Add Premis metadata to file object
+                  # Add Video frame MD5 checksum Premis metadata to file object
                   file_obj.add_metadata([provenance_md])
                except FileNotFoundError:
                   pass
                except Exception as e:
                   pass
+               if item ==  "Telefunken_FFV1_FLAC.mkv":
+                  source_file = File(
+                     path="static/DATANATIVE/Telefunken.mov.mov",
+                     digital_object_path="datanative/Telefunken.mov.mov"
+                  )
+                  outcome_file = File(
+                     path="static/DATA/Telefunken_FFV1_FLAC.mkv",
+                     digital_object_path="data/Telefunken_FFV1_FLAC.mkv"
+                  )
+                  make_datanative_premis(source_file, outcome_file)
             # Add file object to files list
             files.append(file_obj)
-    
+
     return files
+
+def make_datanative_premis(source_file, outcome_file):
+   source_file.generate_technical_metadata()
+   outcome_file.generate_technical_metadata()
+   source_file.digital_object.use = "fi-dpres-no-file-format-validation"
+   event = mets_builder.metadata.DigitalProvenanceEventMetadata(
+      event_type = "migration",
+      detail = "Normalization of digital object.",
+      outcome = "success",
+      outcome_detail = ("Source file format has been normalized. Outcome "
+                        "object has been created as a result."),
+      datetime = "2024-08-14T15:22:00",
+   )
+
+   source_file_techmd = next(
+      metadata for metadata in source_file.metadata
+      if metadata.metadata_type.value == "technical"
+      and metadata.metadata_format.value == "PREMIS:OBJECT"
+   )
+   event.link_object_metadata(
+      source_file_techmd,
+      object_role="source"
+   )
+   outcome_file_techmd = next(
+      metadata for metadata in outcome_file.metadata
+      if metadata.metadata_type.value == "technical"
+      and metadata.metadata_format.value == "PREMIS:OBJECT"
+   )
+   event.link_object_metadata(
+      outcome_file_techmd,
+      object_role="outcome"
+   )
+   source_file.add_metadata([event])
+   outcome_file.add_metadata([event])
 
 #######################
 ### SIP FROM FILES
