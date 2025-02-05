@@ -186,7 +186,7 @@ def read_all_files_mkv(DATA_path):
 
     return files
 
-def make_datanative_premis(source_file, outcome_file):
+def make_datanative_premis(source_file):#, outcome_file):
    source_file.generate_technical_metadata()
    #outcome_file.generate_technical_metadata()
    source_file.digital_object.use = "fi-dpres-no-file-format-validation"
