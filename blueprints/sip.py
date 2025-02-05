@@ -168,19 +168,15 @@ def read_all_files_mkv(DATA_path):
                   pass
                except Exception as e:
                   pass
+               
                if item ==  "Telefunken_FFV1_FLAC.mkv":
                   source_file = File(
                      path="static/DATANATIVE/Telefunken.mov",
                      digital_object_path="datanative/Telefunken.mov"
                   )
-                  #outcome_file = File(
-                  #   path="static/DATA/Telefunken_FFV1_FLAC.mkv",
-                  #   digital_object_path="data/Telefunken_FFV1_FLAC.mkv"
-                  #)
-                  #file_a, file_b = make_datanative_premis(source_file, outcome_file)
                   file_obj_source = make_datanative_premis(source_file, file_obj)
                   files.append(file_obj_source)
-                  #files.append(file_b)
+                  
             # Add file object to files list
             files.append(file_obj)
 
