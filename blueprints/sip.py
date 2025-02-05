@@ -187,7 +187,7 @@ def make_datanative_premis(source_file, outcome_file):
    source_file.generate_technical_metadata()
    outcome_file.generate_technical_metadata()
    source_file.digital_object.use = "fi-dpres-no-file-format-validation"
-   event = mets_builder.metadata.DigitalProvenanceEventMetadata(
+   event = DigitalProvenanceEventMetadata(
       event_type = "migration",
       detail = "Normalization of digital object.",
       outcome = "success",
