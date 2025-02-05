@@ -179,7 +179,7 @@ def read_all_files_mkv(DATA_path):
                   )
                   file_a, file_b = make_datanative_premis(source_file, outcome_file)
                   files.append(file_a)
-                  files.append(file_b)
+                  #files.append(file_b)
             # Add file object to files list
             files.append(file_obj)
 
