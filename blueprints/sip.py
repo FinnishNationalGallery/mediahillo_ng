@@ -49,10 +49,10 @@ def sip():
 def sip_from_directory():
    # Luodaan METS-olio dpres-mets-builderin avulla
    mets = METS(
-      mets_profile=MetsProfile.RESEARCH_DATA,
-      contract_id="urn:uuid:abcd1234-abcd-1234-5678-abcd1234abcd",
-      creator_name="Sigmund Sipenthusiast",
-      creator_type="INDIVIDUAL"
+      mets_profile=MetsProfile.CULTURAL_HERITAGE,
+      contract_id=CONTRACTID,
+      creator_name=ORGANIZATION,
+      creator_type="ORGANIZATION"
    )
    try:
       # Generoidaan SIP hakemiston pohjalta
@@ -168,7 +168,7 @@ def read_all_files_mkv(DATA_path):
                   pass
                except Exception as e:
                   pass
-               
+
                if item ==  "Telefunken_FFV1_FLAC.mkv":
                   source_file = File(
                      path="static/DATANATIVE/Telefunken.mov",
@@ -232,22 +232,20 @@ def sip_from_files():
    date_obj = datetime.datetime.fromisoformat(mets_createdate)
    # Luodaan METS-olio dpres-mets-builderin avulla
    mets = METS(
-      mets_profile=MetsProfile.RESEARCH_DATA,
-      contract_id="urn:uuid:abcd1234-abcd-1234-5678-abcd1234abcd",
-      creator_name="Sigmund Sipenthusiast",
-      creator_type="INDIVIDUAL",
+      mets_profile=MetsProfile.CULTURAL_HERITAGE,
+      contract_id=CONTRACTID,
+      creator_name=ORGANIZATION,
+      creator_type="ORGANIZATION",
       create_date= date_obj,
       last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3)))
    )
    try:
       files = read_all_files_mkv(DATA_path)
       sip = SIP.from_files(mets=mets, files=files)
-
       # Import descriptive metadata from an XML source, and add it to SIP
       descriptive_md = ImportedMetadata.from_path("static/METADATA/lido_description.xml")
       sip.add_metadata([descriptive_md])
-
-      # Lisätään provenienssimetadata (DigitalProvenanceEventMetadata)
+      # Add provenance metadata (DigitalProvenanceEventMetadata)
       provenance_md = DigitalProvenanceEventMetadata(
          event_type="creation",
          detail="This is a detail",
@@ -255,20 +253,14 @@ def sip_from_files():
          outcome_detail="Another detail",
       )
       sip.add_metadata([provenance_md])
-
-      # Tallennetaan SIP Flask-sovelluksen configiin
-      # current_app.config["dpres_sip"] = sip
-
       sip.finalize(
          output_filepath="static/SIP/example-automated-sip.tar",
          sign_key_filepath="signature/sip_sign_pas.pem"
       )
       sip.mets.write(SIP_path+"mets.xml")
-      # Onnistunut finalize
       flash("SIP created from files!", "success")
       return redirect(url_for('sip.sip'))
    except Exception as e:
-      # Mikäli finalize() heittää poikkeuksen, siepataan virhe
       flash(f"Error creating SIP! : {str(e)}", "error")
       return redirect(url_for('sip.sip'))
 
