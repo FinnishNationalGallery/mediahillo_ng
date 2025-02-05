@@ -177,7 +177,9 @@ def read_all_files_mkv(DATA_path):
                      path="static/DATA/Telefunken_FFV1_FLAC.mkv",
                      digital_object_path="data/Telefunken_FFV1_FLAC.mkv"
                   )
-                  make_datanative_premis(source_file, outcome_file)
+                  file_a, file_b = make_datanative_premis(source_file, outcome_file)
+                  files.append(file_a)
+                  files.append(file_b)
             # Add file object to files list
             files.append(file_obj)
 
@@ -216,6 +218,7 @@ def make_datanative_premis(source_file, outcome_file):
    )
    source_file.add_metadata([event])
    outcome_file.add_metadata([event])
+   return source_file, outcome_file
 
 #######################
 ### SIP FROM FILES
