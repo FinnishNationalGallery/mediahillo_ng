@@ -306,26 +306,14 @@ def fix_image_exiftool():
         logfile_validation(filename + " exiftool -> "+ result.stdout + result.stderr + "\n")
 
         # Change original filename using subprocess
-        fixed_path = f"{base_name}{ext}_original"
-        print(fixed_path)
-        original_path = f"{base_name}-original{ext}"
-        print(original_path)
-        if os.path.exists(fixed_path):
-            if os.path.exists(original_path):
-                # Jos kohdekohde on jo olemassa, poista se ensin
-                os.remove(original_path)
-            
-            # Käytä try-except-rakennetta virheiden käsittelyyn
-            try:
-                result = subprocess.run(
-                    ['mv', fixed_path, original_path],
-                    capture_output=True,
-                    text=True,
-                    check=True
-                )
-            except subprocess.CalledProcessError as e:
-                print(f"Virhe tiedoston siirrossa: {e}")
-                print(f"Virheviesti: {e.stderr}")
+        fixed_path = f"{DATA_path}{base_name}{ext}_original"
+        original_path = f"{DATA_path}{base_name}-original{ext}"
+        result = subprocess.run(
+            ['mv',fixed_path,original_path], 
+            capture_output=True, 
+            text=True, 
+            check=True
+        ) 
         # Flash success message
         message = Markup(f"Image fixed: {filename} -> {output_filename}")
         flash(message, 'success')
