@@ -86,4 +86,4 @@ sip.finalize(
     output_filepath="static/SIP/example-manual-sip.tar",
     sign_key_filepath="signature/sip_sign_pas.pem"
 )
-sip.mets.write("/static/SIP/mets.xml")
+sip.mets.write("static/SIP/mets.xml")
