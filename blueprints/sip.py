@@ -178,7 +178,11 @@ def read_all_files_mkv(DATA_path):
                      path="static/DATANATIVE/"+source_filename,
                      digital_object_path="DATANATIVE/"+source_filename
                   )
-                  file_obj_source, file_obj_outcome = make_datanative_premis(source_file, file_obj)
+                  outcome_file = File(
+                     path="static/DATA/"+outcome_filename,
+                     digital_object_path="DATA/"+outcome_filename
+                  )
+                  file_obj_source, file_obj_outcome = make_datanative_premis(source_file, outcome_file)
                   files.append(file_obj_source)
                   files.append(file_obj_outcome)
                   
