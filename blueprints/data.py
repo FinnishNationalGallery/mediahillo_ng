@@ -307,7 +307,7 @@ def fix_image_exiftool():
 
         # Change original filename using subprocess
         fixed_path = f"{DATA_path}{base_name}{ext}_original"
-        original_path = f"{DATA_path}{base_name}-original{ext}"
+        original_path = f"{DATA_path}{base_name}{ext}"
         result = subprocess.run(
             ['mv',fixed_path,original_path], 
             capture_output=True, 
