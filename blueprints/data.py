@@ -307,7 +307,9 @@ def fix_image_exiftool():
 
         # Change original filename using subprocess
         fixed_path = f"{base_name}{ext}_original"
+        print(fixed_path)
         original_path = f"{base_name}-original{ext}"
+        print(original_path)
         if os.path.exists(fixed_path):
             if os.path.exists(original_path):
                 # Jos kohdekohde on jo olemassa, poista se ensin
