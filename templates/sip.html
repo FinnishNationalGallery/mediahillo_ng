@@ -53,6 +53,8 @@
                 <span class="material-symbols-outlined">file_open</span>
                 <a href="{{SIP_path}}{{file}}">{{file}}</a> </br>
                 {% endfor %}
+                </div>
+            </div>
 
                 <!-- div containing the popup -->
                 <div class="popupcontent">
@@ -63,8 +65,6 @@
                     </p>
                 </div>
 
-                </div>
-            </div>
         </div>
     </div>
     <div class="column">
@@ -73,21 +73,21 @@
         </div>
         <div class="box">
             &larr;
-            <a href="{{url_for('sip.sip_from_files')}}"><button class="button is-success" onclick="togglePopup()">CREATE</button></a>
+            <a href="{{url_for('sip.sip_from_files')}}"><button class="button is-success" id="hide1" onclick="togglePopup()">CREATE</button></a>
             SIP tar package from FILES in DATA-Folder  
             <hr>
             &larr;
-            <a href="{{url_for('sip.sip_from_files')}}"><button class="button is-success" onclick="togglePopup()">CREATE</button></a>
+            <a href="{{url_for('sip.sip_from_files')}}"><button class="button is-success" id="hide2" onclick="togglePopup()">CREATE</button></a>
             <strong>UPDATE</strong> SIP tar package from FILES in DATA-Folder 
             <hr>
         </div>
         <div class="box">
             &larr;
-            <a href="{{url_for('sip.sip_from_directory')}}"><button class="button is-success" onclick="togglePopup()">CREATE</button></a>
+            <a href="{{url_for('sip.sip_from_directory')}}"><button class="button is-success" id="hide3" onclick="togglePopup()">CREATE</button></a>
             SIP tar package from DIRECTORY in DATA-Folder
             <hr>
             &larr;
-            <a href="{{url_for('sip.sip_from_directory')}}"><button class="button is-success" onclick="togglePopup()">CREATE</button></a>
+            <a href="{{url_for('sip.sip_from_directory')}}"><button class="button is-success" id="hide4" onclick="togglePopup()">CREATE</button></a>
             <strong>UPDATE</strong> SIP tar package from DIRECTORY in DATA-Folder   
         </div>
         <div class="box">
