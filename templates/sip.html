@@ -53,6 +53,16 @@
                 <span class="material-symbols-outlined">file_open</span>
                 <a href="{{SIP_path}}{{file}}">{{file}}</a> </br>
                 {% endfor %}
+
+                <!-- div containing the popup -->
+                <div class="popupcontent">
+                    <h3>Wait!</h3>
+
+                    <p>
+                        Processing selected operation. Wait until it is finished.
+                    </p>
+                </div>
+
                 </div>
             </div>
         </div>
@@ -63,7 +73,7 @@
         </div>
         <div class="box">
             &larr;
-            <a href="{{url_for('sip.sip_from_files')}}"><button class="button is-success" id="hide1" onclick="togglePopup()">CREATE</button></a>
+            <a href="{{url_for('sip.sip_from_files')}}"><button class="button is-success" onclick="togglePopup()">CREATE</button></a>
             SIP tar package from FILES in DATA-Folder  
             <hr>
             &larr;
