@@ -175,8 +175,8 @@ def read_all_files_mkv(DATA_path):
                   source_filename, outcome_filename = outcome_map[item]
                   print(f"Löytyi vastaavuus: Source: {source_filename} | Outcome: {outcome_filename}")
                   source_file = File(
-                     path=DATANATIVE_path+source_filename,
-                     digital_object_path=DATANATIVE_path+source_filename
+                     path="static/DATANATIVE/"+source_filename,
+                     digital_object_path="DATANATIVE/"+source_filename
                   )
                   file_obj_source = make_datanative_premis(source_file, file_obj)
                   files.append(file_obj_source)
