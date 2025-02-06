@@ -304,6 +304,15 @@ def fix_image_exiftool():
             text=True, 
             check=True
         ) 
+        # Change original filename using subprocess
+        fixed_path = f"{base_name}{ext}_original"
+        original_path = f"{base_name}{ext}"
+        result = subprocess.run(
+            ['mv',fixed_path,original_path], 
+            capture_output=True, 
+            text=True, 
+            check=True
+        ) 
         # Flash success message
         message = Markup(f"Image fixed: {filename} -> {output_filename}")
         flash(message, 'success')
