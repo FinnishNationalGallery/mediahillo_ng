@@ -295,8 +295,6 @@ def fix_image_exiftool():
         ) 
         # exiftool -overwrite_original -all= -tagsfromfile @ -all:all UUSI.tif
 
-        logfile_validation(filename + " exiftool -> "+ result.stdout + result.stderr + "\n")
-
         # Change filename using subprocess
         result = subprocess.run(
             ['mv',input_path,output_path], 
@@ -304,6 +302,9 @@ def fix_image_exiftool():
             text=True, 
             check=True
         ) 
+
+        logfile_validation(filename + " exiftool -> "+ result.stdout + result.stderr + "\n")
+
         # Change original filename using subprocess
         fixed_path = f"{base_name}{ext}_original"
         original_path = f"{base_name}{ext}"
