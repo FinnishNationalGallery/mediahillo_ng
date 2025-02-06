@@ -169,6 +169,9 @@ def read_all_files_mkv(DATA_path):
                except Exception as e:
                   pass
 
+               source_outcome_map = read_datanative_linkfile()
+               if item in source_outcome_map:
+                  print(f"Löytyi vastaavuus: {item} -> {source_outcome_map[item]}")
                if item ==  "Telefunken_FFV1_FLAC.mkv":
                   source_file = File(
                      path="static/DATANATIVE/Telefunken.mov",
@@ -216,6 +219,27 @@ def make_datanative_premis(source_file, outcome_file):
    source_file.add_metadata([event])
    outcome_file.add_metadata([event])
    return source_file
+
+def read_datanative_linkfile():
+    source_outcome_map = {}
+    with open(SIPLOG_path+"datanative.txt", "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue  # Pass emty lines
+
+            parts = line.split('>')
+            if len(parts) != 2:
+                continue  # Check structure
+            
+            source_part = parts[0].strip()  # "Source:Telefunken.mov"
+            outcome_part = parts[1].strip() # "Outcome:Telefunken_FFV1_FLAC.mkv"
+            source_filename = source_part.replace("Source:", "").strip()
+            outcome_filename = outcome_part.replace("Outcome:", "").strip()
+
+            source_outcome_map[source_filename] = outcome_filename
+
+    return source_outcome_map
 
 #######################
 ### SIP FROM FILES
