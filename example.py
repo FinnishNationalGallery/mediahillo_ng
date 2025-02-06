@@ -31,7 +31,7 @@ mets = METS(
 
 # Create files each containing a digital object which contains the sip path.
 file1 = File(
-    path="static/DATA-FFV1-FLAC.mkv",
+    path="static/DATA/FFV1-FLAC.mkv",
     digital_object_path="DATA/Testivideo-FFV1-FLAC.mkv"
 )
 file2 = File(
