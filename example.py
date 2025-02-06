@@ -59,6 +59,7 @@ file1.add_metadata([provenance_md])
 file2.add_metadata([provenance_md, descriptive_md])
 file3.add_metadata([descriptive_md])
 
+'''''''''
 # Make a custom structural map div using the digital objects in files
 root_div = StructuralMapDiv(
     "custom_div",
@@ -75,7 +76,7 @@ structural_map = StructuralMap(root_div=root_div)
 # Add the custom structural map to METS and generate file references
 mets.add_structural_maps([structural_map])
 mets.generate_file_references()
-
+'''''''''
 # Make a SIP using the previously created file and METS. In addition to the
 # manually structural map a default custom map is generated based on the
 # directory structure.
