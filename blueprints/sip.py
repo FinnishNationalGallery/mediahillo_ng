@@ -21,6 +21,7 @@ sip_bp = Blueprint('sip', __name__)
 config = dotenv_values(".env")
 SIGNATURE = config['SIGNATURE']
 DATA_path = config['DATA_FOLDER']
+DATANATIVE_path = config['DATANATIVE_FOLDER']
 SIP_path = config['SIP_FOLDER']
 SIPLOG_path = config['SIPLOG_FOLDER']
 ORGANIZATION = config['ORGANIZATION']
@@ -173,11 +174,9 @@ def read_all_files_mkv(DATA_path):
                if item in outcome_map:
                   source_filename, outcome_filename = outcome_map[item]
                   print(f"Löytyi vastaavuus: Source: {source_filename} | Outcome: {outcome_filename}")
-
-               if item ==  "Telefunken_FFV1_FLAC.mkv":
                   source_file = File(
-                     path="static/DATANATIVE/Telefunken.mov",
-                     digital_object_path="DATANATIVE/Telefunken.mov"
+                     path=DATANATIVE_path+source_filename,
+                     digital_object_path=DATANATIVE_path+source_filename
                   )
                   file_obj_source = make_datanative_premis(source_file, file_obj)
                   files.append(file_obj_source)
