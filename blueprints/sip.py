@@ -224,7 +224,7 @@ def make_datanative_premis(source_file, outcome_file):
 
 def read_datanative_linkfile():
     outcome_map = {}
-    with open("datanative.txt", "r", encoding="utf-8") as f:
+    with open(SIPLOG_path+"datanative.txt", "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if not line:
