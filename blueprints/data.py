@@ -211,7 +211,7 @@ def mediainfo_data():
     mediainfo_output = "MEDIAINFO -> " + fullfilename + "\n\n" + result.stdout
     
     # Kirjoitetaan tuloste tiedostoon filename-mediainfo.txt
-    output_file = f"{filename}.{extension}.txt"
+    output_file = f"{filename}.{extension}-INFO.txt"
     with open(os.path.join(DATA_path, output_file), "w", encoding="utf-8") as f:
         f.write(mediainfo_output)
     
@@ -287,7 +287,8 @@ def fix_image_exiftool():
         
         # Run Exiftool conversion using subprocess
         result = subprocess.run(
-            ['exiftool','-overwrite_original','-TagsFromFile','@','-all:all',input_path], 
+            #['exiftool','-overwrite_original','-TagsFromFile','@','-all:all',input_path], 
+            ['exiftool','-TagsFromFile','@','-all:all',input_path], 
             capture_output=True, 
             text=True, 
             check=True
@@ -350,12 +351,12 @@ def fix_pdf_ghostscript():
         logfile_validation(filename + " chostscript -> "+ result.stdout + result.stderr + "\n")
 
         # remove original using subprocess
-        result = subprocess.run(
-            ['rm',input_path], 
-            capture_output=True, 
-            text=True, 
-            check=True
-        ) 
+        #result = subprocess.run(
+        #    ['rm',input_path], 
+        #    capture_output=True, 
+        #    text=True, 
+        #    check=True
+        #) 
 
         # Flash success message
         message = Markup(f"Image fixed: {filename} -> {output_filename}")
