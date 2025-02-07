@@ -66,15 +66,14 @@ source_file = File(
     path="static/DATANATIVE/Jussila_Yojuna_ProRes_PCMx2.mov",
     digital_object_path="DATANATIVE/Jussila_Yojuna_ProRes_PCMx2.mov"
 )
-
+source_file.generate_technical_metadata()
 outcome_file = File(
     path="static/DATA/Jussila_Yojuna_FFV1_FLACx2.mkv",
     digital_object_path="DATA/Jussila_Yojuna_FFV1_FLACx2.mkv"
 )
-
-source_file.digital_object.use = "fi-dpres-no-file-format-validation"
-source_file.generate_technical_metadata()
 outcome_file.generate_technical_metadata()
+source_file.digital_object.use = "fi-dpres-no-file-format-validation"
+
 
 #event = mets_builder.metadata.DigitalProvenanceEventMetadata(
 event = DigitalProvenanceEventMetadata(
