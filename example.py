@@ -60,17 +60,22 @@ file2.add_metadata([provenance_md, descriptive_md])
 file3.add_metadata([descriptive_md])
 
 ###################################
+Try to link Apple ProRes video to sip
+###################################
 source_file = File(
     path="static/DATANATIVE/Jussila_Yojuna_ProRes_PCMx2.mov",
     digital_object_path="DATANATIVE/Jussila_Yojuna_ProRes_PCMx2.mov"
 )
-source_file.generate_technical_metadata()
+
 outcome_file = File(
     path="static/DATA/Jussila_Yojuna_FFV1_FLACx2.mkv",
     digital_object_path="DATA/Jussila_Yojuna_FFV1_FLACx2.mkv"
 )
-outcome_file.generate_technical_metadata()
+
 source_file.digital_object.use = "fi-dpres-no-file-format-validation"
+source_file.generate_technical_metadata()
+outcome_file.generate_technical_metadata()
+
 event = mets_builder.metadata.DigitalProvenanceEventMetadata(
     event_type = "migration",
     detail = "Normalization of digital object.",
@@ -100,6 +105,7 @@ event.link_object_metadata(
 )
 source_file.add_metadata([event])
 outcome_file.add_metadata([event])
+###################################
 
 '''''''''
 # Make a custom structural map div using the digital objects in files
