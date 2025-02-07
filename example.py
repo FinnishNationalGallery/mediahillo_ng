@@ -76,7 +76,8 @@ source_file.digital_object.use = "fi-dpres-no-file-format-validation"
 source_file.generate_technical_metadata()
 outcome_file.generate_technical_metadata()
 
-event = mets_builder.metadata.DigitalProvenanceEventMetadata(
+#event = mets_builder.metadata.DigitalProvenanceEventMetadata(
+event = DigitalProvenanceEventMetadata(
     event_type = "migration",
     detail = "Normalization of digital object.",
     outcome = "success",
