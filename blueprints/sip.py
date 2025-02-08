@@ -45,16 +45,41 @@ def sip():
    ###
    return render_template('sip.html', files=files, diskinfo=diskinfo, output=output, outerr=outerr, SIP_path=SIP_path)
 
+#######################
+### SIP FROM DIRECTORY
+#######################
 @sip_bp.route('/sip_from_directory')
 @login_required
 def sip_from_directory():
-   # Luodaan METS-olio dpres-mets-builderin avulla
-   mets = METS(
-      mets_profile=MetsProfile.CULTURAL_HERITAGE,
-      contract_id=CONTRACTID,
-      creator_name=ORGANIZATION,
-      creator_type="ORGANIZATION"
-   )
+   update = request.args.get('update') 
+   ###
+   file = open("settings.json", "r")
+   content = file.read()
+   settings = json.loads(content)
+   file.close()
+   mets_createdate = settings['mets_createdate']
+   try:
+      # Luodaan METS-olio dpres-mets-builderin avulla
+      if update == "Yes":
+         date_obj = datetime.datetime.fromisoformat(mets_createdate)
+         mets = METS(
+            mets_profile=MetsProfile.CULTURAL_HERITAGE,
+            contract_id=CONTRACTID,
+            creator_name=ORGANIZATION,
+            creator_type="ORGANIZATION",
+            create_date= date_obj,
+            last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))),
+            record_status="update"
+         )
+      else:
+         mets = METS(
+            mets_profile=MetsProfile.CULTURAL_HERITAGE,
+            contract_id=CONTRACTID,
+            creator_name=ORGANIZATION,
+            creator_type="ORGANIZATION"
+         )
+   except Exception as e:
+      flash(f"Error creating METS! : {str(e)}", "error")
    try:
       # Generoidaan SIP hakemiston pohjalta
       sip = SIP.from_directory(
