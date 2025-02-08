@@ -105,7 +105,7 @@ def sip_from_directory():
          output_filepath="static/SIP/example-automated-sip.tar",
          sign_key_filepath="signature/sip_sign_pas.pem"
       )
-      # Onnistunut finalize
+      sip.mets.write(SIP_path+"mets.xml")
       flash("SIP created from directory!", "success")
       return redirect(url_for('sip.sip'))
    except Exception as e:
