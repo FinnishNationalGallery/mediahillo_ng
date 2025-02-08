@@ -260,22 +260,35 @@ def read_datanative_linkfile():
 @sip_bp.route('/sip_from_files')
 @login_required
 def sip_from_files():
+   update = request.args.get('update') 
    ###
    file = open("settings.json", "r")
    content = file.read()
    settings = json.loads(content)
    file.close()
    mets_createdate = settings['mets_createdate']
-   #date_obj = datetime.datetime.fromisoformat(mets_createdate)
+   
    # Luodaan METS-olio dpres-mets-builderin avulla
-   mets = METS(
-      mets_profile=MetsProfile.CULTURAL_HERITAGE,
-      contract_id=CONTRACTID,
-      creator_name=ORGANIZATION,
-      creator_type="ORGANIZATION",
-      #create_date= date_obj,
-      #last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3)))
-   )
+   if update == "Yes":
+      date_obj = datetime.datetime.fromisoformat(mets_createdate)
+      mets = METS(
+         mets_profile=MetsProfile.CULTURAL_HERITAGE,
+         contract_id=CONTRACTID,
+         creator_name=ORGANIZATION,
+         creator_type="ORGANIZATION",
+         #create_date= date_obj,
+         #last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3)))
+      )
+   else:
+      mets = METS(
+         mets_profile=MetsProfile.CULTURAL_HERITAGE,
+         contract_id=CONTRACTID,
+         creator_name=ORGANIZATION,
+         creator_type="ORGANIZATION",
+         create_date= date_obj,
+         last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))),
+         record_status="update"
+      )
    try:
       files = read_all_files_mkv(DATA_path)
       sip = SIP.from_files(mets=mets, files=files)
