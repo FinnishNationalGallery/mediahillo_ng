@@ -276,18 +276,16 @@ def sip_from_files():
          contract_id=CONTRACTID,
          creator_name=ORGANIZATION,
          creator_type="ORGANIZATION",
-         #create_date= date_obj,
-         #last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3)))
+         create_date= date_obj,
+         last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))),
+         record_status="update"
       )
    else:
       mets = METS(
          mets_profile=MetsProfile.CULTURAL_HERITAGE,
          contract_id=CONTRACTID,
          creator_name=ORGANIZATION,
-         creator_type="ORGANIZATION",
-         create_date= date_obj,
-         last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))),
-         record_status="update"
+         creator_type="ORGANIZATION"
       )
    try:
       files = read_all_files_mkv(DATA_path)
