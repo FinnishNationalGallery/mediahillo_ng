@@ -267,26 +267,28 @@ def sip_from_files():
    settings = json.loads(content)
    file.close()
    mets_createdate = settings['mets_createdate']
-   
-   # Luodaan METS-olio dpres-mets-builderin avulla
-   if update == "Yes":
-      date_obj = datetime.datetime.fromisoformat(mets_createdate)
-      mets = METS(
-         mets_profile=MetsProfile.CULTURAL_HERITAGE,
-         contract_id=CONTRACTID,
-         creator_name=ORGANIZATION,
-         creator_type="ORGANIZATION",
-         create_date= date_obj,
-         last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))),
-         record_status="update"
-      )
-   else:
-      mets = METS(
-         mets_profile=MetsProfile.CULTURAL_HERITAGE,
-         contract_id=CONTRACTID,
-         creator_name=ORGANIZATION,
-         creator_type="ORGANIZATION"
-      )
+   try:
+      # Luodaan METS-olio dpres-mets-builderin avulla
+      if update == "Yes":
+         date_obj = datetime.datetime.fromisoformat(mets_createdate)
+         mets = METS(
+            mets_profile=MetsProfile.CULTURAL_HERITAGE,
+            contract_id=CONTRACTID,
+            creator_name=ORGANIZATION,
+            creator_type="ORGANIZATION",
+            create_date= date_obj,
+            last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))),
+            record_status="update"
+         )
+      else:
+         mets = METS(
+            mets_profile=MetsProfile.CULTURAL_HERITAGE,
+            contract_id=CONTRACTID,
+            creator_name=ORGANIZATION,
+            creator_type="ORGANIZATION"
+         )
+   except Exception as e:
+      flash(f"Error creating METS! : {str(e)}", "error")
    try:
       files = read_all_files_mkv(DATA_path)
       sip = SIP.from_files(mets=mets, files=files)
