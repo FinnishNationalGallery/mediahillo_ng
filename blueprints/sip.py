@@ -47,6 +47,15 @@ def sip():
    ###
    return render_template('sip.html', files=files, diskinfo=diskinfo, output=output, outerr=outerr, SIP_path=SIP_path)
 
+
+def sip_name_detect():
+   lido_inv, lido_id, lido_name, lido_created = mp_metadata.read_mets_lido_xml()
+   if lido_id > "":
+      sip_filename = lido_id + '.tar'
+   else:
+      sip_filename = str(uuid.uuid1()) + '.tar'
+   return sip_filename
+
 #######################
 ### SIP FROM DIRECTORY
 #######################
@@ -102,9 +111,9 @@ def sip_from_directory():
 
       # Tallennetaan SIP Flask-sovelluksen configiin
       # current_app.config["dpres_sip"] = sip
-
+      tar_name = sip_name_detect()
       sip.finalize(
-         output_filepath="static/SIP/example-automated-sip.tar",
+         output_filepath="static/SIP/"+tar_name,
          sign_key_filepath="signature/sip_sign_pas.pem"
       )
       sip.mets.write(SIP_path+"mets.xml")
