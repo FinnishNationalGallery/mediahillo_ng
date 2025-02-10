@@ -399,7 +399,7 @@ def sip_tar_tree():
     
     if not tar_files:
         print("Hakemistosta '{}' ei löytynyt .tar-tiedostoja.".format(directory_path))
-        return
+        return redirect(url_for('sip.sip'))
     else:
       tar_files.sort()
       tar_filename = tar_files[0]
