@@ -44,6 +44,11 @@ def sip():
    except:
       outerr = ""
    files = sorted(os.listdir(SIP_path))
+   data = mp_metadata.read_lido_xml()
+   session['mp_inv'] = data.get("mp_inv", "No value")
+   session['mp_id'] = data.get("mp_id", "No value")
+   session['mp_name'] = data.get("mp_name", "No value")
+   session['mp_created'] = data.get("mp_created", "No value")
    ###
    return render_template('sip.html', files=files, diskinfo=diskinfo, output=output, outerr=outerr, SIP_path=SIP_path)
 
