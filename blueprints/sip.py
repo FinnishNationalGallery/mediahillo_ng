@@ -347,8 +347,9 @@ def sip_from_files():
          outcome_detail="Another detail",
       )
       sip.add_metadata([provenance_md])
+      tar_name = sip_name_detect()
       sip.finalize(
-         output_filepath="static/SIP/example-automated-sip.tar",
+         output_filepath="static/SIP/"+tar_name,
          sign_key_filepath="signature/sip_sign_pas.pem"
       )
       sip.mets.write(SIP_path+"mets.xml")
