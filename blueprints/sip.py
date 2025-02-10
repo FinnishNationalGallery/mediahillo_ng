@@ -52,10 +52,11 @@ def sip_name_detect():
    data = mp_metadata.read_lido_xml()
    lido_id = data.get("mp_id", "No value")
    if lido_id == "No value":
-      sip_filename = lido_id + '.tar'
-   else:
       sip_filename = str(uuid.uuid1()) + '.tar'
       flash("Error reading TAR package name!", "error")
+      sip_filename = lido_id + '.tar'
+   else:
+      sip_filename = lido_id + '.tar'
    return sip_filename
 
 #######################
