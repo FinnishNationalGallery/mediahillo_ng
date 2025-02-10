@@ -78,6 +78,7 @@ def data_premis_event_ffmpeg_ffv1(): # Matroska video FFMPEG normalization event
 @login_required
 def data_premis_event_frame_md():
     files = os.listdir(DATA_path)
+    md5_flag = False
     for file in files:
         filesplit = file.split('.')
         extension = filesplit[-1].lower()
@@ -94,11 +95,13 @@ def data_premis_event_frame_md():
                 logfile_outerror(out.stderr)
             CreateDate = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat()
             output_file = f"{file}.FrameMD5.txt"
+            md5_flag = True
             with open(os.path.join(DATA_path, output_file), "w", encoding="utf-8") as f:
                 f.write(f"ffmpeg -loglevel error -i {file} -map 0:v -f md5 -\n")
                 f.write(session['message_md5'])
-        else:
-            flash("No Matroska .mkv files detected!", 'error')
+    if md5_flag == True:
+        flash("No Matroska .mkv files detected!", 'error')
+        md5_flag = False
     return redirect(url_for('data.data'))
 
 #######################
