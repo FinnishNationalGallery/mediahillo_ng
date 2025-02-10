@@ -363,10 +363,6 @@ def sip_premis_event_created():
 ### MAKE DIRECTORY TREE FROM TAR
 #######################
 def build_tree(tar):
-    """
-    Rakentaa sanakirjapohjaisen puumaisen rakenteen tar-tiedoston sisällöstä.
-    Hakemistot ovat sanakirjoja ja tiedostot merkitty arvolla None.
-    """
     tree = {}
     for member in tar.getmembers():
         parts = member.name.strip("/").split("/")
@@ -380,10 +376,6 @@ def build_tree(tar):
     return tree
 
 def write_tree(tree, file, indent=0):
-    """
-    Kirjoittaa puumaisen rakenteen tiedostoon hierarkkisena listauksena.
-    Hakemistot merkitään plus-merkillä ja tiedostot miinus-merkillä.
-    """
     for name in sorted(tree.keys()):
         if tree[name] is None:
             file.write(" " * indent + "- " + name + "\n")
@@ -398,23 +390,20 @@ def sip_tar_tree():
     tar_files = glob.glob(os.path.join(directory_path, "*.tar"))
     
     if not tar_files:
-        print("Hakemistosta '{}' ei löytynyt .tar-tiedostoja.".format(directory_path))
+        flash("Folder '{}' does not have .tar files".format(directory_path), "error")
         return redirect(url_for('sip.sip'))
     else:
       tar_files.sort()
-      tar_filename = tar_files[0]
-      print("Käytetään tiedostoa:", tar_filename)
+      tar_filename = tar_files[0]      
       try:
          with tarfile.open(tar_filename, "r") as tar:
                tree = build_tree(tar)
       except Exception as e:
-         print("Virhe avattaessa tar-tiedostoa:", e)
-         return
+         flash(f"Error opening tar-file: {str(e)}", "error")
+         return redirect(url_for('sip.sip'))
     
-    # Kirjoitetaan hakemistorakenne output.txt-tiedostoon
     with open(SIPLOG_path+"output.txt", "w", encoding="utf-8") as f:
         write_tree(tree, f)
-    print("Hakemistorakenne on tallennettu tiedostoon output.txt")
     return redirect(url_for('sip.sip'))
 
 
