@@ -394,26 +394,22 @@ def write_tree(tree, file, indent=0):
 @sip_bp.route("/sip_tar_tree")
 @login_required
 def sip_tar_tree():
-    # Määritä hakemisto, josta .tar-tiedosto etsitään (muokkaa tarvittaessa)
-    directory_path = SIP_path  # Vaihda tähän käytettävän hakemiston polku
-    # Haetaan hakemistosta kaikki .tar-päätteiset tiedostot
+    directory_path = SIP_path
     tar_files = glob.glob(os.path.join(directory_path, "*.tar"))
     
     if not tar_files:
         print("Hakemistosta '{}' ei löytynyt .tar-tiedostoja.".format(directory_path))
         return
-    
-    # Lajitellaan tiedostot aakkosjärjestykseen ja valitaan ensimmäinen
-    tar_files.sort()
-    tar_filename = tar_files[0]
-    print("Käytetään tiedostoa:", tar_filename)
-    
-    try:
-        with tarfile.open(tar_filename, "r") as tar:
-            tree = build_tree(tar)
-    except Exception as e:
-        print("Virhe avattaessa tar-tiedostoa:", e)
-        return
+    else:
+      tar_files.sort()
+      tar_filename = tar_files[0]
+      print("Käytetään tiedostoa:", tar_filename)
+      try:
+         with tarfile.open(tar_filename, "r") as tar:
+               tree = build_tree(tar)
+      except Exception as e:
+         print("Virhe avattaessa tar-tiedostoa:", e)
+         return
     
     # Kirjoitetaan hakemistorakenne output.txt-tiedostoon
     with open(SIPLOG_path+"output.txt", "w", encoding="utf-8") as f:
