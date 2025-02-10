@@ -395,7 +395,7 @@ def write_tree(tree, file, indent=0):
 @login_required
 def sip_tar_tree():
     # Määritä hakemisto, josta .tar-tiedosto etsitään (muokkaa tarvittaessa)
-    directory_path = SIPLOG_path  # Vaihda tähän käytettävän hakemiston polku
+    directory_path = SIP_path  # Vaihda tähän käytettävän hakemiston polku
     # Haetaan hakemistosta kaikki .tar-päätteiset tiedostot
     tar_files = glob.glob(os.path.join(directory_path, "*.tar"))
     
@@ -416,7 +416,7 @@ def sip_tar_tree():
         return
     
     # Kirjoitetaan hakemistorakenne output.txt-tiedostoon
-    with open("output.txt", "w", encoding="utf-8") as f:
+    with open(SIPLOG_path+"output.txt", "w", encoding="utf-8") as f:
         write_tree(tree, f)
     print("Hakemistorakenne on tallennettu tiedostoon output.txt")
     return redirect(url_for('sip.sip'))
