@@ -419,6 +419,8 @@ def sip_tar_tree():
     with open("output.txt", "w", encoding="utf-8") as f:
         write_tree(tree, f)
     print("Hakemistorakenne on tallennettu tiedostoon output.txt")
+    return redirect(url_for('sip.sip'))
+
 
 #######################
 ### DELETE FUNCTIONS
