@@ -77,27 +77,29 @@ def data_premis_event_ffmpeg_ffv1(): # Matroska video FFMPEG normalization event
 @data_bp.route('/data_premis_event_frame_md') # Calculate video frame checksum
 @login_required
 def data_premis_event_frame_md():
-   files = os.listdir(DATA_path)
-   for file in files:
-      filesplit = file.split('.')
-      extension = filesplit[-1].lower()
-      filepath = DATA_path + file
-      if extension in ['mkv']: # Only for Matroska .mkv files!
-         try: # Get MD5 video frame checksum from file
-            cmd = 'ffmpeg -loglevel error -i ' + filepath + ' -map 0:v -f md5 -'
-            out = subprocess.run(cmd, shell=True, executable='/bin/bash',stdout=PIPE, stderr=PIPE, universal_newlines=True)
-            #logfile_output(cmd+"\n")
-            #logfile_output(out.stdout+"\n")
-            #logfile_outerror(out.stderr)
-            session['message_md5'] = out.stdout
-         except:
-            logfile_outerror(out.stderr)
-         CreateDate = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat()
-         output_file = f"{file}.FrameMD5.txt"
-         with open(os.path.join(DATA_path, output_file), "w", encoding="utf-8") as f:
-            f.write(f"ffmpeg -loglevel error -i {file} -map 0:v -f md5 -\n")
-            f.write(session['message_md5'])
-   return redirect(url_for('data.data'))
+    files = os.listdir(DATA_path)
+    for file in files:
+        filesplit = file.split('.')
+        extension = filesplit[-1].lower()
+        filepath = DATA_path + file
+        if extension in ['mkv']: # Only for Matroska .mkv files!
+            try: # Get MD5 video frame checksum from file
+                cmd = 'ffmpeg -loglevel error -i ' + filepath + ' -map 0:v -f md5 -'
+                out = subprocess.run(cmd, shell=True, executable='/bin/bash',stdout=PIPE, stderr=PIPE, universal_newlines=True)
+                #logfile_output(cmd+"\n")
+                #logfile_output(out.stdout+"\n")
+                #logfile_outerror(out.stderr)
+                session['message_md5'] = out.stdout
+            except:
+                logfile_outerror(out.stderr)
+            CreateDate = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat()
+            output_file = f"{file}.FrameMD5.txt"
+            with open(os.path.join(DATA_path, output_file), "w", encoding="utf-8") as f:
+                f.write(f"ffmpeg -loglevel error -i {file} -map 0:v -f md5 -\n")
+                f.write(session['message_md5'])
+        else:
+            flash("No Matroska .mkv files detected!", 'error')
+    return redirect(url_for('data.data'))
 
 #######################
 ### FILE VALIDATION ###
