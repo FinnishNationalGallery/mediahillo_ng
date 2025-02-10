@@ -50,6 +50,10 @@ def sip():
 
 def sip_name_detect():
    lido_inv, lido_id, lido_name, lido_created = mp_metadata.read_mets_lido_xml()
+   print(lido_inv)
+   print(lido_id)
+   print(lido_name)
+   print(lido_created)
    if lido_id > "":
       sip_filename = lido_id + '.tar'
    else:
