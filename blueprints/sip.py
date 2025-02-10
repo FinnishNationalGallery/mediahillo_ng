@@ -3,6 +3,8 @@ import os
 import shutil
 import datetime
 import uuid
+import tarfile
+import glob
 from dateutil import parser
 from flask import Blueprint, current_app, render_template, request, url_for, flash, redirect, send_file, session, jsonify
 from flask_login import login_required, current_user
@@ -356,6 +358,67 @@ def sip_premis_event_created():
    if redir == 'once':
       return redirect(url_for('sip.sip'))
    return True
+
+#######################
+### MAKE DIRECTORY TREE FROM TAR
+#######################
+def build_tree(tar):
+    """
+    Rakentaa sanakirjapohjaisen puumaisen rakenteen tar-tiedoston sisällöstä.
+    Hakemistot ovat sanakirjoja ja tiedostot merkitty arvolla None.
+    """
+    tree = {}
+    for member in tar.getmembers():
+        parts = member.name.strip("/").split("/")
+        node = tree
+        for part in parts[:-1]:
+            node = node.setdefault(part, {})
+        if member.isdir():
+            node.setdefault(parts[-1], {})
+        else:
+            node[parts[-1]] = None
+    return tree
+
+def write_tree(tree, file, indent=0):
+    """
+    Kirjoittaa puumaisen rakenteen tiedostoon hierarkkisena listauksena.
+    Hakemistot merkitään plus-merkillä ja tiedostot miinus-merkillä.
+    """
+    for name in sorted(tree.keys()):
+        if tree[name] is None:
+            file.write(" " * indent + "- " + name + "\n")
+        else:
+            file.write(" " * indent + "+ " + name + "\n")
+            write_tree(tree[name], file, indent + 4)
+
+@sip_bp.route("/sip_tar_tree")
+@login_required
+def sip_tar_tree():
+    # Määritä hakemisto, josta .tar-tiedosto etsitään (muokkaa tarvittaessa)
+    directory_path = SIPLOG_path  # Vaihda tähän käytettävän hakemiston polku
+    # Haetaan hakemistosta kaikki .tar-päätteiset tiedostot
+    tar_files = glob.glob(os.path.join(directory_path, "*.tar"))
+    
+    if not tar_files:
+        print("Hakemistosta '{}' ei löytynyt .tar-tiedostoja.".format(directory_path))
+        return
+    
+    # Lajitellaan tiedostot aakkosjärjestykseen ja valitaan ensimmäinen
+    tar_files.sort()
+    tar_filename = tar_files[0]
+    print("Käytetään tiedostoa:", tar_filename)
+    
+    try:
+        with tarfile.open(tar_filename, "r") as tar:
+            tree = build_tree(tar)
+    except Exception as e:
+        print("Virhe avattaessa tar-tiedostoa:", e)
+        return
+    
+    # Kirjoitetaan hakemistorakenne output.txt-tiedostoon
+    with open("output.txt", "w", encoding="utf-8") as f:
+        write_tree(tree, f)
+    print("Hakemistorakenne on tallennettu tiedostoon output.txt")
 
 #######################
 ### DELETE FUNCTIONS
