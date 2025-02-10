@@ -23,6 +23,11 @@ SERVER_ffmpeg = config['SERVER_FFMPEG']
 @login_required
 def metadata():
    files = sorted(os.listdir(METADATA_path))
+   data = mp_metadata.read_lido_xml()
+   session['mp_inv'] = data.get("mp_inv", "No value")
+   session['mp_id'] = data.get("mp_id", "No value")
+   session['mp_name'] = data.get("mp_name", "No value")
+   session['mp_created'] = data.get("mp_created", "No value")
    return render_template('metadata.html', files=files, environment=mp_metadata.MP_ENV, METADATA_path=METADATA_path)
 
 @metadata_bp.route("/metadata_get")
