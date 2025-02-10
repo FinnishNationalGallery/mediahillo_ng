@@ -99,9 +99,8 @@ def data_premis_event_frame_md():
             with open(os.path.join(DATA_path, output_file), "w", encoding="utf-8") as f:
                 f.write(f"ffmpeg -loglevel error -i {file} -map 0:v -f md5 -\n")
                 f.write(session['message_md5'])
-    if md5_flag == True:
+    if md5_flag == False:
         flash("No Matroska .mkv files detected!", 'error')
-        md5_flag = False
     return redirect(url_for('data.data'))
 
 #######################
