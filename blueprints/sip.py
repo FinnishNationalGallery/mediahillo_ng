@@ -81,7 +81,8 @@ def sip_from_directory():
       if update == "Yes":
          try:
             mets_createdate = settings['mets_createdate']
-            date_obj = datetime.datetime.fromisoformat(mets_createdate)
+            #date_obj = datetime.datetime.fromisoformat(mets_createdate)
+            date_obj = parser.isoparse(mets_createdate)
          except Exception as e:
             flash(f"Error creating METS! : Invalid original Createdate in Settings! : {str(e)}", "error")
             return redirect(url_for('sip.sip'))
@@ -319,7 +320,8 @@ def sip_from_files():
       if update == "Yes":
          try:
             mets_createdate = settings['mets_createdate']
-            date_obj = datetime.datetime.fromisoformat(mets_createdate)
+            #date_obj = datetime.datetime.fromisoformat(mets_createdate)
+            date_obj = parser.isoparse(mets_createdate)
          except Exception as e:
             flash(f"Error creating METS! : Invalid original Createdate in Settings! : {str(e)}", "error")
             return redirect(url_for('sip.sip'))
