@@ -89,6 +89,9 @@ def read_lido_xml():
                 # 10) recordID (MuseumPlusObjectId) = "624177"
                 record_id_elem = root.find('.//lido:recordWrap/lido:recordID[@lido:type="MuseumPlusObjectId"]', NS)
                 record_id = record_id_elem.text if record_id_elem is not None else None
+                if record_id == None:
+                    record_id_elem = root.find('.//lido:recordWrap/lido:recordID[@lido:type="ObjectId"]', NS)
+                    record_id = record_id_elem.text if record_id_elem is not None else None    
 
                 # 11) recordType ("objekti")
                 record_type_elem = root.find('.//lido:recordWrap/lido:recordType/lido:term', NS)
