@@ -311,14 +311,14 @@ def sip_from_files():
    settings = json.loads(content)
    file.close()
    try:
-      mets_createdate = settings['mets_createdate']
-      date_obj = datetime.datetime.fromisoformat(mets_createdate)
-   except Exception as e:
-      flash(f"Error creating METS! : Invalid original Createdate in Settings! : {str(e)}", "error")
-      return redirect(url_for('sip.sip'))
-   try:
       # Luodaan METS-olio dpres-mets-builderin avulla
       if update == "Yes":
+         try:
+            mets_createdate = settings['mets_createdate']
+            date_obj = datetime.datetime.fromisoformat(mets_createdate)
+         except Exception as e:
+            flash(f"Error creating METS! : Invalid original Createdate in Settings! : {str(e)}", "error")
+            return redirect(url_for('sip.sip'))
          mets = METS(
             mets_profile=MetsProfile.CULTURAL_HERITAGE,
             contract_id=CONTRACTID,
