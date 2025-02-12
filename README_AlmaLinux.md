@@ -28,6 +28,7 @@ dnf install --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-re
 dnf install python3-dpres-siptools-ng
 dnf install python3-dpres-mets-builder
 dnf install python3-file-scraper-full 
+dnf update ImageMagick
 ```
 **INSTALL EXTRA TOOLS**
 ```
