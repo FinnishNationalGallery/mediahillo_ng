@@ -102,7 +102,9 @@ def sip_from_directory():
             mets_profile=MetsProfile.CULTURAL_HERITAGE,
             contract_id=CONTRACTID,
             creator_name=ORGANIZATION,
-            creator_type="ORGANIZATION"
+            creator_type="ORGANIZATION",
+            package_id=session['mp_inv'],
+            content_id=session['mp_inv']
          )
    except Exception as e:
       flash(f"Error creating METS! : {str(e)}", "error")
@@ -278,32 +280,36 @@ def make_datanative_premis(source_file, outcome_file):
    return source_file, outcome_file
 
 def read_datanative_linkfile():
-    outcome_map = {}
-    with open(SIPLOG_path+"datanative.txt", "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue  # ohitetaan mahdolliset tyhjät rivit
+   outcome_map = {}
+   try:
+      with open(SIPLOG_path+"datanative.txt", "r", encoding="utf-8") as f:
+         for line in f:
+               line = line.strip()
+               if not line:
+                  continue  # ohitetaan mahdolliset tyhjät rivit
 
-            # Oletetaan, että rivi on muodossa:
-            # Source:Telefunken.mov > Outcome:Telefunken_FFV1_FLAC.mkv
-            parts = line.split('>')
-            if len(parts) != 2:
-                # Jos rivi ei vastaa odotettua rakennetta, ohitetaan
-                continue
+               # Oletetaan, että rivi on muodossa:
+               # Source:Telefunken.mov > Outcome:Telefunken_FFV1_FLAC.mkv
+               parts = line.split('>')
+               if len(parts) != 2:
+                  # Jos rivi ei vastaa odotettua rakennetta, ohitetaan
+                  continue
 
-            source_part = parts[0].strip()   # esim. "Source:Telefunken.mov"
-            outcome_part = parts[1].strip()  # esim. "Outcome:Telefunken_FFV1_FLAC.mkv"
+               source_part = parts[0].strip()   # esim. "Source:Telefunken.mov"
+               outcome_part = parts[1].strip()  # esim. "Outcome:Telefunken_FFV1_FLAC.mkv"
 
-            # Poimitaan varsinaiset tiedostonimet (poistetaan "Source:" ja "Outcome:")
-            source_filename = source_part.replace("Source:", "").strip()
-            outcome_filename = outcome_part.replace("Outcome:", "").strip()
+               # Poimitaan varsinaiset tiedostonimet (poistetaan "Source:" ja "Outcome:")
+               source_filename = source_part.replace("Source:", "").strip()
+               outcome_filename = outcome_part.replace("Outcome:", "").strip()
 
-            # Tallennetaan sanakirjaan siten, että avaimena on Outcome-tiedostonimi
-            # ja arvona tupla (source_filename, outcome_filename)
-            outcome_map[outcome_filename] = (source_filename, outcome_filename)
+               # Tallennetaan sanakirjaan siten, että avaimena on Outcome-tiedostonimi
+               # ja arvona tupla (source_filename, outcome_filename)
+               outcome_map[outcome_filename] = (source_filename, outcome_filename)
+   except Exception as e:
+      # Mikäli finalize() heittää poikkeuksen, siepataan virhe
+      flash(f"No DATANATIVE files : {str(e)}", "error")
 
-    return outcome_map
+   return outcome_map
 
 #######################
 ### SIP FROM FILES
@@ -343,7 +349,9 @@ def sip_from_files():
             mets_profile=MetsProfile.CULTURAL_HERITAGE,
             contract_id=CONTRACTID,
             creator_name=ORGANIZATION,
-            creator_type="ORGANIZATION"
+            creator_type="ORGANIZATION",
+            package_id=session['mp_inv'],
+            content_id=session['mp_inv']
          )
    except Exception as e:
       flash(f"Error creating METS! : {str(e)}", "error")
