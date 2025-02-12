@@ -228,7 +228,8 @@ def generate_lido_xml(data):
    eventSet = ET.SubElement(eventWrap, "lido:eventSet")
    event = ET.SubElement(eventSet, "lido:event")
 
-   ET.SubElement(event, "lido:eventType").text = "valmistus"
+   eventType= ET.SubElement(event, "lido:eventType")
+   ET.SubElement(eventType, "lido:term").text = "valmistus"
    eventActor = ET.SubElement(event, "lido:eventActor")
    actorInRole = ET.SubElement(eventActor, "lido:actorInRole")
    actor = ET.SubElement(actorInRole, "lido:actor")
