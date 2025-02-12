@@ -243,7 +243,7 @@ def generate_lido_xml(data):
    administrativeMetadata = ET.SubElement(lido, "lido:administrativeMetadata", {"xml:lang": "fi"})
    recordWrap = ET.SubElement(administrativeMetadata, "lido:recordWrap")
    ET.SubElement(recordWrap, "lido:recordID", {"lido:type": "ObjectId"}).text = data['mp_id']
-   recordType= ET.SubElement(event, "lido:recordType")
+   recordType= ET.SubElement(recordWrap, "lido:recordType")
    ET.SubElement(recordType, "lido:term").text = "objekti"   
 
    recordSource = ET.SubElement(recordWrap, "lido:recordSource")
