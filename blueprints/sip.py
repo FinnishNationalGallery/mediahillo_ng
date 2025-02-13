@@ -300,7 +300,9 @@ def read_datanative_linkfile():
 
                # Poimitaan varsinaiset tiedostonimet (poistetaan "Source:" ja "Outcome:")
                source_filename = source_part.replace("Source:", "").strip()
+               print(source_filename)
                outcome_filename = outcome_part.replace("Outcome:", "").strip()
+               print(outcome_filename)
 
                # Tallennetaan sanakirjaan siten, että avaimena on Outcome-tiedostonimi
                # ja arvona tupla (source_filename, outcome_filename)
