@@ -73,7 +73,7 @@ def send_transfer(filename):
         sftp = ssh.open_sftp()
 
         local_path = os.path.join(SIP_FOLDER, filename)
-        sftp.put(local_path, "/transfer")
+        sftp.put(local_path, "transfer")
         
         sftp.close()
         ssh.close()
