@@ -90,6 +90,19 @@
                         border-radius: 4px')  }}
                     </th>
                 </tr>
+                <tr>
+                    <th></th>
+                    <th>
+                        <div class="field is-grouped">
+                            <div class="control">
+                                {{ form.submit(class="button is-primary", style="width: 100%; padding: 14px 20px; margin: 8px 0;") }}
+                            </div>
+                            <div class="control">
+                                <a href="{{ url_for('metadata.metadata') }}" class="button is-light" style="width: 100%; padding: 14px 20px; margin: 8px 0;">Cancel</a>
+                            </div>
+                        </div>
+                    </th>
+                </tr>
             </table>      
 
         </form>  
