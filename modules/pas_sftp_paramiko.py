@@ -2,6 +2,7 @@ import paramiko
 import os
 import stat
 from dotenv import dotenv_values
+from flask import flash
 
 config = dotenv_values(".env")
 KEY_PATH = config['PRIVATE_KEY_PATH']
@@ -81,6 +82,7 @@ def send_transfer(filename):
         
         return "OK"
     except Exception as e:
+        flash(f"Error sending TAR-file! : {str(e)}", "error")
         return str(e)
 
 # Käyttöesimerkki
