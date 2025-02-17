@@ -52,10 +52,12 @@
                 &rarr;
                 <span class="material-symbols-outlined">file_open</span>
                 <a href="{{SIP_path}}{{file}}">{{file}}</a> 
-                {% if ".mkv" in filename %}
+
+                {% if ".tar" in filename %}
                 <a href="{{url_for('sip.sip_send_tranfer')}}?file={{file}}"><button class="button is-success" id="hide1" onclick="togglePopup()">SEND</button></a>
-                </br>
                 {% endif %}
+                
+                </br>
                 {% endfor %}
                 </div>
             </div>
