@@ -7,6 +7,7 @@ config = dotenv_values(".env")
 KEY_PATH = config['PRIVATE_KEY_PATH']
 KEY_PASS = config['PRIVATE_KEY_PASS']
 DOWNLOAD_FOLDER = config['DOWNLOAD_FOLDER']
+SIP_FOLDER = config['SIP_FOLDER']
 SFTP_USER = config['SFTP_USER']
 if "Production" in config['CONF_SFTP']:
     SFTP_HOST = config['SFTP_HOST_PROD']
@@ -65,6 +66,21 @@ def file(folderpath, filename):
         return "OK"
     except Exception as e:
         return str(e)
+    
+def send_transfer(filename):
+    try:
+        ssh = create_ssh_client()
+        sftp = ssh.open_sftp()
+
+        local_path = os.path.join(SIP_FOLDER, filename)
+        sftp.put(local_path, "/transfer")
+        
+        sftp.close()
+        ssh.close()
+        
+        return "OK"
+    except Exception as e:
+        return str(e)
 
 # Käyttöesimerkki
 if __name__ == "__main__":
@@ -77,3 +93,4 @@ if __name__ == "__main__":
     # Lataa tiedosto
     result = file("/some/remote/path", "example.txt")
     print("Latauksen tulos:", result)
+

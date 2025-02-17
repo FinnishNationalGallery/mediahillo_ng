@@ -8,7 +8,7 @@ import glob
 from dateutil import parser
 from flask import Blueprint, current_app, render_template, request, url_for, flash, redirect, send_file, session, jsonify
 from flask_login import login_required, current_user
-from modules import mp_metadata
+from modules import mp_metadata, pas_sftp_paramiko
 from utils import logfile_output, logfile_outerror, logfile_datanative, subprocess_args, get_diskinfo
 from dotenv import dotenv_values
 from markupsafe import Markup
@@ -287,23 +287,19 @@ def read_datanative_linkfile():
                line = line.strip()
                if not line:
                   continue  # ohitetaan mahdolliset tyhjät rivit
-
                # Oletetaan, että rivi on muodossa:
                # Source:Telefunken.mov > Outcome:Telefunken_FFV1_FLAC.mkv
                parts = line.split('>')
                if len(parts) != 2:
                   # Jos rivi ei vastaa odotettua rakennetta, ohitetaan
                   continue
-
                source_part = parts[0].strip()   # esim. "Source:Telefunken.mov"
                outcome_part = parts[1].strip()  # esim. "Outcome:Telefunken_FFV1_FLAC.mkv"
-
                # Poimitaan varsinaiset tiedostonimet (poistetaan "Source:" ja "Outcome:")
                source_filename = source_part.replace("Source:", "").strip()
                print(source_filename)
                outcome_filename = outcome_part.replace("Outcome:", "").strip()
                print(outcome_filename)
-
                # Tallennetaan sanakirjaan siten, että avaimena on Outcome-tiedostonimi
                # ja arvona tupla (source_filename, outcome_filename)
                outcome_map[outcome_filename] = (source_filename, outcome_filename)
@@ -358,7 +354,7 @@ def sip_from_files():
    except Exception as e:
       flash(f"Error creating METS! : {str(e)}", "error")
    try:
-      files = read_all_files_mkv(DATA_path)
+      files = read_all_files_mkv(DATA_path) # <---------
       sip = SIP.from_files(mets=mets, files=files)
       # Import descriptive metadata from an XML source, and add it to SIP
       descriptive_md = ImportedMetadata.from_path("static/METADATA/lido_description.xml")
@@ -447,6 +443,18 @@ def sip_tar_tree():
     with open(SIPLOG_path+"output.txt", "w", encoding="utf-8") as f:
         write_tree(tree, f)
     return redirect(url_for('sip.sip'))
+
+
+@sip_bp.route("/sip_send_transfer")
+@login_required
+def sip_send_transfer():
+   try:
+      file  = request.args.get('file')
+      message = pas_sftp_paramiko.send_transfer(file)
+      flash(message, 'success')
+   except Exception as e:
+      flash(f"Error sending TAR-file! : {str(e)}", "error")
+   return redirect(url_for('sip.sip'))
 
 
 #######################

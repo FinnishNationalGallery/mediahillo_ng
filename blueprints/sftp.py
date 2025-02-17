@@ -23,3 +23,4 @@ def pas_sftp_file():
    file  = request.args.get('file')
    message = pas_sftp.file(folder, file)
    return render_template('pas_sftp_file.html', folder=folder, file=file, message=message, environment=pas_sftp.SFTP_ENV)
+
