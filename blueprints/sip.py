@@ -448,12 +448,17 @@ def sip_tar_tree():
 @sip_bp.route("/sip_send_transfer")
 @login_required
 def sip_send_transfer():
-   try:
-      file  = request.args.get('file')
-      message = pas_sftp_paramiko.send_transfer(file)
-      flash(message, 'success')
-   except Exception as e:
-      flash(f"Error sending TAR-file! : {str(e)}", "error")
+   send_really = request.args.get('send') 
+   if send_really == "True":
+      try:
+         file  = request.args.get('file')
+         message = pas_sftp_paramiko.send_transfer(file)
+         flash(message, 'success')
+      except Exception as e:
+         flash(f"Error sending TAR-file! : {str(e)}", "error")
+   else:
+      message = Markup("Do you really want to send this TAR-file to CSC? <a href=" + url_for('sip.sip_send_transfer', send="True", file={{file}}) + "><button class=\"button is-danger\">Delete</button></a>"+" <a href=" + url_for('sip.sip') + "><button class=\"button is-dark\">Cancel</button> </a>")
+      flash(message, 'success')         
    return redirect(url_for('sip.sip'))
 
 
