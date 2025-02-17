@@ -53,10 +53,10 @@
                 <span class="material-symbols-outlined">file_open</span>
                 <a href="{{SIP_path}}{{file}}">{{file}}</a> 
 
-                {% if ".tar" in filename %}
+                {% if ".tar" in file %}
                 <a href="{{url_for('sip.sip_send_tranfer')}}?file={{file}}"><button class="button is-success" id="hide1" onclick="togglePopup()">SEND</button></a>
                 {% endif %}
-                
+
                 </br>
                 {% endfor %}
                 </div>
