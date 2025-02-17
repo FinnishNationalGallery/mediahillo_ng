@@ -444,7 +444,9 @@ def sip_tar_tree():
         write_tree(tree, f)
     return redirect(url_for('sip.sip'))
 
-
+#######################
+### SEND TAR WITH SFTP PROTOCOL
+#######################
 @sip_bp.route("/sip_send_transfer")
 @login_required
 def sip_send_transfer():
@@ -457,7 +459,7 @@ def sip_send_transfer():
       except Exception as e:
          flash(f"Error sending TAR-file! : {str(e)}", "error")
    else:
-      message = Markup("Do you really want to send "+ filename +" TAR-file to CSC? <a href=" + url_for('sip.sip_send_transfer', send="True", file=filename) + "><button class=\"button is-success\">YES</button></a>"+" <a href=" + url_for('sip.sip') + "><button class=\"button is-dark\">Cancel</button> </a>")
+      message = Markup("Do you really want to send "+ filename +" TAR-file to CSC with SFTP protocol? <a href=" + url_for('sip.sip_send_transfer', send="True", file=filename) + "><button class=\"button is-success\">YES</button></a>"+" <a href=" + url_for('sip.sip') + "><button class=\"button is-dark\">Cancel</button> </a>")
       flash(message, 'success')         
    return redirect(url_for('sip.sip'))
 
