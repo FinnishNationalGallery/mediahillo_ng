@@ -449,9 +449,9 @@ def sip_tar_tree():
 @login_required
 def sip_send_transfer():
    send_really = request.args.get('send') 
+   file  = request.args.get('file')
    if send_really == "True":
       try:
-         file  = request.args.get('file')
          message = pas_sftp_paramiko.send_transfer(file)
          flash(message, 'success')
       except Exception as e:
