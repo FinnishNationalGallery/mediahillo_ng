@@ -305,7 +305,8 @@ def read_datanative_linkfile():
                outcome_map[outcome_filename] = (source_filename, outcome_filename)
    except Exception as e:
       # Mikäli finalize() heittää poikkeuksen, siepataan virhe
-      flash(f"No DATANATIVE files : {str(e)}", "error")
+      # flash(f"No DATANATIVE files : {str(e)}", "error")
+      pass
 
    return outcome_map
 
