@@ -1,11 +1,9 @@
-## THIS REPOSITORY IS UNDER CONSTRUCTION - DO NOT USE 
-## MEDIAJAM TOOL WILL BE CHANGED TO USE python3-dpres-siptools-ng
-# MediaJam / Mediahillo
+# MediaJam NG / Mediahillo NG
 
 MediaJam (Mediahillo) is a long term preservation **packaging tool interface**, developed in FInnish National Gallery.
 MediaJam is a Flask application working in Python 3 environment.
 
-MediaJam uses [dpres-siptools](https://github.com/Digital-Preservation-Finland/dpres-siptools) commands for packaging files. Therefore [dpres-siptools](https://github.com/Digital-Preservation-Finland/dpres-siptools) MUST be installed to the same server. 
+MediaJam uses [dpres-siptools-ng](https://github.com/Digital-Preservation-Finland/dpres-siptools-ng) commands for packaging files. Therefore [dpres-siptools-ng](https://github.com/Digital-Preservation-Finland/dpres-siptools-ng) MUST be installed to the same server. Installation on Linux distributions is done by using the RPM Package Manager. 
 
 MediaJam can get descriptive metadata from [MuseumPlus](https://www.zetcom.com/en/kookos-collection-management-services-to-be-transferred-to-zetcom-nordics/) collection management system through API-interface.
 
@@ -13,7 +11,7 @@ Application is tested with AlmaLinux 9 server. Flask application was installed a
 
 ## Installation
 As user root:
-First read [AlmaLinux instructions](README_AlmaLinux.md) and install dpres-siptools
+First read [AlmaLinux instructions](README_AlmaLinux.md) and install dpres-siptools-ng
 ``````
 Then add user for MediaJam:
 adduser pasisti
