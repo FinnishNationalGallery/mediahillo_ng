@@ -1,7 +1,7 @@
 # AlmaLinux 9 and dpres-siptools dependencies
 
-MediaJam needs dpres-siptools to be installed with certain dependencies in AlmaLinux 9 server. 
-https://github.com/Digital-Preservation-Finland/dpres-siptools
+MediaJam needs dpres-siptools-ng to be installed with certain dependencies in AlmaLinux 9 server. 
+Installation on Linux distributions is done by using the RPM Package Manager. 
 
 Digital-Preservation-Finland has developed RPM packages to make installation easier.
 
