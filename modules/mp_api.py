@@ -27,7 +27,7 @@ def get_objects_by_title(title, const_url, const_auth):
     method = "POST"
     url = const_url +"/Object/search"
     querystring = {}
-    payload = "<application><modules><module name=\"Object\">\n<search limit=\"500\" offset=\"0\" loadThumbnailSmall =\"true\">\n<select><field fieldPath=\"__id\"/> <field fieldPath=\"ObjObjectVrt\"/> </select>\n<fulltext>*</fulltext>\n<expert module=\"Object\"><and><equalsField fieldPath=\"__orgUnit\" operand=\"KGMuusa\"/>\n<contains fieldPath=\"ObjObjectTitleVrt\" operand=\""+ title	 + "\"/></and>\n</expert>\n</search>\n</module>\n</modules>\n</application>"
+    payload = "<application><modules><module name=\"Object\">\n<search limit=\"500\" offset=\"0\" loadThumbnailSmall =\"true\">\n<select><field fieldPath=\"__id\"/> <field fieldPath=\"ObjObjectVrt\"/> </select>\n<fulltext>*</fulltext>\n<expert module=\"Object\"><and><contains fieldPath=\"ObjObjectTitleVrt\" operand=\""+ title	 + "\"/></and>\n</expert>\n</search>\n</module>\n</modules>\n</application>"
     auth = const_auth
     headers = {
         'Content-Type': "application/xml",
