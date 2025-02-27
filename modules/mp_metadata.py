@@ -339,55 +339,63 @@ def get_object_by_number(object_inv):
 
 def get_object_by_title(title):
     ria = mp_api.get_objects_by_title(title, MP_URL, MP_PASS)
-    mp_response = requests.request(method=ria[0], url=ria[1], verify=True, params=ria[2], data=ria[3], auth=ria[4], headers=ria[5])
+    try:
+        mp_response = requests.request(method=ria[0], url=ria[1], verify=True,
+                                       params=ria[2], data=ria[3], auth=ria[4], headers=ria[5])
+        mp_response.raise_for_status()  # Nostaa poikkeuksen, jos status code on virheellinen
+    except requests.exceptions.RequestException as error:
+        totalSize = "0"
+        mylist = [["1", "Error:"], ["2", "MuseumPlus API interface:"], ["3", str(error)]]
+        xml = ""
+        return totalSize, mylist, xml
+
     input = BytesIO(mp_response.content)
     try:
         tree = et.parse(input)
-    except:
-        totalSize="0"
-        mylist=[["1","Error:"],["2","MuseumPlus API interface:"],["3","503 Service Temporarily Unavailable"]]
-        xml=""
+    except Exception as error:
+        totalSize = "0"
+        mylist = [["1", "Error:"], ["2", "MuseumPlus API interface:"], ["3", str(error)]]
+        xml = ""
         return totalSize, mylist, xml
+
     mylist = []
-    totalSize="0"
-    xml=""
-    ns_mod = {'ns':'http://www.zetcom.com/ria/ws/module'}
-    ###############################################
+    totalSize = "0"
+    xml = ""
+    ns_mod = {'ns': 'http://www.zetcom.com/ria/ws/module'}
+
     def get_values(element):
         name = element.attrib['name']
-        value = element.xpath('./ns:value/text()', namespaces = ns_mod)
+        value = element.xpath('./ns:value/text()', namespaces=ns_mod)
         if not value:
             value = ['']
-        list = [name, value[0]]
-        return list
-    ###############################################
+        return [name, value[0]]
+
     def get_thumbnail(element):
         name = "thumbnail=" + element.attrib['size']
-        value = element.xpath('./ns:value/text()', namespaces = ns_mod)
+        value = element.xpath('./ns:value/text()', namespaces=ns_mod)
         if not value:
             value = ['']
-        list = [name, value[0]]
-        return list
-    ###############################################
+        return [name, value[0]]
+
     for element in tree.iter():
         try:
             totalSize = element.attrib['totalSize']
         except:
             pass
         try:
-            name = element.attrib['name']
-            list = get_values(element)
-            mylist.append(list)
+            list_item = get_values(element)
+            mylist.append(list_item)
         except:
             pass
         try:
-            name = element.attrib['size']
-            list = get_thumbnail(element)
-            mylist.append(list)
+            list_item = get_thumbnail(element)
+            mylist.append(list_item)
         except:
             pass
-    output = et.tostring(tree, pretty_print=True, encoding='utf8') # For testing
+
+    output = et.tostring(tree, pretty_print=True, encoding='utf8')
     return totalSize, mylist, output
+
 
 def create_lido_xml(object_id):
     #session.back_link_id = request.env.http_referer
