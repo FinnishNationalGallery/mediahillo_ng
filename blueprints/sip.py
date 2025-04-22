@@ -189,7 +189,7 @@ def read_all_files_mkv(DATA_path):
                   event_type="normalization",
                   datetime=CreateDate,
                   outcome="success",
-                  detail = "File conversion with FFMPEG program",
+                  detail = "File conversion with software",
                   outcome_detail="FFV1 video in Matroska container"
                )
                agent = DigitalProvenanceAgentMetadata(
@@ -203,7 +203,9 @@ def read_all_files_mkv(DATA_path):
                )
                # Add Premis event to file object
                file_obj.add_metadata([event])
-               # Read Frame MD5 information
+               # 
+               # CHECK IF THERE IS VIDEO FRAME MD5 INFORMATION PER FILE
+               #
                video_frame_file_path = os.path.join(DATA_path, f"{item}.FrameMD5.txt")
                try:
                   with open(video_frame_file_path, "r", encoding="utf-8") as video_frame_file:
@@ -216,13 +218,14 @@ def read_all_files_mkv(DATA_path):
                      outcome="success",
                      outcome_detail=video_frame_md,
                   )
-                  # Add Video frame MD5 checksum Premis metadata to file object
                   file_obj.add_metadata([provenance_md])
                except FileNotFoundError:
-                  pass
+                  pass # We do not care if there is no information
                except Exception as e:
-                  pass
-
+                  flash(f"Error reading video frame MD5! : {str(e)}", "error")
+               # 
+               # CHECK IF THERE IS DATANATIVE FILES AND MAKE LINK FOR THEM
+               #
                outcome_map = read_datanative_linkfile()
                if item in outcome_map:
                   source_filename, outcome_filename = outcome_map[item]
