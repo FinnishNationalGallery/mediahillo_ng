@@ -173,7 +173,9 @@ def read_all_files_mkv(DATA_path):
                 path=static_path,
                 digital_object_path=digital_object_path
             )
-            # Check if is .mkv file
+            #
+            # CHECK IF IS MATROSKA MKV FILE AND PROCEED
+            #
             if item.lower().endswith('.mkv'):
                # Read settings file
                file = open("settings.json", "r")
@@ -229,7 +231,7 @@ def read_all_files_mkv(DATA_path):
                outcome_map = read_datanative_linkfile()
                if item in outcome_map:
                   source_filename, outcome_filename = outcome_map[item]
-                  print(f"Löytyi vastaavuus: Source: {source_filename} | Outcome: {outcome_filename}")
+                  #print(f"Löytyi vastaavuus: Source: {source_filename} | Outcome: {outcome_filename}")
                   source_file = File(
                      path="static/DATANATIVE/"+source_filename,
                      digital_object_path="DATANATIVE/"+source_filename
@@ -300,9 +302,9 @@ def read_datanative_linkfile():
                outcome_part = parts[1].strip()  # esim. "Outcome:Telefunken_FFV1_FLAC.mkv"
                # Poimitaan varsinaiset tiedostonimet (poistetaan "Source:" ja "Outcome:")
                source_filename = source_part.replace("Source:", "").strip()
-               print(source_filename)
+               #print(source_filename)
                outcome_filename = outcome_part.replace("Outcome:", "").strip()
-               print(outcome_filename)
+               #print(outcome_filename)
                # Tallennetaan sanakirjaan siten, että avaimena on Outcome-tiedostonimi
                # ja arvona tupla (source_filename, outcome_filename)
                outcome_map[outcome_filename] = (source_filename, outcome_filename)
