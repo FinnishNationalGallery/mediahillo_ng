@@ -1,4 +1,4 @@
-"""Example code for manual SIP creation."""
+"""Example code for manual SIP creation. Just for testing."""
 from mets_builder import (
     METS,
     MetsProfile,
