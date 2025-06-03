@@ -50,7 +50,7 @@ def folder(folderpath):
         
         return data, directories, files
     except Exception as e:
-        return str(e), [" *** Error connecting SFTP-server *** "], []
+        return str(e), [" *** Error connecting SFTP-server *** ", str(e)], []
 
 def file(folderpath, filename):
     try:
