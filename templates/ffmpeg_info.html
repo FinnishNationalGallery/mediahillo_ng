@@ -18,49 +18,34 @@
             <li>Convert audio stream to FLAC or LPCM </li>
             <li>Avoid whitespaces in output files </li>
             </br>
-            <b>
-                Video stream to FFV1 and Audio stream to FLAC:
-            </b></br>
-            <small>ffmpeg -i Pipilotti_Rist.mov -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec flac Pipilotti_Rist_FFV1_FLAC.mkv</small>
+
+            <b>Video stream to FFV1 and ALL Audio streams FLAC streams:</b>
+            </br>
+            <small>ffmpeg -i Input_Video.mov -map 0:v -map 0:a -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec flac Output_Video_FFV1_FLAC.mkv</small>
             </br>
 
-            <b>
-                Video stream to FFV1 and TWO Audio streams to two different FLAC streams:
-            </b></br>
-            <small>ffmpeg -i Michael_Smith-Secret_horror_DV.mov -map 0:0 -map 0:1 -map 0:2 -c:v:0 ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -c:a:0 flac -c:a:1 flac Michael_Smith-Secret_FFV1_2xFLAC.mkv</small>
+            <b>Video stream to FFV1 and ALL Audio streams to PCM:</b>
             </br>
+            <small>ffmpeg -i Input_Video.mov -map 0:v -map 0:a -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec pcm_s24be Output_Video_FFV1_FLAC.mkv</small>
+            </br></br>
 
-            <b>
-                Video stream to FFV1 and COMBINE two different FLAC audio streams into one audio stream:
-            </b></br>
-            <small>ffmpeg -i Michael_Smith-Secret_horror_DV-FFV1_FLACx2.mkv -filter_complex amix=inputs=2 -c:v copy -c:a flac Michael_Smith-Secret_horror_DV-FFV1_FLACx1.mkv</small>
+            <b>Only Audio stream to FLAC in Matroska .mkv container:</b>
             </br>
-
-            <b>
-                Only Audio stream to FLAC in Matroska .mkv container:
-            </b></br>
             <small>ffmpeg -i Pipilotti_Rist.mov  -vn  -acodec flac Pipilotti_Rist_Only_FLAC.mkv</small>
             </br>
-            <b>
-                Video stream to FFV1 and Audio stream to PCM:
-            </b></br>
-            <small>ffmpeg -i Pipilotti_Rist.mov -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec pcm_s24be Pipilotti_Rist_FFV1_PCM.mkv</small>
-            </br></br>
-            
-            <b>
-                Input files with whitespaces / Video stream to FFV1 and Audio stream to FLAC:
-            </b></br>
+
+            <b>Input files with whitespaces / Video stream to FFV1 and Audio stream to FLAC:</b>
+            </br>
             <small>ffmpeg -i "Juha van Ingen - Disintegrator.mov" -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec flac Juha_van_Ingen_Disintegrator_FFV1_FLAC.mkv</small>
             </br>
-            <b>
-                Input files with whitespaces / Video stream to FFV1 and Audio stream to PCM:
-            </b></br>
+
+            <b>Input files with whitespaces / Video stream to FFV1 and Audio stream to PCM:</b>
+            </br>
             <small>ffmpeg -i "Juha van Ingen - Disintegrator.mov" -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec pcm_s24be Juha_van_Ingen_Disintegrator_FFV1_PCM.mkv</small>
             </br></br>
             
-            <b>
-                Message digest calculation for video <b>FRAME</b> checksum:
-            </b></br>
+            <b>Message digest calculation for video <b>FRAME</b> checksum:</b>
+            </br>
             <small>ffmpeg -loglevel error -i Pipilotti_Rist_FFV1_FLAC.mkv -map 0:v -f md5 -</small>
             </br>
             </br>
