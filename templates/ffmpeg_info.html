@@ -29,10 +29,6 @@
             <small>ffmpeg -i Input_Video.mov -map 0:v -map 0:a -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec pcm_s24be Output_Video_FFV1_FLAC.mkv</small>
             </br></br>
 
-            <b>Only Audio stream to FLAC in Matroska .mkv container:</b>
-            </br>
-            <small>ffmpeg -i Pipilotti_Rist.mov  -vn  -acodec flac Pipilotti_Rist_Only_FLAC.mkv</small>
-            </br>
 
             <b>Input files with whitespaces / Video stream to FFV1 and ALL Audio streams to FLAC:</b>
             </br>
@@ -44,6 +40,11 @@
             <small>ffmpeg -i "Input Video.mov" -map 0:v -map 0:a -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec pcm_s24be Output_Video_FFV1_FLAC.mkv</small>
             </br></br>
             
+            <b>Only Audio stream to FLAC in Matroska .mkv container:</b>
+        </br>
+        <small>ffmpeg -i Pipilotti_Rist.mov  -vn  -acodec flac Pipilotti_Rist_Only_FLAC.mkv</small>
+        </br></br>
+
             <b>Message digest calculation for video <b>FRAME</b> checksum:</b>
             </br>
             <small>ffmpeg -loglevel error -i Pipilotti_Rist_FFV1_FLAC.mkv -map 0:v -f md5 -</small>
