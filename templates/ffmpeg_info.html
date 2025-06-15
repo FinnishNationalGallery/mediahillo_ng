@@ -19,7 +19,7 @@
             <li>Avoid whitespaces in output files </li>
             </br>
 
-            <b>Video stream to FFV1 and ALL Audio streams FLAC streams:</b>
+            <b>Video stream to FFV1 and ALL Audio streams to FLAC:</b>
             </br>
             <small>ffmpeg -i Input_Video.mov -map 0:v -map 0:a -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec flac Output_Video_FFV1_FLAC.mkv</small>
             </br>
@@ -34,14 +34,14 @@
             <small>ffmpeg -i Pipilotti_Rist.mov  -vn  -acodec flac Pipilotti_Rist_Only_FLAC.mkv</small>
             </br>
 
-            <b>Input files with whitespaces / Video stream to FFV1 and Audio stream to FLAC:</b>
+            <b>Input files with whitespaces / Video stream to FFV1 and ALL Audio streams to FLAC:</b>
             </br>
-            <small>ffmpeg -i "Juha van Ingen - Disintegrator.mov" -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec flac Juha_van_Ingen_Disintegrator_FFV1_FLAC.mkv</small>
+            <small>ffmpeg -i "Input Video.mov" -map 0:v -map 0:a -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec flac Output_Video_FFV1_FLAC.mkv</small>
             </br>
 
-            <b>Input files with whitespaces / Video stream to FFV1 and Audio stream to PCM:</b>
+            <b>Input files with whitespaces / Video stream to FFV1 and ALL Audio streams to PCM:</b>
             </br>
-            <small>ffmpeg -i "Juha van Ingen - Disintegrator.mov" -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec pcm_s24be Juha_van_Ingen_Disintegrator_FFV1_PCM.mkv</small>
+            <small>ffmpeg -i "Input Video.mov" -map 0:v -map 0:a -vcodec ffv1 -level 3 -g 1 -slicecrc 1 -context 1 -acodec pcm_s24be Output_Video_FFV1_FLAC.mkv</small>
             </br></br>
             
             <b>Message digest calculation for video <b>FRAME</b> checksum:</b>
