@@ -202,7 +202,7 @@ def sip_from_directory_dc():
       sip.add_metadata([provenance_md])
       # Import descriptive metadata from an XML source, and add it to SIP
       #descriptive_md = ImportedMetadata.from_path("static/METADATA/dublin_core_description.xml")
-      descriptive_md = ImportedMetadata(metadata_type=MetadataType.DESCRIPTIVE, metadata_format=MetadataFormat.DC, format_version="2008", data_path="static/METADATA/dublin_core_description.xml")
+      descriptive_md = ImportedMetadata(metadata_type=MetadataType.DESCRIPTIVE, metadata_format=MetadataFormat.DC, format_version="1.1", data_path="static/METADATA/dublin_core_description.xml")
       sip.add_metadata([descriptive_md])
 
       # Tallennetaan SIP Flask-sovelluksen configiin
