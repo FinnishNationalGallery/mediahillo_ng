@@ -75,8 +75,8 @@
                         <td class="has-text-danger">Something went wrong</td>
                         {% endif %}
 
-                        {% if result is defined and result['match'] is defined and result['match']['mets_OBJID'] is defined %}
-                        <td>{{result['match']['mets_OBJID'][0]}}</td>
+                        {% if result is defined and result['match'] is defined and result['match']['mets_CONTENTID'] is defined %}
+                        <td>{{result['match']['mets_CONTENTID'][0]}}</td>
                         {% else %}
                         <td class="has-text-danger">Something went wrong</td>
                         {% endif %}

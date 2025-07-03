@@ -29,7 +29,7 @@ def get_status():
 
 def get_accepted_created(created):
     #Use ?* or /.*/ for Apache Lucene wildcard search
-    url = REST_URL+"search?q=mets_dmdSec_CREATED:"+ created + " AND mets_OBJID:/.*/ AND mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_recordWrap_recordID:/.*/ &limit=1000"
+    url = REST_URL+"search?q=mets_dmdSec_CREATED:"+ created + " AND mets_CONTENTID:/.*/ AND mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_recordWrap_recordID:/.*/ &limit=1000"
     authentication = REST_PASS
     counter = 0
     try:
@@ -46,7 +46,7 @@ def get_accepted_created(created):
 
 def get_accepted_mpid(mpid):
     #Use ?* or /.*/ for Apache Lucene wildcard search
-    url = REST_URL+"search?q=mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_recordWrap_recordID:" + mpid + " AND mets_OBJID:/.*/ AND mets_dmdSec_CREATED:/.*/ &limit=1000"
+    url = REST_URL+"search?q=mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_recordWrap_recordID:" + mpid + " AND mets_CONTENTID:/.*/ AND mets_dmdSec_CREATED:/.*/ &limit=1000"
     authentication = REST_PASS
     counter = 0
     try:
