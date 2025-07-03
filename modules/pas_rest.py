@@ -63,7 +63,7 @@ def get_accepted_mpid(mpid):
 
 def get_accepted_mpinv(mpinv):
     #Use ?* or /.*/ for Apache Lucene wildcard search
-    url = REST_URL+"search?q=mets_OBJID:" + mpinv + " AND mets_dmdSec_CREATED:/.*/ AND mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_recordWrap_recordID:/.*/ &limit=1000"
+    url = REST_URL+"search?q=mets_CONTENTID:" + mpinv + " AND mets_dmdSec_CREATED:/.*/ AND mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_recordWrap_recordID:/.*/ &limit=1000"
     authentication = REST_PASS
     counter = 0
     try:
