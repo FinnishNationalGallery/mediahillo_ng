@@ -53,8 +53,7 @@
                         <th>CREATED</th>
                         <th>LASTMODDATE</th>
                         <th>MP_ID</th>
-                        <th>MP_INV</th>
-                        <th>AIP ID</th>
+                        <th>Image Description</th>
                         <th>Fetch </th>
                     </tr>
                 </thead>
@@ -73,20 +72,18 @@
                         <td class="has-text-danger"> </td>
                         {% endif %}
 
-                        {% if result is defined and result['match'] is defined and result['match']['mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_resourceWrap_resourceSet_resourceDescription'] is defined %}
-                        <td>{{result['match']['mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_resourceWrap_resourceSet_resourceDescription'][0]}}</td>
-                        {% else %}
-                        <td class="has-text-danger">Something went wrong</td>
-                        {% endif %}
-
                         {% if result is defined and result['match'] is defined and result['match']['mets_CONTENTID'] is defined %}
                         <td>{{result['match']['mets_CONTENTID'][0]}}</td>
                         {% else %}
                         <td class="has-text-danger">Something went wrong</td>
                         {% endif %}
-                        
-                        <td>{{result['id']}}</td>
 
+                        {% if result is defined and result['match'] is defined and result['match']['mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_resourceWrap_resourceSet_resourceDescription'] is defined %}
+                        <td>{{result['match']['mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_resourceWrap_resourceSet_resourceDescription'][0]}}</td>
+                        {% else %}
+                        <td class="has-text-danger">Something went wrong</td>
+                        {% endif %}
+                        
                         <td>
                             <form action="{{url_for('rest.pas_rest_disseminate_aip')}}" method="post">
                                 <button class="button is-small is-success" name="aipid" value={{result['id']}}>Disseminate</button>

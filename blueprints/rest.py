@@ -74,7 +74,7 @@ def pas_rest_accepted_mpinv():
    value = ""
    mpinv = ""
    if request.method == 'POST':
-      mpinv = "\"" + request.form['mpinv'] + "\""
+      mpinv = request.form['mpinv']
       if request.form['mpinv'] == "":
          mpinv = "/.*/"
       if request.form['mpinv'] == "*":
