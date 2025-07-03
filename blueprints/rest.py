@@ -89,6 +89,30 @@ def pas_rest_accepted_mpinv():
          value = ""
    return render_template('pas_rest_accepted_mpinv.html', environment=pas_rest.REST_ENV, message=message, counter=counter, error=error, value=value)
 
+@rest_bp.route("/pas_rest_accepted_description", methods=['GET', 'POST'])
+@login_required
+def pas_rest_accepted_description():
+   message = ""
+   counter = 0
+   error = ""
+   value = ""
+   description = ""
+   if request.method == 'POST':
+      description = "\"" + request.form['description'] + "\""
+      if request.form['description'] == "":
+         description = "/.*/"
+      if request.form['description'] == "*":
+         description = "/.*/"
+      value = request.form['description']
+      try:
+         message, counter, error = pas_rest.get_accepted_description(description)
+      except:
+         message = {'status': 'fail', 'data': {'message': 'Error with REST command!'}}
+         counter = ""
+         error = ""
+         value = ""
+   return render_template('pas_rest_accepted_description.html', environment=pas_rest.REST_ENV, message=message, counter=counter, error=error, value=value)
+
 @rest_bp.route("/pas_rest_disseminate_aip", methods=['GET', 'POST'])
 @login_required
 def pas_rest_disseminate_aip():
