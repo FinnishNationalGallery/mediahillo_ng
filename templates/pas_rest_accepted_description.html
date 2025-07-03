@@ -73,8 +73,8 @@
                         <td class="has-text-danger"> </td>
                         {% endif %}
 
-                        {% if result is defined and result['match'] is defined and result['match']['mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_recordWrap_recordID'] is defined %}
-                        <td>{{result['match']['mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_recordWrap_recordID'][0]}}</td>
+                        {% if result is defined and result['match'] is defined and result['match']['mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_resourceWrap_resourceSet_resourceDescription'] is defined %}
+                        <td>{{result['match']['mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_resourceWrap_resourceSet_resourceDescription'][0]}}</td>
                         {% else %}
                         <td class="has-text-danger">Something went wrong</td>
                         {% endif %}
