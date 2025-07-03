@@ -98,7 +98,7 @@ def pas_rest_accepted_description():
    value = ""
    description = ""
    if request.method == 'POST':
-      description = "\"" + request.form['description'] + "\""
+      description = request.form['description']
       if request.form['description'] == "":
          description = "/.*/"
       if request.form['description'] == "*":
