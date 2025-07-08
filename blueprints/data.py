@@ -215,10 +215,10 @@ def data_image_folder_process():
         with open(out_path, "wb") as fp:
             fp.write(pretty)
 
-    def get_first_subdirectory_name(DATA_path):
+    def get_first_subdirectory_name(image_folder_path):
         try:
-            for entry in sorted(os.listdir(DATA_path)):
-                full_path = os.path.join(DATA_path, entry)
+            for entry in sorted(os.listdir(image_folder_path)):
+                full_path = os.path.join(image_folder_path, entry)
                 if os.path.isdir(full_path):
                     return entry  # Palautetaan vain hakemiston nimi, ei koko polkua
             return None  # Jos alihakemistoja ei löytynyt
@@ -227,7 +227,7 @@ def data_image_folder_process():
             return None
 
     # --------------------------------------------------------------------------
-    dir_path = get_first_subdirectory_name
+    dir_path = get_first_subdirectory_name(DATA_path)
     rewrite = 'k'
     create_lido_xml(dir_path, rewrite_metadata=rewrite)
     return redirect(url_for('data.data'))
