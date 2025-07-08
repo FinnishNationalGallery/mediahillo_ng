@@ -122,12 +122,12 @@ def pas_rest_accepted_img_name():
    value = ""
    imagename = ""
    if request.method == 'POST':
-      imagename = request.form['description']
-      if request.form['description'] == "":
+      imagename = request.form['imagename']
+      if request.form['imagename'] == "":
          imagename = "/.*/"
-      if request.form['description'] == "*":
+      if request.form['imagename'] == "*":
          imagename = "/.*/"
-      value = request.form['description']
+      value = request.form['imagename']
       try:
          message, counter, error = pas_rest.get_accepted_img_name(imagename)
       except:
