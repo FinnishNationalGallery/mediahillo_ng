@@ -12,11 +12,13 @@ from utils import logfile_output, logfile_outerror, logfile_validation, logfile_
 from dotenv import dotenv_values
 from markupsafe import Markup
 from dateutil import parser
+from xml.dom import minidom
 
 data_bp = Blueprint('data', __name__)
 
 config = dotenv_values(".env")
 DATA_path = config['DATA_FOLDER']
+METADATA_path = config['METADATA_FOLDER']
 SIP_path = config['SIP_FOLDER']
 SERVER_ffmpeg = config['SERVER_FFMPEG']
 
@@ -101,6 +103,124 @@ def data_premis_event_frame_md():
                 f.write(session['message_md5'])
     if md5_flag == False:
         flash("No Matroska .mkv files detected!", 'error')
+    return redirect(url_for('data.data'))
+
+#######################
+### IMAGE FOLDER PROCESS
+#######################
+@data_bp.route('/data_image_folder_process') # 
+@login_required
+def data_image_folder_process():
+    # --- vakiot ---------------------------------------------------------------
+    LIDO_NS = "http://www.lido-schema.org"
+    XSI_NS  = "http://www.w3.org/2001/XMLSchema-instance"
+    IMAGE_EXT = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif', '.webp')
+
+    ET.register_namespace("lido", LIDO_NS)
+    ET.register_namespace("xsi",  XSI_NS)
+
+    # --- apufunktiot ----------------------------------------------------------
+    def rewrite_image_metadata(image_path):
+        try:
+            res = subprocess.run(
+                ['exiftool', '-TagsFromFile', '@', '-all:all', image_path],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
+            if res.returncode == 0:
+                backup = f"{image_path}_original"
+                if os.path.exists(backup):
+                    os.remove(backup)
+                return True
+        except Exception:
+            pass
+        return False
+
+    def get_exif_description(image_path):
+        try:
+            res = subprocess.run(
+                ['exiftool', '-Description', '-d', '%Y-%m-%d', image_path],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
+            if res.returncode == 0:
+                for line in res.stdout.splitlines():
+                    if 'Description' in line:
+                        desc = line.split(':', 1)[1].strip()
+                        return (desc.replace('&', '&amp;')
+                                    .replace('<', '&lt;')
+                                    .replace('>', '&gt;')) or f"Kuvaus tiedostosta {os.path.basename(image_path)}"
+        except Exception:
+            pass
+        return f"Kuvaus tiedostosta {os.path.basename(image_path)}"
+
+    def mb_size(path):
+        return f"{os.path.getsize(path) / (1024 * 1024):.2f}"
+
+    def lido_elem(tag, parent, text=None, **attrib):
+        el = ET.SubElement(parent, f"{{{LIDO_NS}}}{tag}", attrib)
+        if text is not None:
+            el.text = text
+        return el
+
+    # --- päätoiminto ----------------------------------------------------------
+    def create_lido_xml(directory_path, rewrite_metadata=False):
+        # kerää ja lajittele kuvatiedostot aakkosjärjestykseen
+        images = sorted(
+            (os.path.join(root, f) for root, _, files in os.walk(directory_path)
+            for f in files if f.lower().endswith(IMAGE_EXT)),
+            key=lambda p: os.path.basename(p).lower()
+        )
+
+        if rewrite_metadata:
+            for img in images:
+                rewrite_image_metadata(img)
+
+        lido_wrap = ET.Element(
+            f"{{{LIDO_NS}}}lidoWrap",
+            {f"{{{XSI_NS}}}schemaLocation":
+                "http://www.lido-schema.org "
+                "http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd"}
+        )
+        lido = lido_elem("lido", lido_wrap)
+        resource_wrap = lido_elem("resourceWrap", lido)
+
+        for img in images:
+            rs = lido_elem("resourceSet", resource_wrap)
+
+            lido_elem("resourceID", rs, os.path.basename(img),
+                    **{f"{{{LIDO_NS}}}type": "filename"})
+
+            rep = lido_elem("resourceRepresentation", rs,
+                            **{f"{{{LIDO_NS}}}type": "image_large"})
+
+            # lido:formatResource-attribuutti (nimiavaruudellinen)
+            lido_elem(
+                "linkResource",
+                rep,
+                os.path.basename(img),
+                **{f"{{{LIDO_NS}}}formatResource": os.path.splitext(img)[1].lstrip('.').lower()}
+            )
+
+            rms = lido_elem("resourceMeasurementsSet", rep)
+            lido_elem("measurementType",  rms, "size")
+            lido_elem("measurementUnit",  rms, "mb")
+            lido_elem("measurementValue", rms, mb_size(img))
+
+            lido_elem("resourceDescription", rs, get_exif_description(img))
+
+        xml_bytes = ET.tostring(lido_wrap, encoding="utf-8")
+        pretty = minidom.parseString(xml_bytes).toprettyxml(indent="  ", encoding="utf-8")
+
+        out_path = os.path.join(METADATA_path, "lido_resources.xml")
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        with open(out_path, "wb") as fp:
+            fp.write(pretty)
+
+        #print(f"LIDO XML-tiedosto luotu: {out_path}")
+
+    # --------------------------------------------------------------------------
+        dir_path = DATA_path + "a0001"
+        rewrite = 'k'
+        create_lido_xml(dir_path, rewrite_metadata=rewrite)
     return redirect(url_for('data.data'))
 
 #######################
