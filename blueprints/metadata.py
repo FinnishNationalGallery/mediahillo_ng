@@ -9,6 +9,7 @@ from markupsafe import Markup
 import modules.mp_metadata as mp_metadata
 from forms.form_metadata import *
 import xml.etree.ElementTree as ET
+import copy
 
 metadata_bp = Blueprint('metadata', __name__)
 
@@ -150,6 +151,47 @@ def get_object_by_title():
 #######################
 ### MAKE LIDO XML   ###
 #######################
+
+# Function for reading Image folder metadata, if metadata exist
+def add_resourcewrap_to_admin_metadata(resources_path, description_path):
+    # Tarkista onko resources_path olemassa
+    if not os.path.isfile(resources_path):
+        return
+
+    # Määritellään nimialueet
+    NS = {
+        'lido': 'http://www.lido-schema.org',
+        'xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+    }
+    ET.register_namespace('lido', NS['lido'])
+    ET.register_namespace('xsi', NS['xsi'])
+
+    # Parsitaan molemmat tiedostot
+    tree_desc = ET.parse(description_path)
+    root_desc = tree_desc.getroot()
+
+    tree_res = ET.parse(resources_path)
+    root_res = tree_res.getroot()
+
+    # Etsitään resourceWrap-elementti resurssitiedostosta
+    resource_wrap = root_res.find('.//lido:resourceWrap', NS)
+    if resource_wrap is None:
+        return
+
+    # Kopioidaan resourceWrap-elementti (deep copy)
+    resource_wrap_copy = copy.deepcopy(resource_wrap)
+
+    # Etsitään administrativeMetadata-elementti kuvaustiedostosta
+    admin_metadata = root_desc.find('.//lido:administrativeMetadata', NS)
+    if admin_metadata is None:
+        return
+
+    # Lisätään resourceWrap-elementti administrativeMetadata-elementin loppuun
+    admin_metadata.append(resource_wrap_copy)
+
+    # Tallennetaan muutokset takaisin tiedostoon
+    tree_desc.write(description_path, encoding='utf-8', xml_declaration=True)
+
 @metadata_bp.route('/metadata_lido_save', methods=['GET', 'POST'])
 def metadata_lido_save():
    form = LidoSave()
@@ -160,6 +202,7 @@ def metadata_lido_save():
       del data['csrf_token']  # Poista csrf-token datasta
       #print("Request form data:", request.form)
       generate_lido_xml(data)
+      add_resourcewrap_to_admin_metadata(METADATA_path+'lido_resources.xml', METADATA_path+'lido_description.xml')
       return redirect(url_for('metadata.metadata'))
    return render_template('metadata_lido_save.html', form=form)
 
@@ -173,6 +216,7 @@ def metadata_lido_edit():
       del data['csrf_token']  # Poista csrf-token datasta
       #print("Request form data:", request.form)
       generate_lido_xml(data)
+      add_resourcewrap_to_admin_metadata(METADATA_path+'lido_resources.xml', METADATA_path+'lido_description.xml')
       return redirect(url_for('metadata.metadata'))
    return render_template('metadata_lido_save.html', form=form)
 
