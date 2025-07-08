@@ -95,6 +95,23 @@ def get_accepted_img_desc(description):
         r_json = ""
     return r_json, counter, error
 
+def get_accepted_img_name(imagename):
+    #Use ?* or /.*/ for Apache Lucene wildcard search
+    url = REST_URL+"search?q=mets_CONTENTID:/.*/ AND mets_dmdSec_CREATED:/.*/ AND mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_resourceWrap_resourceSet_resourceID:"+ imagename + "&limit=1000"
+    authentication = REST_PASS
+    counter = 0
+    try:
+        response = requests.get(url, verify=False, auth=authentication)
+        r_json = response.json()
+        error = ""
+        for result in r_json['data']['results']:
+            counter = counter + 1
+    except Exception as e: 
+        error = str(e)
+        counter = 0
+        r_json = ""
+    return r_json, counter, error
+
 def disseminate_aip(aipid):
     url = REST_URL+"preserved/" + aipid + "/disseminate?format=zip"
     authentication = REST_PASS
