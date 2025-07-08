@@ -78,7 +78,7 @@ def get_accepted_mpinv(mpinv):
         r_json = ""
     return r_json, counter, error
 
-def get_accepted_description(description):
+def get_accepted_img_desc(description):
     #Use ?* or /.*/ for Apache Lucene wildcard search
     url = REST_URL+"search?q=mets_CONTENTID:/.*/ AND mets_dmdSec_CREATED:/.*/ AND mets_dmdSec_mdWrap_xmlData_lidoWrap_lido_administrativeMetadata_resourceWrap_resourceSet_resourceDescription:"+ description + "&limit=1000"
     authentication = REST_PASS
