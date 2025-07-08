@@ -218,9 +218,9 @@ def data_image_folder_process():
         #print(f"LIDO XML-tiedosto luotu: {out_path}")
 
     # --------------------------------------------------------------------------
-        dir_path = DATA_path + "a0001"
-        rewrite = 'k'
-        create_lido_xml(dir_path, rewrite_metadata=rewrite)
+    dir_path = DATA_path + "a0001"
+    rewrite = 'k'
+    create_lido_xml(dir_path, rewrite_metadata=rewrite)
     return redirect(url_for('data.data'))
 
 #######################
