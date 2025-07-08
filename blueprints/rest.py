@@ -111,7 +111,7 @@ def pas_rest_accepted_img_desc():
          counter = ""
          error = ""
          value = ""
-   return render_template('pas_rest_accepted_description.html', environment=pas_rest.REST_ENV, message=message, counter=counter, error=error, value=value)
+   return render_template('pas_rest_accepted_img_desc.html', environment=pas_rest.REST_ENV, message=message, counter=counter, error=error, value=value)
 
 @rest_bp.route("/pas_rest_disseminate_aip", methods=['GET', 'POST'])
 @login_required
