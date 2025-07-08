@@ -215,10 +215,19 @@ def data_image_folder_process():
         with open(out_path, "wb") as fp:
             fp.write(pretty)
 
-        #print(f"LIDO XML-tiedosto luotu: {out_path}")
+    def get_first_subdirectory_name(DATA_path):
+        try:
+            for entry in sorted(os.listdir(DATA_path)):
+                full_path = os.path.join(DATA_path, entry)
+                if os.path.isdir(full_path):
+                    return entry  # Palautetaan vain hakemiston nimi, ei koko polkua
+            return None  # Jos alihakemistoja ei löytynyt
+        except Exception as e:
+            print(f"Virhe: {e}")
+            return None
 
     # --------------------------------------------------------------------------
-    dir_path = DATA_path + "a0001"
+    dir_path = get_first_subdirectory_name
     rewrite = 'k'
     create_lido_xml(dir_path, rewrite_metadata=rewrite)
     return redirect(url_for('data.data'))
