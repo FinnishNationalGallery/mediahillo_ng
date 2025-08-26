@@ -164,6 +164,7 @@ def read_all_files_mkv(DATA_path):
     files = []
     for item in os.listdir(DATA_path):
         full_path = os.path.join(DATA_path, item)
+        file_append_flag = True
         # Check if is file and not folder
         if os.path.isfile(full_path):
             digital_object_path = f"DATA/{item}"
@@ -243,12 +244,15 @@ def read_all_files_mkv(DATA_path):
                   file_obj_source, file_obj_outcome = make_datanative_premis(source_file, outcome_file)
                   files.append(file_obj_source)
                   files.append(file_obj_outcome)
+                  file_append_flag = False
                   
             # Add file object to files list
-            files.append(file_obj)
+            if file_append_flag is True:
+               files.append(file_obj)
 
     return files
 
+## MAKE DATANATIVE PREMIS EVENT ##
 def make_datanative_premis(source_file, outcome_file):
    source_file.generate_technical_metadata()
    outcome_file.generate_technical_metadata()
@@ -284,6 +288,7 @@ def make_datanative_premis(source_file, outcome_file):
    outcome_file.add_metadata([event])
    return source_file, outcome_file
 
+## READ DATANATIVE LINK FILE AND MAKE LINKS ##
 def read_datanative_linkfile():
    outcome_map = {}
    try:
