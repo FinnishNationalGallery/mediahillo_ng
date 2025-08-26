@@ -31,16 +31,16 @@ mets = METS(
 
 # Create files each containing a digital object which contains the sip path.
 file1 = File(
-    path="static/DATA/Testivideo-FFV1-FLAC.mkv",
-    digital_object_path="DATA/Testivideo-FFV1-FLAC.mkv"
+    path="static/DATA/Testivideo-Apple-ProRes422HQ.mkv",
+    digital_object_path="DATA/Testivideo-Apple-ProRes422HQ.mkv"
 )
 file2 = File(
     path="static/DATA/Testikuva-JPEG.jpeg",
     digital_object_path="DATA/Testikuva-JPEG.jpeg"
 )
 file3 = File(
-    path="static/DATA/Testikuva-TIFF-fixed.tif",
-    digital_object_path="DATA/Testikuva-TIFF-fixed.tif"
+    path="static/DATA/Testitiedosto-PDF.pdf",
+    digital_object_path="DATA/Testitiedosto-PDF.pdf"
 )
 
 # Create provenance metadata
@@ -63,13 +63,13 @@ file3.add_metadata([descriptive_md])
 # Try to link Apple ProRes video to sip
 ###################################
 source_file = File(
-    path="static/DATANATIVE/Jussila_Yojuna_ProRes_PCMx2.mov",
-    digital_object_path="DATANATIVE/Jussila_Yojuna_ProRes_PCMx2.mov"
+    path="static/DATANATIVE/Testivideo-Apple-ProRes422HQ.mov",
+    digital_object_path="DATANATIVE/Testivideo-Apple-ProRes422HQ.mov"
 )
 source_file.generate_technical_metadata()
 outcome_file = File(
-    path="static/DATA/Jussila_Yojuna_FFV1_FLACx2.mkv",
-    digital_object_path="DATA/Jussila_Yojuna_FFV1_FLACx2.mkv"
+    path="static/DATA/Testivideo-Apple-ProRes422HQ.mkv",
+    digital_object_path="DATA/Testivideo-Apple-ProRes422HQ.mkv"
 )
 outcome_file.generate_technical_metadata()
 
