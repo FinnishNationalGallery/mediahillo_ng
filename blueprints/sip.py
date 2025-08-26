@@ -161,96 +161,96 @@ def read_all_files(DATA_path):
    return files
 
 def read_all_files_mkv(DATA_path):
-    files = []
-    for item in os.listdir(DATA_path):
-        full_path = os.path.join(DATA_path, item)
-        file_append_flag = True
-        # Check if is file and not folder
-        if os.path.isfile(full_path):
-            digital_object_path = f"DATA/{item}"
-            static_path = f"static/{digital_object_path}"
-            # Create file object
-            file_obj = File(
-                path=static_path,
-                digital_object_path=digital_object_path
+   files = []
+   for item in os.listdir(DATA_path):
+      full_path = os.path.join(DATA_path, item)
+      file_append_flag = True
+      # Check if is file and not folder
+      if os.path.isfile(full_path):
+         digital_object_path = f"DATA/{item}"
+         static_path = f"static/{digital_object_path}"
+         # Create file object
+         file_obj = File(
+               path=static_path,
+               digital_object_path=digital_object_path
+         )
+         #
+         # CHECK IF IS MATROSKA MKV FILE AND PROCEED
+         #
+         if item.lower().endswith('.mkv'):
+            # Read settings file
+            file = open("settings.json", "r")
+            content = file.read()
+            settings = json.loads(content)
+            file.close()
+            event_time = settings['prem_norm_date']
+            agent_name = settings['prem_norm_agent']
+            # Create Premis event
+            datetime_obj = parser.parse(event_time)
+            CreateDate = datetime_obj.isoformat()
+            event = DigitalProvenanceEventMetadata(
+               event_type="normalization",
+               datetime=CreateDate,
+               outcome="success",
+               detail = "File conversion with software",
+               outcome_detail="FFV1 video in Matroska container"
             )
+            agent = DigitalProvenanceAgentMetadata(
+               name=agent_name,
+               agent_type="software",
+               #version="1.2.0"
+            )
+            event.link_agent_metadata(
+               agent,
+               agent_role="executing program"
+            )
+            # Add Premis event to file object
+            file_obj.add_metadata([event])
+            # 
+            # CHECK IF THERE IS VIDEO FRAME MD5 INFORMATION PER FILE
             #
-            # CHECK IF IS MATROSKA MKV FILE AND PROCEED
-            #
-            if item.lower().endswith('.mkv'):
-               # Read settings file
-               file = open("settings.json", "r")
-               content = file.read()
-               settings = json.loads(content)
-               file.close()
-               event_time = settings['prem_norm_date']
-               agent_name = settings['prem_norm_agent']
-               # Create Premis event
-               datetime_obj = parser.parse(event_time)
-               CreateDate = datetime_obj.isoformat()
-               event = DigitalProvenanceEventMetadata(
-                  event_type="normalization",
-                  datetime=CreateDate,
+            video_frame_file_path = os.path.join(DATA_path, f"{item}.FrameMD5.txt")
+            try:
+               with open(video_frame_file_path, "r", encoding="utf-8") as video_frame_file:
+                     for line in video_frame_file:
+                        if line.startswith("MD5="):
+                           video_frame_md = line.strip()
+               provenance_md = DigitalProvenanceEventMetadata(
+                  event_type="message digest calculation",
+                  detail=f"ffmpeg -loglevel error -i {item} -map 0:v -f md5 -",
                   outcome="success",
-                  detail = "File conversion with software",
-                  outcome_detail="FFV1 video in Matroska container"
+                  outcome_detail=video_frame_md,
                )
-               agent = DigitalProvenanceAgentMetadata(
-                  name=agent_name,
-                  agent_type="software",
-                  #version="1.2.0"
+               file_obj.add_metadata([provenance_md])
+            except FileNotFoundError:
+               pass # We do not care if there is no information
+            except Exception as e:
+               flash(f"Error reading video frame MD5! : {str(e)}", "error")
+            # 
+            # CHECK IF THERE IS DATANATIVE FILES AND MAKE LINK FOR THEM
+            #
+            outcome_map = read_datanative_linkfile()
+            if item in outcome_map:
+               source_filename, outcome_filename = outcome_map[item]
+               #print(f"Löytyi vastaavuus: Source: {source_filename} | Outcome: {outcome_filename}")
+               source_file = File(
+                  path="static/DATANATIVE/"+source_filename,
+                  digital_object_path="DATANATIVE/"+source_filename
                )
-               event.link_agent_metadata(
-                  agent,
-                  agent_role="executing program"
+               outcome_file = File(
+                  path="static/DATA/"+outcome_filename,
+                  digital_object_path="DATA/"+outcome_filename
                )
-               # Add Premis event to file object
-               file_obj.add_metadata([event])
-               # 
-               # CHECK IF THERE IS VIDEO FRAME MD5 INFORMATION PER FILE
-               #
-               video_frame_file_path = os.path.join(DATA_path, f"{item}.FrameMD5.txt")
-               try:
-                  with open(video_frame_file_path, "r", encoding="utf-8") as video_frame_file:
-                        for line in video_frame_file:
-                           if line.startswith("MD5="):
-                              video_frame_md = line.strip()
-                  provenance_md = DigitalProvenanceEventMetadata(
-                     event_type="message digest calculation",
-                     detail=f"ffmpeg -loglevel error -i {item} -map 0:v -f md5 -",
-                     outcome="success",
-                     outcome_detail=video_frame_md,
-                  )
-                  file_obj.add_metadata([provenance_md])
-               except FileNotFoundError:
-                  pass # We do not care if there is no information
-               except Exception as e:
-                  flash(f"Error reading video frame MD5! : {str(e)}", "error")
-               # 
-               # CHECK IF THERE IS DATANATIVE FILES AND MAKE LINK FOR THEM
-               #
-               outcome_map = read_datanative_linkfile()
-               if item in outcome_map:
-                  source_filename, outcome_filename = outcome_map[item]
-                  #print(f"Löytyi vastaavuus: Source: {source_filename} | Outcome: {outcome_filename}")
-                  source_file = File(
-                     path="static/DATANATIVE/"+source_filename,
-                     digital_object_path="DATANATIVE/"+source_filename
-                  )
-                  outcome_file = File(
-                     path="static/DATA/"+outcome_filename,
-                     digital_object_path="DATA/"+outcome_filename
-                  )
-                  file_obj_source, file_obj_outcome = make_datanative_premis(source_file, outcome_file)
-                  files.append(file_obj_source)
-                  files.append(file_obj_outcome)
-                  file_append_flag = False
-                  
-            # Add file object to files list
-            if file_append_flag is True:
-               files.append(file_obj)
+               file_obj_source, file_obj_outcome = make_datanative_premis(source_file, outcome_file)
+               files.append(file_obj_source)
+               files.append(file_obj_outcome)
+               file_append_flag = False
+               
+         # Add file object to files list
+         if file_append_flag is True:
+            files.append(file_obj)
 
-    return files
+   return files
 
 ## MAKE DATANATIVE PREMIS EVENT ##
 def make_datanative_premis(source_file, outcome_file):
