@@ -20,7 +20,7 @@ else:
     MP_URL = config['MP_TEST_URL'] 
     MP_PASSI = config['MP_TEST_PASS']
     MP_ENV = 'MuseumPlus TESTING ENVIRONMENT'
-MP_PASS = tuple(MP_PASSI.split(","))
+MP_PASS = tuple(MP_PASSI.split(",",1))
 
 def read_lido_xml():
     try:
