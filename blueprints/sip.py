@@ -131,7 +131,8 @@ def sip_from_directory():
       tar_name = sip_name_detect()
       sip.finalize(
          output_filepath="static/SIP/"+tar_name,
-         sign_key_filepath="signature/sip_sign_pas.pem"
+         sign_key_filepath=SIGNATURE
+         #sign_key_filepath="signature/sip_sign_pas.pem"
       )
       sip.mets.write(SIP_path+"mets.xml")
       flash("SIP created from directory!", "success")
