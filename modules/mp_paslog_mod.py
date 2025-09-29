@@ -11,14 +11,15 @@ METADATA_path = config['METADATA_FOLDER']
 if "Production" in config['CONF_PASLOG']:
     MP_URL = config['MP_PROD_URL'] 
     MP_PASSI = config['MP_PROD_PASS']
+    MP_PASSI_WRITE = config['MP_PROD_PASS_WRITE']
     MP_ENV = 'MuseumPlus PRODUCTION ENVIRONMENT'
 else:
     MP_URL = config['MP_TEST_URL'] 
     MP_PASSI = config['MP_TEST_PASS']
+    MP_PASSI_WRITE = config['MP_TEST_PASS_WRITE']
     MP_ENV = 'MuseumPlus TESTING ENVIRONMENT'
-MP_PASS = tuple(MP_PASSI.split(","))
-MP_PASSI_WRITE = config['MP_TEST_PASS_WRITE']
-MP_PASS_WRITE = tuple(MP_PASSI_WRITE.split(","))
+MP_PASS = tuple(MP_PASSI.split(",",1))
+MP_PASS_WRITE = tuple(MP_PASSI_WRITE.split(",",1))
 #
 if "Production" in config['CONF_PASLOG']:
     REST_SERVER = config['REST_SERVER_PROD']
