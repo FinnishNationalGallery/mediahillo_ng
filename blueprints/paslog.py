@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 import modules.mp_paslog_mod as mp_paslog_mod
 from models import db_paslog_mp, db_paslog_csc
 from extensions import db
-from sqlalchemy import or_, and_, func
+from sqlalchemy import select, exists, func, not_
 
 paslog_bp = Blueprint('paslog', __name__)
 
@@ -85,6 +85,7 @@ def get_mp_paslog():
         return f'Error fetching MP data: {str(e)}', 500
     return render_template('paslog_mp_marked.html', totalSize=totalSize, objects=mydict, xml=xml)
 
+
 @paslog_bp.route('/paslog_show_data')
 @login_required
 def paslog_show_data():
@@ -96,49 +97,41 @@ def paslog_show_data():
             self.pas_id = pas_id
             self.mp_paslog = mp_paslog
 
-    pdata = []
     try:
-        # Hae “ei-merkityt”: NULL, tyhjä tai whitespace
-        data = (
-            db.session.query(db_paslog_csc)
+        # Alikysely: onko MP-taulussa sama pas_mp_id ja ei-tyhjä merkintä?
+        mp_mark_exists = (
+            db.session.query(db_paslog_mp.id)
             .filter(
-                or_(
-                    db_paslog_csc.mp_paslog.is_(None),
-                    func.trim(db_paslog_csc.mp_paslog) == ''
-                )
+                db_paslog_mp.pas_mp_id == db_paslog_csc.pas_mp_id,
+                func.length(func.trim(db_paslog_mp.mp_paslog)) > 0
             )
+            .exists()
+        )
+
+        # Hae CSC-rivit, joille EI löydy merkintää MP-taulusta
+        rows = (
+            db.session.query(db_paslog_csc)
+            .filter(not_(mp_mark_exists))
             .order_by(db_paslog_csc.pas_created.desc())
             .all()
         )
 
-        for row in data:
-            # Onko sama pas_mp_id jo merkattu (ei-tyhjä ja ei-NULL)?
-            check = (
-                db.session.query(db_paslog_csc)
-                .filter(
-                    db_paslog_csc.pas_mp_id == row.pas_mp_id,
-                    and_(
-                        db_paslog_csc.mp_paslog.isnot(None),
-                        func.length(func.trim(db_paslog_csc.mp_paslog)) > 0
-                    )
-                )
-                .all()
+        pdata = [
+            Paslog(
+                id=r.id,
+                pas_mp_id=r.pas_mp_id,
+                pas_created=r.pas_created,
+                pas_id=r.pas_id,
+                mp_paslog=r.mp_paslog
             )
+            for r in rows
+        ]
 
-            if not check:  # ei merkintää -> näytetään
-                pdata.append(Paslog(
-                    id=row.id,
-                    pas_mp_id=row.pas_mp_id,
-                    pas_created=row.pas_created,
-                    pas_id=row.pas_id,
-                    mp_paslog=row.mp_paslog
-                ))
-
-        totalSize = len(pdata)
-        return render_template('paslog_show_data.html', data=pdata, totalSize=totalSize)
+        return render_template('paslog_show_data.html', data=pdata, totalSize=len(pdata))
 
     except Exception as e:
         return f'Error fetching MP marked data: {str(e)}', 500
+
 
 '''
 @paslog_bp.route('/paslog_show_data')
