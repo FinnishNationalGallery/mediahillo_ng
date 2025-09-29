@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 import modules.mp_paslog_mod as mp_paslog_mod
 from models import db_paslog_mp, db_paslog_csc
 from extensions import db
+from sqlalchemy import or_, and_, func
 
 paslog_bp = Blueprint('paslog', __name__)
 
