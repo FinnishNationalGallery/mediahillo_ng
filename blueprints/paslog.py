@@ -89,54 +89,6 @@ def get_mp_paslog():
 @paslog_bp.route('/paslog_show_data')
 @login_required
 def paslog_show_data():
-    class Paslog:
-        def __init__(self, id, pas_mp_id, pas_created, pas_id, mp_paslog):
-            self.id = id
-            self.pas_mp_id = pas_mp_id
-            self.pas_created = pas_created
-            self.pas_id = pas_id
-            self.mp_paslog = mp_paslog
-
-    try:
-        # Alikysely: onko MP-taulussa sama pas_mp_id ja ei-tyhjä merkintä?
-        mp_mark_exists = (
-            db.session.query(db_paslog_mp.id)
-            .filter(
-                db_paslog_mp.pas_mp_id == db_paslog_csc.pas_mp_id,
-                func.length(func.trim(db_paslog_mp.mp_paslog)) > 0
-            )
-            .exists()
-        )
-
-        # Hae CSC-rivit, joille EI löydy merkintää MP-taulusta
-        rows = (
-            db.session.query(db_paslog_csc)
-            .filter(not_(mp_mark_exists))
-            .order_by(db_paslog_csc.pas_created.desc())
-            .all()
-        )
-
-        pdata = [
-            Paslog(
-                id=r.id,
-                pas_mp_id=r.pas_mp_id,
-                pas_created=r.pas_created,
-                pas_id=r.pas_id,
-                mp_paslog=r.mp_paslog
-            )
-            for r in rows
-        ]
-
-        return render_template('paslog_show_data.html', data=pdata, totalSize=len(pdata))
-
-    except Exception as e:
-        return f'Error fetching MP marked data: {str(e)}', 500
-
-
-'''
-@paslog_bp.route('/paslog_show_data')
-@login_required
-def paslog_show_data():
     # Define the Paslog class (move this outside the function if possible)
     class Paslog:
         def __init__(self, id, pas_mp_id, pas_created, pas_id, mp_paslog):
@@ -184,7 +136,7 @@ def paslog_show_data():
         # Use proper error logging in production
         # current_app.logger.error(f'Error fetching MP marked data: {str(e)}')
         return f'Error fetching MP marked data: {str(e)}', 500
-'''
+
 
 @paslog_bp.route('/paslog_put_mark/', methods=['GET', 'POST'])
 @login_required
