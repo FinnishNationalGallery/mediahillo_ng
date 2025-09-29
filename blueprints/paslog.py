@@ -87,6 +87,62 @@ def get_mp_paslog():
 @paslog_bp.route('/paslog_show_data')
 @login_required
 def paslog_show_data():
+    class Paslog:
+        def __init__(self, id, pas_mp_id, pas_created, pas_id, mp_paslog):
+            self.id = id
+            self.pas_mp_id = pas_mp_id
+            self.pas_created = pas_created
+            self.pas_id = pas_id
+            self.mp_paslog = mp_paslog
+
+    pdata = []
+    try:
+        # Hae “ei-merkityt”: NULL, tyhjä tai whitespace
+        data = (
+            db.session.query(db_paslog_csc)
+            .filter(
+                or_(
+                    db_paslog_csc.mp_paslog.is_(None),
+                    func.trim(db_paslog_csc.mp_paslog) == ''
+                )
+            )
+            .order_by(db_paslog_csc.pas_created.desc())
+            .all()
+        )
+
+        for row in data:
+            # Onko sama pas_mp_id jo merkattu (ei-tyhjä ja ei-NULL)?
+            check = (
+                db.session.query(db_paslog_csc)
+                .filter(
+                    db_paslog_csc.pas_mp_id == row.pas_mp_id,
+                    and_(
+                        db_paslog_csc.mp_paslog.isnot(None),
+                        func.length(func.trim(db_paslog_csc.mp_paslog)) > 0
+                    )
+                )
+                .all()
+            )
+
+            if not check:  # ei merkintää -> näytetään
+                pdata.append(Paslog(
+                    id=row.id,
+                    pas_mp_id=row.pas_mp_id,
+                    pas_created=row.pas_created,
+                    pas_id=row.pas_id,
+                    mp_paslog=row.mp_paslog
+                ))
+
+        totalSize = len(pdata)
+        return render_template('paslog_show_data.html', data=pdata, totalSize=totalSize)
+
+    except Exception as e:
+        return f'Error fetching MP marked data: {str(e)}', 500
+
+'''
+@paslog_bp.route('/paslog_show_data')
+@login_required
+def paslog_show_data():
     # Define the Paslog class (move this outside the function if possible)
     class Paslog:
         def __init__(self, id, pas_mp_id, pas_created, pas_id, mp_paslog):
@@ -134,6 +190,7 @@ def paslog_show_data():
         # Use proper error logging in production
         # current_app.logger.error(f'Error fetching MP marked data: {str(e)}')
         return f'Error fetching MP marked data: {str(e)}', 500
+'''
 
 @paslog_bp.route('/paslog_put_mark/', methods=['GET', 'POST'])
 @login_required
