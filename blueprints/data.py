@@ -1,3 +1,10 @@
+### FILENAME VALIDATION DEPENDECIES
+from __future__ import annotations
+import string
+import unicodedata
+from pathlib import Path
+from zoneinfo import ZoneInfo
+###
 import datetime
 import json
 import os
@@ -13,13 +20,7 @@ from dotenv import dotenv_values
 from markupsafe import Markup
 from dateutil import parser
 from xml.dom import minidom
-### FILENAME VALIDATION DEPENDECIES
-from __future__ import annotations
-import string
-import unicodedata
-from pathlib import Path
-from zoneinfo import ZoneInfo
-###
+
 
 data_bp = Blueprint('data', __name__)
 
