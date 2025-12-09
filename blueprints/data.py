@@ -640,7 +640,7 @@ def validate_all_filenames(DATA_path_full, DATANATIVE_path_full):
     Returns:
         tuple: (total_invalid_count, report_path)
     """
-    report_path = os.path.join(DATA_path_full, "validate_filenames.txt")
+    report_path = os.path.join(DATA_path_full, "validation_filenames.txt")
     
     # Validoi molemmat hakemistot
     data_invalid = validate_filenames_in_directory(DATA_path_full)
