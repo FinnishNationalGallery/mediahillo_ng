@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import re
 import shutil
 import subprocess
 import xml.etree.ElementTree as ET
@@ -562,11 +563,159 @@ def file_delete():
 ### FILENAME VALIDATION
 #######################
 
+def validate_filename(filename):
+    """
+    Tarkistaa onko tiedostonimi validi.
+    
+    Validi tiedostonimi:
+    - Ei välilyöntejä
+    - Ei skandinaavisia merkkejä (ä, ö, å, Ä, Ö, Å)
+    - Ei UNIX-kiellettyjä merkkejä (NULL byte ja /)
+    
+    Returns:
+        tuple: (is_valid, error_message)
+    """
+    errors = []
+    
+    # Tarkista välilyönnit
+    if ' ' in filename:
+        errors.append("sisältää välilyöntejä")
+    
+    # Tarkista skandinaaviset merkit
+    if re.search(r'[äöåÄÖÅ]', filename):
+        errors.append("sisältää skandinaavisia merkkejä (ä, ö, å)")
+    
+    # Tarkista UNIX-kielletyt merkit (NULL ja /)
+    if '\0' in filename:
+        errors.append("sisältää NULL-merkin")
+    if '/' in filename:
+        errors.append("sisältää kauttaviivan (/)")
+    
+    if errors:
+        return False, ", ".join(errors)
+    return True, None
+
+
+def validate_filenames_in_directory(directory_path):
+    """
+    Käy läpi hakemiston kaikki tiedostot rekursiivisesti ja validoi nimet.
+    
+    Returns:
+        list: Lista tupleja (filepath, filename, error_message)
+    """
+    invalid_files = []
+    
+    if not os.path.exists(directory_path):
+        return [("ERROR", directory_path, "Hakemistoa ei löydy")]
+    
+    for root, dirs, files in os.walk(directory_path):
+        # Tarkista tiedostot
+        for filename in files:
+            is_valid, error_msg = validate_filename(filename)
+            if not is_valid:
+                filepath = os.path.join(root, filename)
+                # Laske suhteellinen polku raportointia varten
+                rel_path = os.path.relpath(filepath, directory_path)
+                invalid_files.append((rel_path, filename, error_msg))
+        
+        # Tarkista myös hakemistojen nimet
+        for dirname in dirs:
+            is_valid, error_msg = validate_filename(dirname)
+            if not is_valid:
+                dirpath = os.path.join(root, dirname)
+                rel_path = os.path.relpath(dirpath, directory_path)
+                invalid_files.append((rel_path, dirname, error_msg + " (hakemisto)"))
+    
+    return invalid_files
+
+
+def validate_all_filenames(DATA_path_full, DATANATIVE_path_full):
+    """
+    Pääfunktio joka validoi molemmat hakemistot ja kirjoittaa raportin.
+    
+    Args:
+        DATA_path_full: Polku DATA-hakemistoon
+        DATANATIVE_path_full: Polku DATANATIVE-hakemistoon
+    
+    Returns:
+        tuple: (total_invalid_count, report_path)
+    """
+    report_path = os.path.join(DATA_path_full, "validate_filenames.txt")
+    
+    # Validoi molemmat hakemistot
+    data_invalid = validate_filenames_in_directory(DATA_path_full)
+    datanative_invalid = validate_filenames_in_directory(DATANATIVE_path_full)
+    
+    # Kirjoita raportti
+    with open(report_path, 'w', encoding='utf-8') as f:
+        f.write("=" * 80 + "\n")
+        f.write("TIEDOSTONIMIEN VALIDOINTIRAPORTTI\n")
+        f.write("=" * 80 + "\n\n")
+        
+        # DATA-hakemiston tulokset
+        f.write(f"DATA-HAKEMISTO: {DATA_path_full}\n")
+        f.write("-" * 80 + "\n")
+        if data_invalid:
+            f.write(f"Löydettiin {len(data_invalid)} ei-validia tiedostoa/hakemistoa:\n\n")
+            for rel_path, name, error in data_invalid:
+                f.write(f"  Polku: {rel_path}\n")
+                f.write(f"  Nimi: {name}\n")
+                f.write(f"  Virhe: {error}\n")
+                f.write("\n")
+        else:
+            f.write("✓ Kaikki tiedostonimet ovat valideja!\n\n")
+        
+        # DATANATIVE-hakemiston tulokset
+        f.write("\n" + "=" * 80 + "\n")
+        f.write(f"DATANATIVE-HAKEMISTO: {DATANATIVE_path_full}\n")
+        f.write("-" * 80 + "\n")
+        if datanative_invalid:
+            f.write(f"Löydettiin {len(datanative_invalid)} ei-validia tiedostoa/hakemistoa:\n\n")
+            for rel_path, name, error in datanative_invalid:
+                f.write(f"  Polku: {rel_path}\n")
+                f.write(f"  Nimi: {name}\n")
+                f.write(f"  Virhe: {error}\n")
+                f.write("\n")
+        else:
+            f.write("✓ Kaikki tiedostonimet ovat valideja!\n\n")
+        
+        # Yhteenveto
+        total_invalid = len(data_invalid) + len(datanative_invalid)
+        f.write("\n" + "=" * 80 + "\n")
+        f.write("YHTEENVETO\n")
+        f.write("-" * 80 + "\n")
+        f.write(f"DATA-hakemisto: {len(data_invalid)} virheellistä\n")
+        f.write(f"DATANATIVE-hakemisto: {len(datanative_invalid)} virheellistä\n")
+        f.write(f"YHTEENSÄ: {total_invalid} virheellistä tiedostoa/hakemistoa\n")
+        f.write("=" * 80 + "\n")
+    
+    return len(data_invalid) + len(datanative_invalid), report_path
+
+
 @data_bp.route("/validate-filenames", methods=["GET", "POST"])
 def validate_filenames_route():
+    """
+    Flask route-funktio joka käsittelee validointipyynnön.
+    """
     if request.method == "POST":
-        flash(f"Polku1: {DATA_path_full}. Polku2: {DATANATIVE_path_full}", "success")
+        try:
+            total_invalid, report_path = validate_all_filenames(
+                DATA_path_full, 
+                DATANATIVE_path_full
+            )
+            
+            if total_invalid == 0:
+                flash(f'✓ Kaikki tiedostonimet ovat valideja! Raportti tallennettu: {report_path}', 
+                      'success')
+            else:
+                flash(f'⚠ Löydettiin {total_invalid} ei-validia tiedostonimeä. '
+                      f'Katso raportti: {report_path}', 
+                      'warning')
+            
+        except Exception as e:
+            flash(f'Virhe validoinnissa: {str(e)}', 'danger')
+        
         return redirect(url_for("data.validate_filenames_route"))
-
+    
     # GET -> Show DATA folder
     return redirect(url_for('data.data'))
