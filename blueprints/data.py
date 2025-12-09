@@ -568,5 +568,5 @@ def validate_filenames_route():
         flash(f"Polku1: {DATA_path_full}. Polku2: {DATANATIVE_path_full}", "success")
         return redirect(url_for("data.validate_filenames_route"))
 
-    # GET -> vahvistussivu
+    # GET -> Show DATA folder
     return redirect(url_for('data.data'))
