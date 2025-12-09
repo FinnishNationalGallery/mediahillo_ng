@@ -710,7 +710,7 @@ def validate_filenames_route():
             else:
                 flash(f'⚠ Löydettiin {total_invalid} ei-validia tiedostonimeä. '
                       f'Katso raportti: {report_path}', 
-                      'warning')
+                      'error')
             
         except Exception as e:
             flash(f'Virhe validoinnissa: {str(e)}', 'danger')
