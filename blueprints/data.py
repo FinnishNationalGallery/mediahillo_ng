@@ -6,18 +6,28 @@ import subprocess
 import xml.etree.ElementTree as ET
 from typing import Tuple
 from subprocess import PIPE
-from flask import Blueprint, current_app, render_template, request, url_for, flash, redirect, send_file, session, jsonify
+from flask import Blueprint, current_app, render_template, request, url_for, flash, redirect, send_file, session, jsonify, Response
 from flask_login import login_required, current_user
 from utils import logfile_output, logfile_outerror, logfile_validation, logfile_output, subprocess_args, get_diskinfo
 from dotenv import dotenv_values
 from markupsafe import Markup
 from dateutil import parser
 from xml.dom import minidom
+### FILENAME VALIDATION DEPENDECIES
+from __future__ import annotations
+import string
+import unicodedata
+from pathlib import Path
+from zoneinfo import ZoneInfo
+###
 
 data_bp = Blueprint('data', __name__)
 
 config = dotenv_values(".env")
 DATA_path = config['DATA_FOLDER']
+DATA_path_full = config['APP_FOLDER'] + config['DATA_FOLDER']
+DATANATIVE_path = config['DATANATIVE_FOLDER']
+DATANATIVE_path_full = config['APP_FOLDER'] + config['DATANATIVE_FOLDER']
 METADATA_path = config['METADATA_FOLDER']
 SIP_path = config['SIP_FOLDER']
 SERVER_ffmpeg = config['SERVER_FFMPEG']
@@ -553,3 +563,134 @@ def file_delete():
       except:
          deleteMessage = "Cannot delete directory!"
    return redirect(url_for(view))
+
+#######################
+### FILENAME VALIDATION
+#######################
+
+SAFE_WHITELIST = set(string.ascii_letters + string.digits + "._-")
+RISKY_METACHARS = set(r''' '"`\/$&|;<>()[\]{}*?!#%^=+~,:@''')
+
+def _nfc(s: str) -> str: return unicodedata.normalize("NFC", s)
+def _has_whitespace(s: str) -> bool: return any(ch.isspace() for ch in s)
+def _has_non_ascii(s: str) -> bool: return not all(ord(ch) < 128 for ch in s)
+def _control_chars(s: str) -> set[str]: return {ch for ch in s if ord(ch) < 32 or ord(ch) == 127}
+def _risky_metachars(s: str) -> set[str]: return {ch for ch in s if ch in RISKY_METACHARS}
+def _outside_whitelist(s: str) -> set[str]: return {ch for ch in s if ch not in SAFE_WHITELIST}
+
+def analyze_name(name: str) -> list[str]:
+    reasons: list[str] = []
+    s = _nfc(name)
+    if _has_whitespace(s): reasons.append("välilyönti/valkoinen merkki")
+    ctrl = _control_chars(s)
+    if ctrl: reasons.append(f"kontrollimerkki: {repr(''.join(sorted(ctrl)))}")
+    meta = _risky_metachars(s)
+    if meta: reasons.append(f"metamerkki(t): {''.join(sorted(meta))}")
+    outside = _outside_whitelist(s) - meta - ctrl
+    if outside:
+        if _has_non_ascii(s):
+            non_ascii = {ch for ch in outside if ord(ch) >= 128}
+            ascii_odd = outside - non_ascii
+            if non_ascii: reasons.append(f"Unicode-merkki(t): {''.join(sorted(non_ascii))}")
+            if ascii_odd: reasons.append(f"ei-whitelist ASCII: {''.join(sorted(ascii_odd))}")
+        else:
+            reasons.append(f"ei-whitelist: {''.join(sorted(outside))}")
+    return reasons
+
+def scan_dirs(dirs: list[str], include_dirs: bool = False):
+    for root_dir in dirs:
+        root_dir = os.path.abspath(root_dir)
+        if not os.path.isdir(root_dir):
+            yield f"[VAROITUS] Ei hakemistoa: {root_dir}", ["varoitus"]
+            continue
+        for current_root, subdirs, files in os.walk(root_dir, topdown=True, followlinks=False):
+            if include_dirs:
+                for dname in subdirs:
+                    reasons = analyze_name(dname)
+                    if reasons:
+                        yield os.path.join(current_root, dname), reasons
+            for fname in files:
+                reasons = analyze_name(fname)
+                if reasons:
+                    yield os.path.join(current_root, fname), reasons
+
+# --- UUTTA: lue polut suoraan globaaleista muuttujista ---
+def _dirs_from_vars() -> list[str]:
+    # Oleta että DATA_path ja DATANATIVE_path on määritelty data.py:n alussa
+    paths = []
+    for p in (globals().get("DATA_path_full"), globals().get("DATANATIVE_path_full")):
+        if p:
+            paths.append(os.path.abspath(os.path.expanduser(os.path.expandvars(p))))
+    # poista duplikaatit, säilytä järjestys
+    return list(dict.fromkeys(paths))
+
+def write_validation_report(dirs: list[str], include_dirs: bool = False, outfile: Path | None = None) -> dict:
+    """
+    Kirjoittaa raportin static/DATA/validate_filenames.txt, ellei outfile ole annettu.
+    """
+    if outfile is None:
+        static_base = Path(current_app.static_folder)  # yleensä <app_root>/static
+        outfile = static_base / "DATA" / "validate_filenames.txt"
+
+    per_dir_counts = {os.path.abspath(d): 0 for d in dirs}
+    total = 0
+
+    try:
+        tz = ZoneInfo("Europe/Helsinki")
+        ts = datetime.now(tz).isoformat(sep=" ", timespec="seconds")
+    except Exception:
+        ts = datetime.now().isoformat(sep=" ", timespec="seconds")
+
+    lines: list[str] = []
+    lines.append("# Filename validation report")
+    lines.append(f"# Generated: {ts}")
+    lines.append(f"# Include directories: {include_dirs}")
+    lines.append("# Roots:")
+    for d in dirs:
+        lines.append(f"#   - {os.path.abspath(d)}")
+    lines.append("")
+
+    for path, reasons in scan_dirs(dirs, include_dirs=include_dirs):
+        if reasons == ["varoitus"]:
+            lines.append(f"{path}")
+            continue
+        total += 1
+        for rd in per_dir_counts:
+            try:
+                if os.path.commonpath([os.path.abspath(path), rd]) == rd:
+                    per_dir_counts[rd] += 1
+                    break
+            except ValueError:
+                pass
+        lines.append(f"{path}")
+        lines.append(f"  -> syy: {', '.join(reasons)}")
+
+    lines.append("")
+    lines.append("Yhteenveto")
+    lines.append("---------")
+    for rd, cnt in per_dir_counts.items():
+        lines.append(f"{rd}: {cnt} osumaa")
+    lines.append(f"Kaikki yhteensä: {total} osumaa")
+    lines.append("")
+
+    outfile.parent.mkdir(parents=True, exist_ok=True)
+    with outfile.open("w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines))
+
+    return {"outfile": str(outfile), "total": total, "per_dir_counts": per_dir_counts}
+
+@data_bp.route("/validate-filenames", methods=["GET", "POST"])
+def validate_filenames_route():
+    if request.method == "POST":
+        dirs = _dirs_from_vars()
+        if not dirs:
+            flash("DATA_path_full / DATANATIVE_path_full eivät ole määriteltyinä.", "error")
+            return redirect(url_for("data.validate_filenames_route"))
+
+        include_dirs = True # Check also directory names
+        result = write_validation_report(dirs=dirs, include_dirs=include_dirs)
+        flash(f"OK: {result['total']} osumaa. Raportti: {result['outfile']}", "success")
+        return redirect(url_for("data.validate_filenames_route"))
+
+    # GET -> vahvistussivu
+    return redirect(url_for('data.data'))

@@ -106,6 +106,15 @@
 
         <div class="box">
             &larr; 
+            <form method="post" action="{{ url_for('data.validate_filenames') }}">
+                <button type="submit" class="button is-warning">Check</button> filenames
+            </form>
+        </div>
+
+
+
+        <div class="box">
+            &larr; 
             <a href="{{url_for('data.data_delete')}}"><button class="button is-danger">Delete</button></a>  
             Delete all files from DATA-folder
         </div>
