@@ -565,7 +565,7 @@ def file_delete():
 
 def validate_filename(filename):
     """
-    Checks if a filename is valid.
+    Checks if a filename is valid in pure UNIX style.
     
     Valid filename:
     - No spaces
@@ -649,7 +649,7 @@ def validate_all_filenames(DATA_path_full, DATANATIVE_path_full):
     # Write report
     with open(report_path, 'w', encoding='utf-8') as f:
         f.write("=" * 80 + "\n")
-        f.write("FILENAME VALIDATION REPORT\n")
+        f.write("FILENAME VALIDATION REPORT: Pure UNIX style\n")
         f.write("=" * 80 + "\n\n")
         
         # DATA directory results
