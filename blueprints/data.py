@@ -705,7 +705,7 @@ def validate_filenames_route():
             )
             
             if total_invalid == 0:
-                flash(f'✓ All filenames are valid! Report saved: {report_path}', 
+                flash(f'✓ All filenames are valid! Report saved: {DATA_path}', 
                       'success')
             else:
                 flash(f'⚠ Found {total_invalid} invalid filename(s). '
