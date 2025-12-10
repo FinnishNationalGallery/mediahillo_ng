@@ -640,7 +640,7 @@ def validate_all_filenames(DATA_path_full, DATANATIVE_path_full):
     Returns:
         tuple: (total_invalid_count, report_path)
     """
-    report_path = os.path.join(DATA_path_full, "validate_filenames.txt")
+    report_path = os.path.join(DATA_path_full, "validation_filenames.txt")
     
     # Validate both directories
     data_invalid = validate_filenames_in_directory(DATA_path_full)
@@ -649,7 +649,7 @@ def validate_all_filenames(DATA_path_full, DATANATIVE_path_full):
     # Write report
     with open(report_path, 'w', encoding='utf-8') as f:
         f.write("=" * 80 + "\n")
-        f.write("FILENAME VALIDATION REPORT: Pure UNIX style\n")
+        f.write("FILENAME VALIDATION REPORT: Check if filenames are pure UNIX style\n")
         f.write("=" * 80 + "\n\n")
         
         # DATA directory results
