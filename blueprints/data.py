@@ -709,7 +709,7 @@ def validate_filenames_route():
                       'success')
             else:
                 flash(f'⚠ Found {total_invalid} invalid filename(s). '
-                      f'See report: {report_path}', 
+                      f'See report: {DATA_path}', 
                       'error')
             
         except Exception as e:
