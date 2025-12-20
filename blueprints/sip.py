@@ -5,6 +5,13 @@ import datetime
 import uuid
 import tarfile
 import glob
+import gc
+
+from siptools_ng.file import File
+from siptools_ng.sip import SIP
+from mets_builder import METS, MetsProfile, StructuralMapDiv, StructuralMap
+from mets_builder.metadata import DigitalProvenanceEventMetadata, DigitalProvenanceAgentMetadata, ImportedMetadata, MetadataType, MetadataFormat
+
 from dateutil import parser
 from flask import Blueprint, current_app, render_template, request, url_for, flash, redirect, send_file, session, jsonify
 from flask_login import login_required, current_user
@@ -12,11 +19,9 @@ from modules import mp_metadata, pas_sftp_paramiko
 from utils import logfile_output, logfile_outerror, logfile_datanative, subprocess_args, get_diskinfo
 from dotenv import dotenv_values
 from markupsafe import Markup
-from mets_builder import METS, MetsProfile, StructuralMapDiv, StructuralMap
-from mets_builder.metadata import DigitalProvenanceEventMetadata, DigitalProvenanceAgentMetadata, ImportedMetadata, MetadataType, MetadataFormat
 
-from siptools_ng.file import File
-from siptools_ng.sip import SIP
+
+
 
 sip_bp = Blueprint('sip', __name__)
 
@@ -328,6 +333,8 @@ def read_datanative_linkfile():
 @login_required
 def sip_from_files():
    update = request.args.get('update') 
+   sip = None
+   files = None
    ###
    file = open("settings.json", "r")
    content = file.read()
@@ -387,9 +394,14 @@ def sip_from_files():
       )
       sip.mets.write(SIP_path+"mets.xml")
       flash("SIP created from files!", "success")
-      return redirect(url_for('sip.sip'))
+      #return redirect(url_for('sip.sip'))
    except Exception as e:
       flash(f"Error creating SIP! : {str(e)}", "error")
+      #return redirect(url_for('sip.sip'))
+   finally:
+      sip = None
+      files = None
+      gc.collect()
       return redirect(url_for('sip.sip'))
 
 @sip_bp.route("/sip_premis_event_created") # MuseumPlus digital object creation
