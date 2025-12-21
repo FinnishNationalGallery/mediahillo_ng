@@ -6,6 +6,7 @@ import uuid
 import tarfile
 import glob
 import gc
+import traceback
 
 from siptools_ng.file import File
 from siptools_ng.sip import SIP
@@ -397,7 +398,17 @@ def sip_from_files():
       #return redirect(url_for('sip.sip'))
    except Exception as e:
       flash(f"Error creating SIP! : {str(e)}", "error")
-      #return redirect(url_for('sip.sip'))
+      os.makedirs(SIPLOG_path, exist_ok=True)
+      error_file = os.path.join(SIPLOG_path, "sip_error.txt")
+      with open(error_file, "a", encoding="utf-8") as f:
+         f.write("\n" + "=" * 80 + "\n")
+         f.write(f"Timestamp: {datetime.datetime.now().isoformat(timespec='seconds')}\n")
+         f.write(f"Exception: {type(e).__name__}: {e}\n")
+         f.write(f"Request: {request.method} {request.full_path}\n")
+         f.write(f"Remote: {request.remote_addr}\n")
+         f.write("\nTraceback:\n")
+         f.write(traceback.format_exc())
+         #return redirect(url_for('sip.sip'))
    finally:
       sip = None
       files = None
