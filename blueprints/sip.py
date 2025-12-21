@@ -408,6 +408,15 @@ def sip_from_files():
          f.write(f"Remote: {request.remote_addr}\n")
          f.write("\nTraceback:\n")
          f.write(traceback.format_exc())
+      siplog_error_file = os.path.join(SIPLOG_path, "output.txt")
+      with open(siplog_error_file, "a", encoding="utf-8") as f:
+         f.write("\n" + "=" * 80 + "\n")
+         f.write(f"Timestamp: {datetime.datetime.now().isoformat(timespec='seconds')}\n")
+         f.write(f"Exception: {type(e).__name__}: {e}\n")
+         f.write(f"Request: {request.method} {request.full_path}\n")
+         f.write(f"Remote: {request.remote_addr}\n")
+         f.write("\nTraceback:\n")
+         f.write(traceback.format_exc())
          #return redirect(url_for('sip.sip'))
    finally:
       sip = None
