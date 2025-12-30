@@ -563,3 +563,21 @@ def sip_file_delete():
       except:
          deleteMessage = "Cannot delete directory!"
    return redirect(url_for(view))
+
+
+@sip_bp.route("/restart_gunicorn", methods=["GET", "POST"])
+def restart_gunicorn():
+    """
+    Restart Gunicorn www-server and reset sip-instance.
+    """
+    if request.method == "POST":
+        try:
+         subprocess_args('/home/pasisti/restart_gunicorn.sh')
+            
+        except Exception as e:
+            flash(f'Validation error: {str(e)}', 'danger')
+        
+        return redirect(url_for("sip.restart_gunicorn"))
+    
+    # GET -> Show SIP folder
+    return redirect(url_for('sip.sip'))

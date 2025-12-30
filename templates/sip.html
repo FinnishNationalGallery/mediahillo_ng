@@ -74,6 +74,9 @@
             Files and folders inside TAR-file:
             <pre>{{ output }}</pre>
         </div>
+            <form method="post" action="{{ url_for('sip.restart_gunicorn') }}">
+                &larr; <button type="submit" class="button is-warning">Reset</button>www-server
+            </form>
     </div>
     <div class="column">
         <div class="notification is-warning">
