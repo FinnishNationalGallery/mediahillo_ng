@@ -17,7 +17,7 @@ from dateutil import parser
 from flask import Blueprint, current_app, render_template, request, url_for, flash, redirect, send_file, session, jsonify
 from flask_login import login_required, current_user
 from modules import mp_metadata, pas_sftp_paramiko
-from utils import logfile_output, logfile_outerror, logfile_datanative, subprocess_args, get_diskinfo
+from utils import logfile_output, logfile_outerror, logfile_datanative, subprocess_args, subprocess_args_simple, get_diskinfo
 from dotenv import dotenv_values
 from markupsafe import Markup
 
@@ -572,7 +572,7 @@ def restart_gunicorn():
     """
     if request.method == "POST":
         try:
-         subprocess_args('/home/pasisti/restart_gunicorn.sh')
+         subprocess_args_simple('/home/pasisti/restart_gunicorn.sh')
             
         except Exception as e:
             flash(f'Validation error: {str(e)}', 'danger')

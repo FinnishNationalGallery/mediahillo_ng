@@ -74,9 +74,7 @@
             Files and folders inside TAR-file:
             <pre>{{ output }}</pre>
         </div>
-            <form method="post" action="{{ url_for('sip.restart_gunicorn') }}">
-                <button type="submit" class="button is-warning">Reset</button> www-server and after "502 Bad Gateway" refresh Browser
-            </form>
+
     </div>
     <div class="column">
         <div class="notification is-warning">
@@ -115,6 +113,13 @@
             Delete all files from SIP-folder
               
         </div>
+        <div class="box">
+            &larr;
+            <form method="post" action="{{ url_for('sip.restart_gunicorn') }}">
+                <button type="submit" class="button is-warning">Reset</button> www-server and after "502 Bad Gateway" refresh Browser
+            </form>
+        </div>
+
     </div>
 </div>
 

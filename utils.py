@@ -38,6 +38,12 @@ def subprocess_args(*args):
    logfile_output(out.stdout+"\n")
    logfile_outerror(out.stderr)
 
+def subprocess_args_simple(*args):
+   listToStrCmd = '\' \''.join(map(str, list(args)))
+   commandStr = '\'' + listToStrCmd + '\''
+   cmd = commandStr  # No need to activate venv
+   out = subprocess.run(cmd, shell=True, executable='/bin/bash', stdout=PIPE, stderr=PIPE, universal_newlines=True)
+
 def get_diskinfo():
    cmd = 'df -h ' + APP_FOLDER
    out = subprocess.run(cmd, shell=True, executable='/bin/bash', stdout=PIPE, stderr=PIPE, universal_newlines=True)
