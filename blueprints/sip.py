@@ -20,6 +20,7 @@ from modules import mp_metadata, pas_sftp_paramiko
 from utils import logfile_output, logfile_outerror, logfile_datanative, subprocess_args, subprocess_args_simple, get_diskinfo
 from dotenv import dotenv_values
 from markupsafe import Markup
+from subprocess import run, PIPE
 
 
 
@@ -572,7 +573,23 @@ def restart_gunicorn():
     """
     if request.method == "POST":
         try:
-         subprocess_args_simple('/home/pasisti/restart_gunicorn.sh')
+         #subprocess_args_simple('/home/pasisti/restart_gunicorn.sh')
+
+         env = os.environ.copy()
+         env['PATH'] = '/usr/local/bin:/usr/bin:/bin:/home/pasisti/.local/bin'
+         env['LANG'] = 'en_US.UTF-8'
+         env['LC_ALL'] = 'en_US.UTF-8'
+
+         # Run script
+         result = run(
+            '/home/pasisti/restart_gunicorn.sh',
+            shell=True,
+            executable='/bin/bash',
+            stdout=PIPE,
+            stderr=PIPE,
+            universal_newlines=True,
+            env=env  
+         )
             
         except Exception as e:
             flash(f'Validation error: {str(e)}', 'danger')
