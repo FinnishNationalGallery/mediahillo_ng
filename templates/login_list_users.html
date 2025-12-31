@@ -31,6 +31,11 @@
                 <button type="submit" class="button is-warning">Update</button> application codes from git repository (git pull)
             </form>
         </div>
+        <div class="box">
+            <form method="post" action="{{ url_for('sip.restart_gunicorn') }}">
+                &larr; <button type="submit" class="button is-warning">Reset</button> www-server and after "502 Bad Gateway" refresh Browser
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
