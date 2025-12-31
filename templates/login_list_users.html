@@ -24,6 +24,9 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <form method="post" action="{{ url_for('sip.update_git_pull') }}">
+                &larr; <button type="submit" class="button is-warning">Update</button> application codes from git repository
+            </form>
         </div>
     </div>
 </div>

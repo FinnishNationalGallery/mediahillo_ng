@@ -565,6 +565,9 @@ def sip_file_delete():
          deleteMessage = "Cannot delete directory!"
    return redirect(url_for(view))
 
+#######################
+### RESTART GUNICORN 
+#######################
 
 @sip_bp.route("/restart_gunicorn", methods=["GET", "POST"])
 def restart_gunicorn():
@@ -573,8 +576,6 @@ def restart_gunicorn():
     """
     if request.method == "POST":
         try:
-         #subprocess_args_simple('/home/pasisti/restart_gunicorn.sh')
-
          env = os.environ.copy()
          env['PATH'] = '/usr/local/bin:/usr/bin:/bin:/home/pasisti/.local/bin'
          env['LANG'] = 'en_US.UTF-8'
@@ -595,6 +596,41 @@ def restart_gunicorn():
             flash(f'Validation error: {str(e)}', 'danger')
         
         return redirect(url_for("sip.restart_gunicorn"))
+    
+    # GET -> Show SIP folder
+    return redirect(url_for('sip.sip'))
+
+#######################
+### UPDATE GIT CODES 
+#######################
+
+@sip_bp.route("/update_git_pull", methods=["GET", "POST"])
+def update_git_pull():
+    """
+    Update codes from git repository.
+    """
+    if request.method == "POST":
+        try:
+         env = os.environ.copy()
+         env['PATH'] = '/usr/local/bin:/usr/bin:/bin:/home/pasisti/.local/bin'
+         env['LANG'] = 'en_US.UTF-8'
+         env['LC_ALL'] = 'en_US.UTF-8'
+
+         # Run script
+         result = run(
+            '/home/pasisti/update_git_pull.sh',
+            shell=True,
+            executable='/bin/bash',
+            stdout=PIPE,
+            stderr=PIPE,
+            universal_newlines=True,
+            env=env  
+         )
+            
+        except Exception as e:
+            flash(f'Validation error: {str(e)}', 'danger')
+        
+        return redirect(url_for("sip.update_git_pull"))
     
     # GET -> Show SIP folder
     return redirect(url_for('sip.sip'))
