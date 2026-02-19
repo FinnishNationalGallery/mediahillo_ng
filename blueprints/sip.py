@@ -101,7 +101,7 @@ def sip_from_directory():
             package_id=session['mp_inv'],
             content_id=session['mp_inv'],
             create_date= date_obj,
-            last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))),
+            last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=0))),
             record_status="update"
          )
       else:
@@ -360,7 +360,7 @@ def sip_from_files():
             package_id=session['mp_inv'],
             content_id=session['mp_inv'],
             create_date= date_obj,
-            last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))),
+            last_mod_date= datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=0))),
             record_status="update"
          )
       else:
@@ -436,7 +436,7 @@ def sip_premis_event_created():
    agent_name = "MuseumPlus"
    agent_type = "software"
    if not session.get('mp_created'): # Try get date from MuseumPlus Lido read
-      session['mp_created'] = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat()
+      session['mp_created'] = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=0))).isoformat()
       #session['mp_created'] = "2018-04-12T14:09:00.233"
    subprocess_args('premis-event', event_type, session['mp_created'], '--event_detail', event_detail, '--event_outcome', event_outcome, '--event_outcome_detail', event_outcome_detail, '--workspace', SIP_path, '--agent_name', agent_name, '--agent_type', agent_type)
    if redir == 'once':
