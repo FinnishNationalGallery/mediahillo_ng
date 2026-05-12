@@ -105,6 +105,14 @@
         </div>
 
         <div class="box">
+            <strong>Validate all files in DATA-folder</strong>
+            </br></br>
+            &larr; 
+            <a href="{{url_for('data.analyze_all_files')}}"><button class="button is-success" id="hide3" onclick="togglePopup()">Analyze</button></a>
+            Validate all files and write validation report
+        </div>
+
+        <div class="box">
             <form method="post" action="{{ url_for('data.validate_filenames_route') }}">
                 &larr; <button type="submit" class="button is-warning">Check</button> Check filenames in DATA and DATANATIVE folders
             </form>

@@ -329,6 +329,75 @@ def analyze_file():
    logfile_validation("\n")
    return redirect(url_for('data.data'))
 
+@data_bp.route("/analyze_all_files")
+@login_required
+def analyze_all_files():
+    """
+    Validoi kaikki tiedostot DATA_path-hakemistossa käyttäen
+    analyze_file_validation-funktiota. Kirjoittaa raportin validation.txt-tiedostoon.
+    """
+    # Alusta validation.txt otsikolla (tuore raportti)
+    validation_file = os.path.join(DATA_path, "validation.txt")
+    try:
+        with open(validation_file, 'w', encoding='utf-8') as f:
+            f.write("=" * 80 + "\n")
+            f.write("FILE VALIDATION REPORT - All files in DATA-folder\n")
+            f.write(f"Path: {DATA_path}\n")
+            f.write(f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write("=" * 80 + "\n\n")
+    except Exception as e:
+        flash(f"Error initializing validation report: {str(e)}", 'error')
+        return redirect(url_for('data.data'))
+
+    # Hae tiedostot DATA_path-hakemistosta
+    try:
+        files = sorted(os.listdir(DATA_path))
+    except Exception as e:
+        flash(f"Error reading DATA folder: {str(e)}", 'error')
+        return redirect(url_for('data.data'))
+
+    # Ohita raportti- ja info-tiedostot
+    skip_files = ['validation.txt', 'validation_filenames.txt']
+
+    validated_count = 0
+    skipped_count = 0
+    invalid_count = 0
+
+    for filename in files:
+        full_path = os.path.join(DATA_path, filename)
+
+        # Ohita hakemistot
+        if os.path.isdir(full_path):
+            skipped_count += 1
+            continue
+
+        # Ohita raportit ja mediainfo-tulosteet
+        if filename in skip_files or filename.endswith('-INFO.txt'):
+            skipped_count += 1
+            continue
+
+        # Suorita validointi FILE VALIDATION -osion funktiolla
+        file_analysis = analyze_file_validation(full_path)
+        grade = file_analysis.get("grade", "")
+        well_formed = file_analysis.get("well-formed", "")
+        messages = file_analysis.get("messages", "")
+
+        # Kirjaa lokitiedostoon
+        logfile_validation(filename + " -> " + well_formed + " -> " + messages + "\n")
+        logfile_validation("\n")
+
+        validated_count += 1
+        if str(well_formed).upper() != "TRUE":
+            invalid_count += 1
+
+    flash(
+        f"Validated {validated_count} file(s). "
+        f"Skipped {skipped_count}. Invalid/errors: {invalid_count}. "
+        f"See validation report below.",
+        'success'
+    )
+    return redirect(url_for('data.data'))
+
 #######################
 ### FILE MEDIAINFO  ###
 #######################
