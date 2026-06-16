@@ -18,10 +18,9 @@ def pas_rest_status():
    status_data = None
    error = ""
    try:
-      # get_status() palauttaa jo valmiiksi jäsennetyn dictin (response.json()).
-      # Varmistetaan silti, että rakenne on odotettu ja status onnistunut.
       if isinstance(message, dict) and message.get('status') == 'success':
          capacity = message['data']['capacity']
+         key_figures = message['data']['key_figures']
          TB = 1024 ** 4  # tavua / teratavu (binäärinen, TiB)
 
          total = capacity['total']
@@ -33,6 +32,8 @@ def pas_rest_status():
             'used': used / TB,
             'available': available / TB,
             'used_percent': (used / total * 100) if total else 0,
+            'objects_preserved': key_figures['objects_preserved'],
+            'sips_accepted': key_figures['sips_accepted'],
          }
       else:
          error = "Status-kyselyn vastaus ei ollut onnistunut."
