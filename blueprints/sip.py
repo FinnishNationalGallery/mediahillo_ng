@@ -258,36 +258,9 @@ def read_all_files_mkv(DATA_path):
                file_append_flag = False
 
          ######
-         # CHECK IF IS CARRIER FILE AND PROCEED
+         # CHECK IF IS CARRIER FILE (MP4) AND PROCEED
          ######
          if item.lower().endswith('.mp4'):
-            # Read settings file
-            file = open("settings.json", "r")
-            content = file.read()
-            settings = json.loads(content)
-            file.close()
-            event_time = settings['prem_norm_date']
-            agent_name = settings['prem_norm_agent']
-            # Create Premis event
-            datetime_obj = parser.parse(event_time)
-            CreateDate = datetime_obj.isoformat()
-            event = DigitalProvenanceEventMetadata(
-               event_type="normalization",
-               datetime=CreateDate,
-               outcome="success",
-               detail = "File conversion with software",
-               outcome_detail="File converted to accepted form"
-            )
-            agent = DigitalProvenanceAgentMetadata(
-               name=agent_name,
-               agent_type="software",
-               #version="1.2.0"
-            )
-            event.link_agent_metadata(
-               agent,
-               agent_role="executing program"
-            )
-            file_obj.add_metadata([event])
             # 
             # CHECK IF THERE IS DATANATIVE FILES AND MAKE LINK FOR THEM
             #
