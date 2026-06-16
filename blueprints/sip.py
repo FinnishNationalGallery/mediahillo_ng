@@ -287,13 +287,12 @@ def read_all_files_mkv(DATA_path):
                agent,
                agent_role="executing program"
             )
+            file_obj.add_metadata([event])
             # 
             # CHECK IF THERE IS DATANATIVE FILES AND MAKE LINK FOR THEM
             #
             outcome_map = read_datanative_linkfile()
             if item in outcome_map:
-               # First Add Premis event to file object
-               file_obj.add_metadata([event])
                # Then proceed
                source_filename, outcome_filename = outcome_map[item]
                #print(f"Löytyi vastaavuus: Source: {source_filename} | Outcome: {outcome_filename}")
