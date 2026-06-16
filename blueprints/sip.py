@@ -148,6 +148,9 @@ def sip_from_directory():
       # Mikäli finalize() heittää poikkeuksen, siepataan virhe
       flash(f"Error creating SIP! : {str(e)}", "error")
       return redirect(url_for('sip.sip'))
+   
+####################
+# HELPER FUNCTIONS FOR SIP FROM FILES
 ####################
 
 def read_all_files(DATA_path):
@@ -182,9 +185,9 @@ def read_all_files_mkv(DATA_path):
                path=static_path,
                digital_object_path=digital_object_path
          )
-         #
+         ######
          # CHECK IF IS MATROSKA MKV FILE AND PROCEED
-         #
+         ######
          if item.lower().endswith('.mkv'):
             # Read settings file
             file = open("settings.json", "r")
@@ -234,6 +237,58 @@ def read_all_files_mkv(DATA_path):
                pass # We do not care if there is no information
             except Exception as e:
                flash(f"Error reading video frame MD5! : {str(e)}", "error")
+            # 
+            # CHECK IF THERE IS DATANATIVE FILES AND MAKE LINK FOR THEM
+            #
+            outcome_map = read_datanative_linkfile()
+            if item in outcome_map:
+               source_filename, outcome_filename = outcome_map[item]
+               #print(f"Löytyi vastaavuus: Source: {source_filename} | Outcome: {outcome_filename}")
+               source_file = File(
+                  path="static/DATANATIVE/"+source_filename,
+                  digital_object_path="DATANATIVE/"+source_filename
+               )
+               outcome_file = File(
+                  path="static/DATA/"+outcome_filename,
+                  digital_object_path="DATA/"+outcome_filename
+               )
+               file_obj_source, file_obj_outcome = make_datanative_premis(source_file, outcome_file)
+               files.append(file_obj_source)
+               files.append(file_obj_outcome)
+               file_append_flag = False
+
+            ######
+            # CHECK IF IS CARRIER FILE AND PROCEED
+            ######
+         if item.lower().endswith('.mp4'):
+            # Read settings file
+            file = open("settings.json", "r")
+            content = file.read()
+            settings = json.loads(content)
+            file.close()
+            event_time = settings['prem_norm_date']
+            agent_name = settings['prem_norm_agent']
+            # Create Premis event
+            datetime_obj = parser.parse(event_time)
+            CreateDate = datetime_obj.isoformat()
+            event = DigitalProvenanceEventMetadata(
+               event_type="normalization",
+               datetime=CreateDate,
+               outcome="success",
+               detail = "File conversion with software",
+               outcome_detail="File converted to accepted form"
+            )
+            agent = DigitalProvenanceAgentMetadata(
+               name=agent_name,
+               agent_type="software",
+               #version="1.2.0"
+            )
+            event.link_agent_metadata(
+               agent,
+               agent_role="executing program"
+            )
+            # Add Premis event to file object
+            file_obj.add_metadata([event])
             # 
             # CHECK IF THERE IS DATANATIVE FILES AND MAKE LINK FOR THEM
             #
