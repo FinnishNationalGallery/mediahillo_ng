@@ -15,7 +15,37 @@ def pas_rest_index():
 @login_required
 def pas_rest_status():
    message = pas_rest.get_status()
-   return render_template('pas_rest_status.html', environment=pas_rest.REST_ENV, message=message)
+   status_data = None
+   error = ""
+   try:
+      # get_status() palauttaa jo valmiiksi jäsennetyn dictin (response.json()).
+      # Varmistetaan silti, että rakenne on odotettu ja status onnistunut.
+      if isinstance(message, dict) and message.get('status') == 'success':
+         capacity = message['data']['capacity']
+         TB = 1024 ** 4  # tavua / teratavu (binäärinen, TiB)
+
+         total = capacity['total']
+         used = capacity['used']
+         available = capacity['available']
+
+         status_data = {
+            'capacity': total / TB,
+            'used': used / TB,
+            'available': available / TB,
+            'used_percent': (used / total * 100) if total else 0,
+         }
+      else:
+         error = "Status-kyselyn vastaus ei ollut onnistunut."
+   except (KeyError, TypeError, ZeroDivisionError):
+      error = "Status-datan jäsentäminen epäonnistui."
+
+   return render_template(
+      'pas_rest_status.html',
+      environment=pas_rest.REST_ENV,
+      status_data=status_data,
+      error=error,
+      message=message,
+   )
 
 @rest_bp.route("/pas_rest_accepted_created", methods=['GET', 'POST'])
 @login_required

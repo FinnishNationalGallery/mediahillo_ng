@@ -23,9 +23,52 @@
             <h5 class="title is-5">{{environment}}</h5>
         </div>
         <div class="box">
-            {{message}}
-        </br></br>
-    
+            {% if status_data %}
+            <h2 class="title is-4">Säilytyspalvelun tila</h2>
+
+            <table class="table is-fullwidth is-striped">
+                <tbody>
+                    <tr>
+                        <th>Kapasiteetti</th>
+                        <td class="has-text-right">{{ "%.2f"|format(status_data.capacity) }} Tt</td>
+                    </tr>
+                    <tr>
+                        <th>Käytetty</th>
+                        <td class="has-text-right">{{ "%.2f"|format(status_data.used) }} Tt</td>
+                    </tr>
+                    <tr>
+                        <th>Jäljellä</th>
+                        <td class="has-text-right">{{ "%.2f"|format(status_data.available) }} Tt</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="mb-2">Käytetty {{ "%.1f"|format(status_data.used_percent) }} % kapasiteetista</p>
+            <progress
+                class="progress {% if status_data.used_percent >= 90 %}is-danger{% elif status_data.used_percent >= 75 %}is-warning{% else %}is-success{% endif %}"
+                value="{{ status_data.used_percent }}" max="100">
+                {{ "%.1f"|format(status_data.used_percent) }}%
+            </progress>
+
+            <h2 class="title is-4 mt-5">Avainluvut</h2>
+            <table class="table is-fullwidth is-striped">
+                <tbody>
+                    <tr>
+                        <th>Säilytettyjä objekteja</th>
+                        <td class="has-text-right">{{ status_data.objects_preserved }}</td>
+                    </tr>
+                    <tr>
+                        <th>Hyväksyttyjä SIP-paketteja</th>
+                        <td class="has-text-right">{{ status_data.sips_accepted }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            {% elif error %}
+            <div class="notification is-danger">{{ error }}</div>
+            {% else %}
+            {{ message }}
+            {% endif %}
         </div>
     </div>
     
