@@ -317,6 +317,15 @@ def read_all_files_mkv(DATA_path):
 
 ## MAKE DATANATIVE PREMIS EVENT ##
 def make_datanative_premis(source_file, outcome_file):
+   file = open("settings.json", "r")
+   content = file.read()
+   settings = json.loads(content)
+   file.close()
+   event_time = settings['prem_norm_date']
+   agent_name = settings['prem_norm_agent']
+   # Create Premis event
+   datetime_obj = parser.parse(event_time)
+   CreateDate = datetime_obj.isoformat()
    source_file.generate_technical_metadata()
    outcome_file.generate_technical_metadata()
    source_file.digital_object.use = "fi-dpres-no-file-format-validation"
@@ -326,7 +335,8 @@ def make_datanative_premis(source_file, outcome_file):
       outcome = "success",
       outcome_detail = ("Source file format has been normalized. Outcome "
                         "object has been created as a result."),
-      datetime = "2024-08-14T15:22:00",
+      datetime = CreateDate,
+      #datetime = "2024-08-14T15:22:00",
    )
 
    source_file_techmd = next(
