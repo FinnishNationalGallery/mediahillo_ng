@@ -258,7 +258,7 @@ def read_all_files_mkv(DATA_path):
                file_append_flag = False
 
          ######
-         # CHECK IF IS CARRIER FILE (MP4) AND PROCEED
+         # CHECK IF IS CARRIER FILE (MP4) AND MAKE DATANATIVE LINK
          ######
          if item.lower().endswith('.mp4'):
             # 
