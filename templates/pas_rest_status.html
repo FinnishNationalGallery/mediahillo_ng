@@ -30,20 +30,20 @@
                 <tbody>
                     <tr>
                         <th>Kapasiteetti</th>
-                        <td class="has-text-right">{{ "%.2f"|format(status_data.capacity) }} Tt</td>
+                        <td class="has-text-right">{{ "%.2f"|format(status_data.capacity)|replace(".", ",")  }} Tt</td>
                     </tr>
                     <tr>
                         <th>Käytetty</th>
-                        <td class="has-text-right">{{ "%.2f"|format(status_data.used) }} Tt</td>
+                        <td class="has-text-right">{{ "%.2f"|format(status_data.used)|replace(".", ",")  }} Tt</td>
                     </tr>
                     <tr>
                         <th>Jäljellä</th>
-                        <td class="has-text-right">{{ "%.2f"|format(status_data.available) }} Tt</td>
+                        <td class="has-text-right">{{ "%.2f"|format(status_data.available)|replace(".", ",")  }} Tt</td>
                     </tr>
                 </tbody>
             </table>
 
-            <p class="mb-2">Käytetty {{ "%.1f"|format(status_data.used_percent) }} % kapasiteetista</p>
+            <p class="mb-2">Käytetty {{ "%.1f"|format(status_data.used_percent)|replace(".", ",")  }} % kapasiteetista</p>
             <progress
                 class="progress {% if status_data.used_percent >= 90 %}is-danger{% elif status_data.used_percent >= 75 %}is-warning{% else %}is-success{% endif %}"
                 value="{{ status_data.used_percent }}" max="100">
